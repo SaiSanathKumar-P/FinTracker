@@ -1,5 +1,4 @@
 // ================= LOGIN =================
-const BASE = "https://fintrackerr.onrender.com";
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
@@ -10,7 +9,7 @@ if (loginForm) {
     const password = document.getElementById("password").value;
 
     try {
-      const response = await fetch(`${BASE}/api/auth/login`, {
+      const response = await fetch("https://fintrackerr.onrender.com//api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -18,12 +17,7 @@ if (loginForm) {
         body: JSON.stringify({ email, password })
       });
 
-let data = {};
-try{
-  data = await res.json();
-}catch(e){
-  console.log("No JSON returned");
-}
+      const data = await response.json();
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
@@ -54,7 +48,7 @@ if (registerForm) {
     const password = document.getElementById("password").value;
 
     try {
-      const res = await fetch(`${BASE}/api/auth/register`, {
+      const res = await fetch("https://fintrackerr.onrender.com//api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -77,7 +71,3 @@ if (registerForm) {
     }
   });
 }
-
-
-
-

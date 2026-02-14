@@ -94,7 +94,7 @@ if (loginForm) {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        window.location.href = "dashboard.html";
+        window.location.href = "/dashboard.html";
       } else {
         alert(data.message || "Invalid email or password");
       }
@@ -133,7 +133,7 @@ if (registerForm) {
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
-        window.location.href = "dashboard.html";
+        window.location.href = "/dashboard.html";
       } else {
         alert(data.message);
       }
@@ -144,4 +144,5 @@ if (registerForm) {
     }
   });
 }
+
 

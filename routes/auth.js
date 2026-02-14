@@ -9,6 +9,9 @@ const router = express.Router();
 router.get("/test", (req, res) => {
   res.json({ message: "Auth route working" });
 });
+if (!process.env.JWT_SECRET) {
+  console.error("JWT_SECRET is missing in environment variables");
+}
 
 
 // ================= REGISTER =================
@@ -84,4 +87,5 @@ router.post("/login", async (req, res) => {
 });
 
 module.exports = router;
+
 

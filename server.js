@@ -12,7 +12,7 @@ app.use(express.static("public"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/expenses", require("./routes/expenses"));
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGO_URI)
 .then(()=> console.log("MongoDB Connected Successfully"))
 .catch(err=> console.log(err));
 
@@ -21,4 +21,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, ()=>{
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
 

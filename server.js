@@ -5,19 +5,28 @@ require("dotenv").config();
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
 
-const authRoutes = require("./routes/auth");
-const expenseRoutes = require("./routes/expenses");
+// Routes
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/expenses", require("./routes/expenses"));
 
-app.use("/api/auth", authRoutes);
-app.use("/api/expenses", expenseRoutes);
+// Root route (important)
+app.get("/", (req, res) => {
+  res.json({ message: "FinTrack API is running" });
+});
 
+// 404 fallback (important)
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
+// MongoDB
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected Successfully"))
+.then(() => console.log("MongoDB Connected"))
 .catch(err => console.log(err));
 
 const PORT = process.env.PORT || 5000;

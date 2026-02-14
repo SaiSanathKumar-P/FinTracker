@@ -81,8 +81,9 @@ if (registerForm) {
 
     } catch (error) {
       console.error(error);
-      alert("Server error");
+      alert("Server error. Please try again.");
     }
   });
 }
+
 

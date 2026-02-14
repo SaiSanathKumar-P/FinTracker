@@ -1,6 +1,6 @@
 const express = require("express");
-const Expense = require("../models/Expense");
-const auth = require("../middleware/authMiddleware");
+const Expense = require("./Expense");
+const auth = require(".authMiddleware");
 
 const router = express.Router();
 
@@ -116,5 +116,6 @@ if (total > 10000) riskLevel = "High Risk";
         res.status(500).json({ message: "Analyzer error" });
     }
 });
+
 
 module.exports = router;

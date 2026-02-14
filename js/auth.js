@@ -18,7 +18,12 @@ if (loginForm) {
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
+      let data = {};
+try {  
+  data = await response.json();
+} catch (e) {
+  console.error("Invalid JSON");
+}
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
@@ -72,4 +77,5 @@ if (registerForm) {
     }
   });
 }
+
 

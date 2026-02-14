@@ -9,7 +9,7 @@ if (loginForm) {
     const password = document.getElementById("password").value;
 
     try {
-      const response = await fetch("https://fintrackerr.onrender.com/api/auth/login", {
+      const response = await fetch(`${BASE}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -17,21 +17,28 @@ if (loginForm) {
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
+      let data = {};
+      try {
+        data = await response.json();
+      } catch {
+        alert("Server did not return data");
+        return;
+      }
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        window.location.href = "/dashboard.html";
+        window.location.href = "dashboard.html";
       } else {
-        alert(data.message || "Invalid email or password");
+        alert(data.message || "Invalid credentials");
       }
 
     } catch (error) {
       console.error("Login error:", error);
-      alert("Server error. Please try again.");
+      alert("Server error");
     }
   });
 }
+
 
 
 // ================= REGISTER =================
@@ -48,7 +55,7 @@ if (registerForm) {
     const password = document.getElementById("password").value;
 
     try {
-      const res = await fetch("https://fintrackerr.onrender.com/api/auth/register", {
+      const res = await fetch(`${BASE}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -56,13 +63,19 @@ if (registerForm) {
         body: JSON.stringify({ name, email, college, year, password })
       });
 
-      const data = await res.json();
+      let data = {};
+      try {
+        data = await res.json();
+      } catch {
+        alert("Server did not return data");
+        return;
+      }
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
-        window.location.href = "/dashboard.html";
+        window.location.href = "dashboard.html";
       } else {
-        alert(data.message);
+        alert(data.message || "Registration failed");
       }
 
     } catch (error) {
@@ -71,5 +84,3 @@ if (registerForm) {
     }
   });
 }
-
-

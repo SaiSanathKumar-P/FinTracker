@@ -2,7 +2,7 @@ window.history.pushState(null, null, window.location.href);
 window.onpopstate = function () {
   window.history.go(1);
 };
-const EXPENSE_API = "http://localhost:5000/api/expenses";
+const EXPENSE_API = "https://fintrackerr.onrender.com/api/expenses";
 const token = localStorage.getItem("token");
 
 let monthlyBudget = 0;
@@ -72,7 +72,7 @@ async function loadExpenses() {
   try {
 
     const res = await fetch(EXPENSE_API, {
-      headers: { "Authorization": token }
+      headers: { "Authorization": `Bearer ${token}`
     });
 
     if (!res.ok) {
@@ -122,7 +122,7 @@ async function deleteExpense(id) {
 
   await fetch(EXPENSE_API + "/" + id, {
     method: "DELETE",
-    headers: { "Authorization": token }
+    headers: { "Authorization": `Bearer ${token}`
   });
 
   loadExpenses();
@@ -134,7 +134,7 @@ async function loadSmartAnalysis() {
 
   try {
 
-    const res = await fetch("http://localhost:5000/api/expenses/analyze", {
+    const res = await fetch("https://fintrackerr.onrender.com/expenses/analyze", {
   headers: { "Authorization": `Bearer ${token}` }
     });
 
@@ -165,3 +165,4 @@ function logoutUser() {
 // INITIAL LOAD
 loadExpenses();
 loadSmartAnalysis();
+

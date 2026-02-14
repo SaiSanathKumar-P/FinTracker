@@ -43,6 +43,8 @@ async function addExpense() {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
+}
+
       },
       body: JSON.stringify({ title, category, amount })
     });
@@ -122,8 +124,9 @@ async function deleteExpense(id) {
 
   await fetch(EXPENSE_API + "/" + id, {
     method: "DELETE",
-    headers: { "Authorization": `Bearer ${token}`
-  });
+    headers: {
+  "Authorization": `Bearer ${token}`
+}
 
   loadExpenses();
   loadSmartAnalysis();
@@ -134,9 +137,10 @@ async function loadSmartAnalysis() {
 
   try {
 
-    const res = await fetch("https://fintrackerr.onrender.com/expenses/analyze", {
-  headers: { "Authorization": `Bearer ${token}` }
-    });
+    const res = await fetch("https://fintrackerr.onrender.com/api/expenses/analyze", {
+  headers: {
+  "Authorization": `Bearer ${token}`
+}
 
     if (!res.ok) return;
 
@@ -165,4 +169,5 @@ function logoutUser() {
 // INITIAL LOAD
 loadExpenses();
 loadSmartAnalysis();
+
 

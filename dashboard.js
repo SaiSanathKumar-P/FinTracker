@@ -72,7 +72,8 @@ async function loadExpenses() {
   try {
 
     const res = await fetch(EXPENSE_API, {
-      headers: { "Authorization": token }
+      headers: { "Authorization": `Bearer ${token}` }
+
     });
 
     if (!res.ok) {
@@ -122,7 +123,7 @@ async function deleteExpense(id) {
 
   await fetch(EXPENSE_API + "/" + id, {
     method: "DELETE",
-    headers: { "Authorization": token }
+    headers: { "Authorization": `Bearer ${token}` }
   });
 
   loadExpenses();
@@ -165,4 +166,5 @@ function logoutUser() {
 // INITIAL LOAD
 loadExpenses();
 loadSmartAnalysis();
+
 

@@ -1148,3 +1148,16 @@ body.light-mode .theme-select {
   }
 
 }
+.auth-container {
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  padding: 30px 20px;
+}
+
+.auth-container input {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+}
+

@@ -10,14 +10,22 @@
   --animation: gradientMove 10s ease infinite;
 }
 
-body{
-  background: var(--bg-color);
-  background-size:400% 400%;
-  animation: var(--animation);
-  color: var(--text-color);
-  min-height:100vh;
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  background-attachment: fixed;
+  background-size: cover;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
 }
 
+input,
+select,
+textarea {
+  font-size: 16px;
+}
 
 /* HEADER */
 header{
@@ -1097,4 +1105,46 @@ body.light-mode .theme-select {
 .how-card p {
   font-size: 15px;
   color: #cbd5e1;
+}
+
+/* ===================== */
+/* GLOBAL MOBILE FIX */
+/* ===================== */
+
+@media (max-width: 768px) {
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .dashboard-wrapper {
+    padding: 20px;
+  }
+
+  .summary-grid,
+  .ai-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .expense-form {
+    flex-direction: column;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
 }

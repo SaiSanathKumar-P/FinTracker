@@ -41,10 +41,10 @@ async function addExpense() {
     const res = await fetch(EXPENSE_API + "/add", {
       method: "POST",
       headers: {
-  "Content-Type": "application/json",
-  "Authorization": `Bearer ${token}`
-},
-body: JSON.stringify({ title, category, amount })
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ title, category, amount })
     });
 
     const data = await res.json();
@@ -72,7 +72,7 @@ async function loadExpenses() {
   try {
 
     const res = await fetch(EXPENSE_API, {
-      headers: { "Authorization": `Bearer ${token}`
+      headers: { "Authorization": token }
     });
 
     if (!res.ok) {
@@ -122,9 +122,8 @@ async function deleteExpense(id) {
 
   await fetch(EXPENSE_API + "/" + id, {
     method: "DELETE",
-    headers: {
-  "Authorization": `Bearer ${token}`
-}
+    headers: { "Authorization": token }
+  });
 
   loadExpenses();
   loadSmartAnalysis();
@@ -135,12 +134,9 @@ async function loadSmartAnalysis() {
 
   try {
 
-    const res = await fetch(
- "https://fintrack-backend.onrender.com/api/expenses/analyze",
- {
-   headers:{ Authorization:`Bearer ${token}` }
- }
-);
+    const res = await fetch("https://fintrackerr.onrender.com/api/expenses/analyze", {
+  headers: { "Authorization": `Bearer ${token}` }
+    });
 
     if (!res.ok) return;
 
@@ -169,7 +165,3 @@ function logoutUser() {
 // INITIAL LOAD
 loadExpenses();
 loadSmartAnalysis();
-
-
-
-

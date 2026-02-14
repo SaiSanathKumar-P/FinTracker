@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinTrack - Smart Student Finance</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auto-mode">
+<header>
+  <div class="logo">FinTrack</div>
+  <div>
+    <div class="theme-dropdown">
+  <button id="themeBtn" class="theme-btn">Both ▾</button>
+
+  <div id="themeMenu" class="theme-menu">
+    <div data-theme="light">Light</div>
+    <div data-theme="dark">Dark</div>
+    <div data-theme="auto">Both</div>
+  </div>
+</div>
+
+
+  <a href="login.html" class="nav-btn">Login</a>
+  <a href="register.html" class="nav-btn primary">Register</a>
+
+</div>
+  </div>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+  <div class="hero-left">
+    <h1>Manage Your Student Finances Smarter</h1>
+    <p>Track expenses, control budgets and gain smart financial insights designed specifically for college students.</p>
+    <a href="register.html" class="cta-btn">Get Started</a>
+  </div>
+
+  <div class="hero-right">
+    <img src="images/indexgroup.png" alt="Students Managing Finance">
+  </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features-section">
+  <h2>Powerful Features</h2>
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <img src="images/smartanalytics.png" alt="">
+      <h3>Smart Analytics</h3>
+      <p>Visual charts to understand your spending behavior.</p>
+    </div>
+
+    <div class="feature-card">
+      <img src="images/budgetcontrol.png" alt="">
+      <h3>Budget Control</h3>
+      <p>Set monthly budgets and monitor remaining balance.</p>
+    </div>
+
+    <div class="feature-card">
+      <img src="images/Securelogin.png" alt="">
+      <h3>Secure Login</h3>
+      <p>JWT authentication with encrypted password protection.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- IMAGE + TEXT SECTION -->
+<section class="split-section">
+  <div class="split-image">
+    <img src="images/collegestudents.png" alt="College Students">
+  </div>
+  <div class="split-text">
+    <h2>Built for Modern Students</h2>
+    <p>
+      Whether it's hostel rent, food, travel or academic expenses —
+      FinTrack helps you manage everything in one secure dashboard.
+    </p>
+    <a href="register.html" class="cta-btn">Start Managing Now</a>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <h2>How It Works</h2>
+
+  <div class="how-grid">
+
+    <div class="how-card">
+      <img src="images/createacc.png" alt="Create Account">
+      <h3>Create Account</h3>
+      <p>Sign up securely using your email and password.</p>
+    </div>
+
+    <div class="how-card">
+      <img src="images/addexpens.png" alt="Add Expenses">
+      <h3>Add Expenses</h3>
+      <p>Track daily spending like food, rent, and travel.</p>
+    </div>
+
+    <div class="how-card">
+      <img src="images/setbudg.png" alt="Set Budget">
+      <h3>Set Budget</h3>
+      <p>Define monthly limits to control overspending.</p>
+    </div>
+
+    <div class="how-card">
+      <img src="images/getsmarter.png" alt="Smart Insights">
+      <h3>Get Smart Insights</h3>
+      <p>View charts and AI suggestions to improve savings.</p>
+    </div>
+
+  </div>
+</section>
+
+
+<footer>
+  © 2026 FinTrack | Designed for Students
+</footer>
+<script>
+const themeBtn = document.getElementById("themeBtn");
+const themeMenu = document.getElementById("themeMenu");
+const dropdown = document.querySelector(".theme-dropdown");
+
+const savedTheme = localStorage.getItem("theme");
+
+if (savedTheme) {
+    document.body.classList.add(savedTheme);
+    themeBtn.textContent = savedTheme.replace("-mode","").replace(/^./, c => c.toUpperCase()) + " ▾";
+}
+
+// Toggle menu
+themeBtn.addEventListener("click", () => {
+    dropdown.classList.toggle("active");
+});
+
+// Select theme
+themeMenu.querySelectorAll("div").forEach(item => {
+    item.addEventListener("click", function() {
+        const selected = this.getAttribute("data-theme") + "-mode";
+
+        document.body.classList.remove("light-mode","dark-mode","auto-mode");
+        document.body.classList.add(selected);
+
+        localStorage.setItem("theme", selected);
+
+        themeBtn.textContent = this.textContent + " ▾";
+        dropdown.classList.remove("active");
+    });
+});
+
+// Close if clicked outside
+document.addEventListener("click", function(e){
+    if(!dropdown.contains(e.target)){
+        dropdown.classList.remove("active");
+    }
+});
+
+
+</script>
+
+
+</body>
+</html>

@@ -137,10 +137,12 @@ async function loadSmartAnalysis() {
 
   try {
 
-    const res = await fetch("https://fintrackerr.onrender.com/api/expenses/analyze", {
-  headers: {
-  "Authorization": `Bearer ${token}`
-}
+    const res = await fetch(
+ "https://fintrack-backend.onrender.com/api/expenses/analyze",
+ {
+   headers:{ Authorization:`Bearer ${token}` }
+ }
+);
 
     if (!res.ok) return;
 
@@ -169,5 +171,6 @@ function logoutUser() {
 // INITIAL LOAD
 loadExpenses();
 loadSmartAnalysis();
+
 
 

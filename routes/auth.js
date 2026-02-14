@@ -7,8 +7,9 @@ const router = express.Router();
 
 // ✅ TEST ROUTE
 router.get("/test", (req, res) => {
-  res.send("Auth route working");
+  res.json({ message: "Auth route working" });
 });
+
 
 // ================= REGISTER =================
 router.post("/register", async (req, res) => {
@@ -83,3 +84,4 @@ router.post("/login", async (req, res) => {
 });
 
 module.exports = router;
+

@@ -17,13 +17,15 @@ if (loginForm) {
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
+      // ⚠️ SAFE JSON PARSE
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
 
-      if (response.ok) {
+      if (response.ok && data.token) {
         localStorage.setItem("token", data.token);
         window.location.href = "dashboard.html";
       } else {
-        alert(data.message || "Invalid email or password");
+        alert(data.message || "Login failed");
       }
 
     } catch (error) {
@@ -48,7 +50,7 @@ if (registerForm) {
     const password = document.getElementById("password").value;
 
     try {
-      const res = await fetch("https://fintrackerr.onrender.com/api/auth/register", {
+      const response = await fetch("https://fintrackerr.onrender.com/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -56,17 +58,18 @@ if (registerForm) {
         body: JSON.stringify({ name, email, college, year, password })
       });
 
-      const data = await res.json();
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
 
-      if (res.ok) {
+      if (response.ok && data.token) {
         localStorage.setItem("token", data.token);
         window.location.href = "dashboard.html";
       } else {
-        alert(data.message);
+        alert(data.message || "Registration failed");
       }
 
     } catch (error) {
-      console.error(error);
+      console.error("Register error:", error);
       alert("Server error");
     }
   });

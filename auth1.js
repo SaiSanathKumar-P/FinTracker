@@ -9,7 +9,7 @@ if (loginForm) {
     const password = document.getElementById("password").value;
 
     try {
-      const response = await fetch("https://fintrackerr.onrender.com/api/auth1/login", {
+      const response = await fetch("https://fintrackerr.onrender.com/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -48,7 +48,7 @@ if (registerForm) {
     const password = document.getElementById("password").value;
 
     try {
-      const res = await fetch("https://fintrackerr.onrender.com/api/auth1/register", {
+      const res = await fetch("https://fintrackerr.onrender.com/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

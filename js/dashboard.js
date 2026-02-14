@@ -41,12 +41,10 @@ async function addExpense() {
     const res = await fetch(EXPENSE_API + "/add", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-}
-
-      },
-      body: JSON.stringify({ title, category, amount })
+  "Content-Type": "application/json",
+  "Authorization": `Bearer ${token}`
+},
+body: JSON.stringify({ title, category, amount })
     });
 
     const data = await res.json();
@@ -171,6 +169,7 @@ function logoutUser() {
 // INITIAL LOAD
 loadExpenses();
 loadSmartAnalysis();
+
 
 
 

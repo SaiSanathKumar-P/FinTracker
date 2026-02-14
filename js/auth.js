@@ -18,11 +18,11 @@ if (loginForm) {
         body: JSON.stringify({ email, password })
       });
 
-      let data = {};
-try {  
-  data = await response.json();
-} catch (e) {
-  console.error("Invalid JSON");
+let data = {};
+try{
+  data = await res.json();
+}catch(e){
+  console.log("No JSON returned");
 }
 
       if (response.ok) {
@@ -77,6 +77,7 @@ if (registerForm) {
     }
   });
 }
+
 
 
 

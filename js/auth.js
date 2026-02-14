@@ -1,3 +1,4 @@
+const BASE = "https://fintrackerr.onrender.com";
 // ================= LOGIN =================
 const loginForm = document.getElementById("loginForm");
 
@@ -84,3 +85,4 @@ if (registerForm) {
     }
   });
 }
+

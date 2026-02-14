@@ -5,6 +5,10 @@ const User = require("../models/User");
 
 const router = express.Router();
 
+// ✅ TEST ROUTE
+router.get("/test", (req, res) => {
+  res.send("Auth route working");
+});
 
 // ================= REGISTER =================
 router.post("/register", async (req, res) => {
@@ -13,14 +17,11 @@ router.post("/register", async (req, res) => {
 
     email = email.trim().toLowerCase();
 
-    // Check if email exists
     const existingUser = await User.findOne({ email });
-
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -50,7 +51,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
 // ================= LOGIN =================
 router.post("/login", async (req, res) => {
   try {
@@ -59,13 +59,11 @@ router.post("/login", async (req, res) => {
     email = email.trim().toLowerCase();
 
     const user = await User.findOne({ email });
-
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }

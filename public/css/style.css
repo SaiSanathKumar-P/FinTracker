@@ -1099,73 +1099,47 @@ body.light-mode .theme-select {
 /* --- Responsiveness for Tablets and Mobiles --- */
 
 /* For screens smaller than 768px (Tablets/Phones) */
-@media (max-width: 768px) {
-    .glass-card {
-        width: 90%; /* Card takes up more screen width on small devices */
-        padding: 20px;
-        margin: 10px auto;
-    }
-
-    h1 {
-        font-size: 1.8rem; /* Shrink text so it doesn't wrap awkwardly */
-    }
-
-    .dashboard-grid {
-        display: flex;
-        flex-direction: column; /* Stack stats on top of each other instead of side-by-side */
-    }
-}
 
 /* For very small screens smaller than 480px (Phones) */
-@media (max-width: 480px) {
-    .nav-buttons {
-        display: flex;
-        gap: 5px;
-    }
-    
-    .logout-btn {
-        padding: 8px 12px;
-        font-size: 14px;
-    }
-}
 
 /* ===================================================
    MOBILE RESPONSIVE FIX (GLOBAL)
 =================================================== */
+/* =====================================
+   PROFESSIONAL CLEAN RESPONSIVE SYSTEM
+===================================== */
 
 @media (max-width: 768px){
 
-/* Prevent side scroll */
-html, body{
-  overflow-x: hidden;
-}
-
-/* HEADER */
+/* ===== HEADER ===== */
 header{
-  flex-direction: column;
-  gap: 12px;
-  padding: 15px;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 15px 20px;
 }
 
 .logo{
-  font-size: 20px;
-  text-align: center;
+  font-size: 18px;
 }
 
-/* NAV BUTTONS */
+header div{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
 .nav-btn,
-.theme-btn,
-.btn{
-  padding: 8px 14px;
-  font-size: 14px;
+.theme-btn{
+  padding:6px 12px;
+  font-size:13px;
 }
 
-/* ================= HERO SECTION ================= */
-
+/* ===== HERO SECTION ===== */
 .hero-section{
   flex-direction: column;
-  padding: 60px 20px;
   text-align: center;
+  padding: 50px 6%;
+  gap: 30px;
 }
 
 .hero-left h1{
@@ -1178,174 +1152,67 @@ header{
 }
 
 .hero-right img{
-  max-width: 260px;
-  width: 100%;
+  max-width: 300px;
 }
 
-/* ================= FEATURES ================= */
+/* ===== FEATURES ===== */
+.features-section{
+  padding: 70px 6%;
+}
 
-.features-grid,
-.features{
+.features-grid{
   flex-direction: column;
-  gap: 20px;
+  gap: 25px;
 }
 
 .feature-card{
   width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
 }
 
-/* ================= SPLIT SECTION ================= */
-
+/* ===== SPLIT SECTION ===== */
 .split-section{
   flex-direction: column;
-  padding: 60px 20px;
   text-align: center;
+  padding: 70px 6%;
+  gap: 40px;
 }
 
 .split-image img{
-  max-width: 260px;
+  max-width: 300px;
 }
 
-/* ================= FORMS ================= */
+/* ===== HOW SECTION ===== */
+.how-section{
+  padding: 70px 6%;
+}
 
-.form-container,
-.dashboard-container,
-.modern-form{
-  width: 92%;
-  margin: 40px auto;
-  padding: 20px;
+.how-grid{
+  grid-template-columns: 1fr;
+  gap: 25px;
+}
+
+/* ===== DASHBOARD ===== */
+.summary-grid{
+  grid-template-columns: 1fr;
 }
 
 .form-row{
   flex-direction: column;
 }
 
-.form-row input,
-.form-row select{
-  width: 100%;
-}
-
-/* ================= DASHBOARD ================= */
-
-.summary-grid{
-  grid-template-columns: 1fr;
-}
-
-.cards{
-  flex-direction: column;
-}
-
-.card{
-  width: 100%;
-}
-
-/* ================= CHARTS ================= */
-
-.charts,
-.charts-grid{
-  grid-template-columns: 1fr;
-}
-
-.charts canvas,
-.charts-grid canvas{
-  width: 100% !important;
-}
-
-/* ================= AI BOX ================= */
-
 .ai-grid{
   flex-direction: column;
 }
 
-.ai-box{
-  width: 100%;
-}
-
-/* ================= IMAGES FIX ================= */
-
+/* ===== GENERAL FIX ===== */
 img{
   max-width: 100%;
   height: auto;
-  display: block;
-}
-
-/* ================= BUTTON SIZE ================= */
-
-button,
-.add-btn,
-.save-budget-btn{
-  font-size: 14px;
-  padding: 12px;
-}
-
-/* ================= HEADINGS ================= */
-
-h1{font-size:28px;}
-h2{font-size:24px;}
-h3{font-size:20px;}
-
-}
-
-@media (max-width: 768px){
-  body{
-    zoom: 0.97;
-  }
-}
-
-/* ===================================
-   CLEAN MOBILE COMPACT LAYOUT FIX
-=================================== */
-
-@media (max-width: 768px){
-
-/* Remove huge section spacing */
-.hero-section,
-.features-section,
-.split-section,
-.how-section{
-  padding: 50px 20px !important;
-  min-height: auto !important;
-}
-
-/* Reduce hero heading */
-.hero-left h1{
-  font-size: 28px !important;
-}
-
-/* Reduce section titles */
-.features-section h2,
-.split-text h2,
-.how-section h2{
-  font-size: 24px !important;
-  margin-bottom: 25px !important;
-}
-
-/* Reduce feature card padding */
-.feature-card{
-  padding: 20px !important;
-}
-
-/* Remove fixed image heights */
-.feature-card img{
-  height: auto !important;
-}
-
-/* Reduce gap between stacked sections */
-.features-grid,
-.steps,
-.how-grid{
-  gap: 20px !important;
-}
-
-/* Make hero image smaller */
-.hero-right img{
-  max-width: 220px !important;
-}
-
-/* Reduce split image size */
-.split-image img{
-  max-width: 220px !important;
 }
 
 }
+
+
 

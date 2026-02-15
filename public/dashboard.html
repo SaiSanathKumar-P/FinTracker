@@ -9,11 +9,37 @@
   <style>
     body { opacity: 0; transition: opacity 0.2s; }
     body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
-    .offline-badge { background: #f59e0b; color: #0f172a; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-left: 1rem; }
-    .chart-container { background: var(--card-bg); border-radius: 20px; padding: 1.5rem; margin-top: 2rem; }
-    .recent-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 0.5rem; }
-    .reset-btn { background: #ef4444; color: white; border: none; border-radius: 20px; padding: 6px 16px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
-    .reset-btn:hover { background: #dc2626; transform: scale(1.05); }
+    /* Chart container initially hidden */
+    #chartContainer { display: none; }
+    /* Category add button */
+    .category-add-btn {
+      background: var(--primary-500);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      width: 40px;
+      height: 40px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      box-shadow: 0 4px 10px rgba(56,189,248,0.3);
+    }
+    .category-add-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px var(--primary-500);
+    }
+    .form-row .custom-select-wrapper {
+      flex: 2; /* give more space for dropdown + button */
+    }
+    .category-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex: 1;
+    }
   </style>
 </head>
 <body class="auto-mode">
@@ -21,7 +47,6 @@
     <header class="topbar">
       <h1 class="logo">FinTrack</h1>
       <div class="topbar-right">
-        <span id="apiStatus" class="offline-badge" style="display:none;">Offline Mode</span>
         <button class="logout-btn" id="logoutBtn">Logout</button>
       </div>
     </header>
@@ -44,18 +69,21 @@
       <h2>Add New Expense</h2>
       <div class="form-row">
         <input type="text" id="title" placeholder="Expense Title">
-        <div class="custom-select-wrapper" id="categoryWrapper">
-          <button class="custom-select-trigger" id="categoryTrigger">
-            <span id="selected-display">Select Category</span><span class="arrow"></span>
-          </button>
-          <div class="custom-options" id="dropdownMenu">
-            <div class="option" data-value="Food">🍔 Food</div>
-            <div class="option" data-value="Transport">🚗 Transport</div>
-            <div class="option" data-value="Shopping">🛍 Shopping</div>
-            <div class="option" data-value="Education">📚 Education</div>
-            <div class="option" data-value="Entertainment">🎬 Entertainment</div>
+        <div class="category-row">
+          <div class="custom-select-wrapper" id="categoryWrapper">
+            <button class="custom-select-trigger" id="categoryTrigger">
+              <span id="selected-display">Select Category</span><span class="arrow"></span>
+            </button>
+            <div class="custom-options" id="dropdownMenu">
+              <div class="option" data-value="Food">🍔 Food</div>
+              <div class="option" data-value="Transport">🚗 Transport</div>
+              <div class="option" data-value="Shopping">🛍 Shopping</div>
+              <div class="option" data-value="Education">📚 Education</div>
+              <div class="option" data-value="Entertainment">🎬 Entertainment</div>
+            </div>
+            <input type="hidden" id="category-select">
           </div>
-          <input type="hidden" id="category-select">
+          <button class="category-add-btn" id="addCategoryBtn" title="Add new category">+</button>
         </div>
         <input type="number" id="amount" placeholder="Amount (₹)" min="0" step="1">
         <button class="add-btn" id="addExpenseBtn">Add</button>
@@ -64,24 +92,21 @@
 
     <!-- Expense List & Recent Activity -->
     <section class="history-section">
-      <div style="display: flex; align-items: center; justify-content: space-between;">
-        <h2 id="history-heading">Expense List</h2>
-        <button id="resetMockBtn" class="reset-btn">Reset Demo Data</button>
-      </div>
+      <h2 id="history-heading">Expense List</h2>
       <div class="scroll-container">
         <ul id="expenseList"></ul>
       </div>
     </section>
 
     <!-- Recent Activity (last 5 expenses) -->
-    <section class="recent-activity" style="margin-top: 2rem;">
+    <section class="recent-activity">
       <h2>🕒 Recent Activity</h2>
       <div id="recentList" class="recent-list"></div>
     </section>
 
     <!-- Chart & AI Insights -->
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
-      <div class="chart-container">
+      <div class="chart-container" id="chartContainer">
         <h3>Expense by Category</h3>
         <canvas id="categoryChart" width="400" height="300"></canvas>
       </div>

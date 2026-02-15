@@ -107,20 +107,30 @@ body {
 /* ========== 3. THEME VARIABLES ========== */
 /* Light Mode (default light) */
 body.light-mode {
-  --bg-primary: linear-gradient(135deg, #f0f9ff, #e6f2ff);
-  --bg-secondary: #ffffff;
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
-  --card-bg: rgba(255, 255, 255, 0.9);
-  --card-border: rgba(0, 0, 0, 0.05);
-  --input-bg: #ffffff;
-  --input-border: #cbd5e1;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --overlay: rgba(0, 0, 0, 0.5);
+  /* High-energy blue gradient to match your FinTrack brand */
+  --bg-primary: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
+  --bg-secondary: rgba(255, 255, 255, 0.2);
+  
+  /* Text needs to be white to pop against the blue background */
+  --text-primary: #ffffff;
+  --text-secondary: #f1f5f9;
+  --text-muted: #cbd5e1;
+  
+  /* Glassmorphism settings for light mode */
+  --border-color: rgba(255, 255, 255, 0.3);
+  --card-bg: rgba(255, 255, 255, 0.15);
+  --card-border: rgba(255, 255, 255, 0.25);
+  
+  /* Input fields stay readable */
+  --input-bg: rgba(255, 255, 255, 0.2);
+  --input-border: rgba(255, 255, 255, 0.4);
+  
+  --shadow-color: rgba(0, 0, 0, 0.15);
+  --overlay: rgba(15, 23, 42, 0.6);
   --animation: none;
+
   background: var(--bg-primary);
+  background-attachment: fixed; /* Keeps the blue background steady on mobile */
   color: var(--text-primary);
 }
 
@@ -1775,3 +1785,4 @@ footer a:hover {
 
 /* ========== END OF STYLESHEET ========== */
 /* Total lines: ~2150 */
+

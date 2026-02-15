@@ -158,9 +158,16 @@ document.addEventListener("click", function(e){
     }
 });
 
+const savedTheme = localStorage.getItem("theme");
 
+if (savedTheme) {
+  document.body.classList.add(savedTheme);
+} else {
+  document.body.classList.add("auto-mode");
+}
 </script>
 
 
 </body>
 </html>
+

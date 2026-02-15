@@ -17,6 +17,10 @@ body{
   color: var(--text-color);
   min-height:100vh;
 }
+html, body{
+  overflow-x:hidden;
+  max-width:100%;
+}
 
 
 /* HEADER */
@@ -54,11 +58,7 @@ header{
   box-shadow:0 0 20px #38bdf8;
 }
 
-/* HERO */
-.hero{
-  text-align:center;
-  padding:100px 20px;
-}
+
 
 .hero h1{
   font-size:42px;
@@ -316,25 +316,7 @@ footer{
   border:none;
   border-radius:8px;
 }
-/* --- 1. PROFESSIONAL CUSTOM SCROLLBAR --- */
-/* Target the whole page and any scrollable areas */
-::-webkit-scrollbar {
-  width: 10px;
-}
 
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #38bdf8, #0ea5e9);
-  border-radius: 10px;
-  border: 2px solid #0f172a; /* Creates a padding effect */
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #22d3ee;
-}
 
 /* --- 2. CUSTOM SELECTION COLOR --- */
 ::selection {
@@ -558,19 +540,7 @@ footer{
   margin-top:40px;
 }
 
-#expenseList{
-  list-style:none;
-  padding:0;
-}
 
-#expenseList li{
-  background:rgba(255,255,255,0.08);
-  margin:10px 0;
-  padding:12px;
-  border-radius:10px;
-  display:flex;
-  justify-content:space-between;
-}
 /* MODERN FORM */
 
 .modern-form{
@@ -1167,4 +1137,51 @@ body.light-mode .theme-select {
         padding: 8px 12px;
         font-size: 14px;
     }
+}
+
+/* ================= MOBILE OPTIMIZATION ================= */
+
+@media (max-width: 768px){
+
+  header{
+    padding:15px 20px;
+  }
+
+  .hero-section{
+    flex-direction:column;
+    text-align:center;
+    padding:60px 20px;
+  }
+
+  .hero-left h1{
+    font-size:32px;
+  }
+
+  .hero-left p{
+    font-size:16px;
+  }
+
+  .hero-right img{
+    max-width:280px;
+  }
+
+  .features-grid,
+  .how-grid{
+    gap:20px;
+  }
+
+  .feature-card,
+  .how-card{
+    width:100%;
+  }
+
+  .split-section{
+    flex-direction:column;
+    padding:60px 20px;
+    text-align:center;
+  }
+
+  .split-text h2{
+    font-size:28px;
+  }
 }

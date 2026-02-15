@@ -2,119 +2,171 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-  <title>FinTrack Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="description" content="FinTrack Dashboard – manage expenses, budgets, and get AI insights.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>FinTrack – Dashboard</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { opacity: 0; transition: opacity 0.2s; }
+    body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
+  </style>
 </head>
 <body class="auto-mode">
+  <div class="dashboard-wrapper">
+    <!-- Top Bar -->
+    <header class="topbar" role="banner">
+      <h1 class="logo">FinTrack</h1>
+      <div class="topbar-right">
+        <button class="logout-btn" id="logoutBtn" aria-label="Logout">Logout</button>
+      </div>
+    </header>
 
-<div class="dashboard-wrapper">
+    <!-- Summary Cards -->
+    <section class="summary-grid" aria-label="Financial summary">
+      <article class="summary-card">
+        <h2>Total Expenses</h2>
+        <p class="amount">₹ <span id="totalAmount">0</span></p>
+      </article>
 
-  <div class="topbar">
-    <h1>FinTrack</h1>
-    <div class="topbar-right">
-       <button class="logout-btn" onclick="logoutUser()">Logout</button>
-    </div>
-  </div>
+      <article class="summary-card budget-card">
+        <h2>🎯 Monthly Budget</h2>
+        <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0" aria-label="Set monthly budget">
+        <p class="amount">₹ <span id="budgetValue">0</span></p>
+        <button class="save-budget-btn" id="saveBudgetBtn">Save Budget</button>
+      </article>
 
-  <div class="summary-grid">
-    <div class="summary-card">
-      <h3>Total Expenses</h3>
-      <h2>₹ <span id="totalAmount">0</span></h2>
-    </div>
+      <article class="summary-card">
+        <h2>Remaining</h2>
+        <p class="amount">₹ <span id="remainingAmount">0</span></p>
+      </article>
 
-    <div class="summary-card budget-card">
-      <h3>🎯 Monthly Budget</h3>
-      <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0" oninput="updateBudgetValue(this.value)">
-      <p>₹ <span id="budgetValue">0</span></p>
-      <button class="save-budget-btn" onclick="setBudget()">Save Budget</button>
-    </div>
+      <article class="summary-card">
+        <h2>Budget Usage</h2>
+        <p class="amount" id="budgetUsage">0% Used</p>
+      </article>
+    </section>
 
-    <div class="summary-card">
-      <h3>Remaining</h3>
-      <h2>₹ <span id="remainingAmount">0</span></h2>
-    </div>
+    <!-- Add Expense Form (modern) -->
+    <section class="modern-form" aria-labelledby="add-expense-heading">
+      <h2 id="add-expense-heading">Add New Expense</h2>
+      <div class="form-row">
+        <input type="text" id="title" placeholder="Expense Title (e.g., Lunch)" aria-label="Expense title">
 
-    <div class="summary-card">
-      <h3>Budget Usage</h3>
-      <h2 id="budgetUsage">0% Used</h2>
-    </div>
-  </div>
-
-  <div class="modern-form">
-    <h2>Add New Expense</h2>
-    <div class="form-row">
-      <input type="text" id="title" placeholder="Expense Title">
-
-      <div class="custom-select-wrapper" id="categoryWrapper">
-        <div class="custom-select-trigger" onclick="toggleDropdown()">
-          <span id="selected-display">Select Category</span>
-          <div class="arrow"></div>
+        <!-- Custom Category Selector (accessible) -->
+        <div class="custom-select-wrapper" id="categoryWrapper">
+          <button class="custom-select-trigger" id="categoryTrigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Select category">
+            <span id="selected-display">Select Category</span>
+            <span class="arrow" aria-hidden="true"></span>
+          </button>
+          <div class="custom-options" id="dropdownMenu" role="listbox" aria-labelledby="categoryTrigger">
+            <div class="option" role="option" data-value="Food">🍔 Food</div>
+            <div class="option" role="option" data-value="Transport">🚗 Transport</div>
+            <div class="option" role="option" data-value="Shopping">🛍 Shopping</div>
+            <div class="option" role="option" data-value="Education">📚 Education</div>
+            <div class="option" role="option" data-value="Entertainment">🎬 Entertainment</div>
+          </div>
+          <input type="hidden" id="category-select" value="">
         </div>
-        <div class="custom-options" id="dropdownMenu">
-          <div class="option" onclick="selectOption('Food', '🍔 Food')">🍔 Food</div>
-          <div class="option" onclick="selectOption('Transport', '🚗 Transport')">🚗 Transport</div>
-          <div class="option" onclick="selectOption('Shopping', '🛍 Shopping')">🛍 Shopping</div>
-          <div class="option" onclick="selectOption('Education', '📚 Education')">📚 Education</div>
-          <div class="option" onclick="selectOption('Entertainment', '🎬 Entertainment')">🎬 Entertainment</div>
+
+        <input type="number" id="amount" placeholder="Amount (₹)" min="0" step="1" aria-label="Expense amount">
+        <button class="add-btn" id="addExpenseBtn">Add</button>
+      </div>
+    </section>
+
+    <!-- Expense History -->
+    <section class="history-section" aria-labelledby="history-heading">
+      <h2 id="history-heading">Expense List</h2>
+      <div class="scroll-container" tabindex="0" role="region" aria-label="List of expenses">
+        <ul id="expenseList" aria-live="polite"></ul>
+      </div>
+    </section>
+
+    <!-- AI Smart Analyzer -->
+    <section class="ai-card" aria-labelledby="ai-heading">
+      <h2 id="ai-heading">🧠 Smart Spending Analyzer</h2>
+      <div class="ai-grid">
+        <div class="ai-box">
+          <h3>Top Category</h3>
+          <p id="aiTopCategory" aria-live="polite">-</p>
         </div>
-        <input type="hidden" id="category-select" value="">
+        <div class="ai-box">
+          <h3>Risk Level</h3>
+          <p id="aiRisk" aria-live="polite">-</p>
+        </div>
+        <div class="ai-box">
+          <h3>AI Suggestion</h3>
+          <p id="aiSuggestion" aria-live="polite">-</p>
+        </div>
       </div>
-
-      <input id="amount" type="number" placeholder="Amount">
-      <button class="add-btn" onclick="addExpense()">Add</button>
-    </div>
+    </section>
   </div>
 
-  <div class="history-section">
-    <h2>Expense List</h2>
-    <div class="scroll-container">
-        <ul id="expenseList"></ul>
-    </div>
-  </div>
+  <!-- Include dashboard logic (external JS recommended) -->
+  <script src="js/dashboard.js"></script>
+  <script>
+    // Minimal custom dropdown handling + theme application
+    (function() {
+      // Apply theme
+      try { document.body.className = localStorage.getItem('theme') || 'auto-mode'; } catch (e) {}
 
-  <div class="ai-card">
-    <h2>🧠 Smart Spending Analyzer</h2>
-    <div class="ai-grid">
-      <div class="ai-box">
-        <h4>Top Category</h4>
-        <p id="aiTopCategory">-</p>
-      </div>
-      <div class="ai-box">
-        <h4>Risk Level</h4>
-        <p id="aiRisk">-</p>
-      </div>
-      <div class="ai-box">
-        <h4>AI Suggestion</h4>
-        <p id="aiSuggestion">-</p>
-      </div>
-    </div>
-  </div>
+      // Custom dropdown with keyboard accessibility
+      const trigger = document.getElementById('categoryTrigger');
+      const wrapper = document.getElementById('categoryWrapper');
+      const options = document.querySelectorAll('.option');
+      const selectedDisplay = document.getElementById('selected-display');
+      const hiddenInput = document.getElementById('category-select');
 
-</div>
+      if (trigger && wrapper) {
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const expanded = trigger.getAttribute('aria-expanded') === 'true' ? false : true;
+          trigger.setAttribute('aria-expanded', expanded);
+          wrapper.classList.toggle('open');
+        });
 
-<script src="js/dashboard.js"></script>
-<script>
-    // Minimal JS to handle the custom dropdown toggle
-    function toggleDropdown() {
-        document.getElementById('categoryWrapper').classList.toggle('open');
-    }
+        options.forEach(opt => {
+          opt.addEventListener('click', () => {
+            const value = opt.getAttribute('data-value') || opt.textContent.trim().replace(/[^a-zA-Z]/g, '');
+            const displayText = opt.textContent.trim();
+            selectedDisplay.textContent = displayText;
+            hiddenInput.value = value;
+            wrapper.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
+          });
 
-    function selectOption(val, text) {
-        document.getElementById('selected-display').innerText = text;
-        document.getElementById('category-select').value = val;
-        document.getElementById('categoryWrapper').classList.remove('open');
-    }
+          // Keyboard support
+          opt.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              opt.click();
+            }
+          });
+        });
 
-    // Close when clicking outside
-    window.onclick = function(e) {
-        if (!e.target.closest('.custom-select-wrapper')) {
-            document.getElementById('categoryWrapper').classList.remove('open');
-        }
-    }
-</script>
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+          if (!wrapper.contains(e.target)) {
+            wrapper.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && wrapper.classList.contains('open')) {
+            wrapper.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // Logout handler
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        window.location.href = 'login.html';
+      });
+    })();
+  </script>
 </body>
-
 </html>

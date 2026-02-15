@@ -1395,12 +1395,6 @@ label {
   box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
-.reset-btn:hover {
-  background: #dc2626;
-  transform: scale(1.05);
-  box-shadow: 0 0 15px var(--danger);
-}
-
 /* ========== 16. CUSTOM COMPONENTS (unchanged) ========== */
 /* Custom Select (keep as is) */
 .custom-select-wrapper {
@@ -2344,3 +2338,4 @@ footer a:hover {
   flex: 1;
   min-width: 250px;
 }
+

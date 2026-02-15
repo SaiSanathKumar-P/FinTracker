@@ -15,20 +15,16 @@
 </head>
 <body class="auto-mode">
   <div class="auth-container">
-    <!-- LEFT BRAND SECTION -->
     <aside class="auth-left" role="complementary" aria-label="Brand information">
       <h1>FinTrack</h1>
       <p>Smart Student Expense Management</p>
       <img src="images/3d-render-secure-login-password-illustration.png"
            alt="Secure login illustration" class="brand-icon" width="300" height="300" loading="eager">
     </aside>
-
-    <!-- RIGHT FORM SECTION -->
     <main class="auth-right" role="main">
       <h2>Welcome Back 👋</h2>
       <p class="subtitle">Login to continue managing your finances</p>
-
-      <form id="loginForm" action="#" method="post" novalidate>
+      <form id="loginForm" novalidate>
         <div class="input-group">
           <label for="email" class="visually-hidden">Email address</label>
           <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" inputmode="email">
@@ -39,16 +35,11 @@
         </div>
         <button type="submit" class="login-btn">Login</button>
       </form>
-
       <p class="register-link">
         Don't have an account? <a href="register.html">Register</a>
       </p>
-
-      <!-- Optional demo credentials hint (remove in production) -->
-      <p class="demo-hint" style="font-size:0.8rem; margin-top:1rem; opacity:0.7;">Demo: student@example.com / password123</p>
     </main>
   </div>
-
   <script>
     (function() {
       // Apply saved theme
@@ -57,13 +48,14 @@
         document.body.className = savedTheme;
       } catch (e) {}
 
-      // Simple login handler (demo only – replace with real auth)
+      // Login handler – sets a dummy token so dashboard works in mock mode
       document.getElementById('loginForm')?.addEventListener('submit', function(e) {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
         if (email && pass) {
-          // Demo: redirect to dashboard (no actual validation)
+          // Set a dummy token (you can replace with real auth later)
+          localStorage.setItem('token', 'demo-token-' + Date.now());
           window.location.href = 'dashboard.html';
         } else {
           alert('Please fill in both fields');

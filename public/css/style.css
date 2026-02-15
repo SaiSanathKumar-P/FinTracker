@@ -1212,10 +1212,16 @@ img{
   height: auto;
 }
 .features-title {
-    font-size: 28px;   /* decrease size */
+    font-size: 26px;
+    margin-bottom: 15px;
+  }
+
+  .features-section {
+    padding: 30px 15px;
   }
   
 }
+
 
 
 

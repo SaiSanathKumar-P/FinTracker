@@ -1430,11 +1430,11 @@ label {
   top: calc(100% + var(--space-xs));
   left: 0;
   right: 0;
-  background: var(--bg-secondary); /* Keeps it solid and clear */
-  /* backdrop-filter: blur(20px); <--- DELETE OR COMMENT THIS LINE */
+  background: #1e293b; /* Use a solid dark color instead of transparent glass */
+  /* backdrop-filter: blur(20px); <--- DELETE THIS LINE */
   border-radius: var(--radius-md);
   border: 1px solid var(--primary-500);
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5); /* Stronger shadow for depth */
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
@@ -2326,5 +2326,6 @@ footer a:hover {
   flex: 1;
   min-width: 250px;
 }
+
 
 

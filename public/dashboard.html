@@ -7,11 +7,9 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    /* Minimal overrides – keep only essential */
     body { opacity: 0; transition: opacity 0.2s; }
     body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
     #chartContainer { display: none; }
-    /* Optional: ensure consistent height across inputs and select trigger */
     .form-row input,
     .form-row .custom-select-trigger,
     .form-row .add-btn {
@@ -31,15 +29,24 @@
 
     <!-- Summary Cards -->
     <section class="summary-grid">
-      <article class="summary-card"><h2>Total Expenses</h2><p class="amount">₹ <span id="totalAmount">0</span></p></article>
+      <article class="summary-card">
+        <h2>Total Expenses</h2>
+        <p class="amount">₹ <span id="totalAmount">0</span></p>
+      </article>
       <article class="summary-card budget-card">
         <h2>🎯 Monthly Budget</h2>
         <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0">
         <p class="amount">₹ <span id="budgetValue">0</span></p>
         <button class="save-budget-btn" id="saveBudgetBtn">Save Budget</button>
       </article>
-      <article class="summary-card"><h2>Remaining</h2><p class="amount">₹ <span id="remainingAmount">0</span></p></article>
-      <article class="summary-card"><h2>Budget Usage</h2><p class="amount" id="budgetUsage">0% Used</p></article>
+      <article class="summary-card">
+        <h2>Remaining</h2>
+        <p class="amount">₹ <span id="remainingAmount">0</span></p>
+      </article>
+      <article class="summary-card">
+        <h2>Budget Usage</h2>
+        <p class="amount" id="budgetUsage">0% Used</p>
+      </article>
     </section>
 
     <!-- Add Expense Form -->
@@ -50,53 +57,63 @@
         <div class="category-row">
           <div class="custom-select-wrapper" id="categoryWrapper">
             <button class="custom-select-trigger" id="categoryTrigger">
-              <span id="selected-display">Select Category</span><span class="arrow"></span>
+              <span id="selected-display">Select Category</span>
+              <span class="arrow"></span>
             </button>
-            <div class="custom-options" id="dropdownMenu">
-              <div class="option" data-value="Food">🍔 Food</div>
-              <div class="option" data-value="Transport">🚗 Transport</div>
-              <div class="option" data-value="Shopping">🛍 Shopping</div>
-              <div class="option" data-value="Education">📚 Education</div>
-              <div class="option" data-value="Entertainment">🎬 Entertainment</div>
-            </div>
+            <div class="custom-options" id="dropdownMenu"></div>
             <input type="hidden" id="category-select">
           </div>
-          <button class="category-add-btn" id="addCategoryBtn" title="Add new category">+</button>
+          <div class="category-actions">
+            <button class="category-add-btn" id="addCategoryBtn" title="Add new category">+</button>
+            <button class="category-remove-btn" id="removeCategoryBtn" title="Remove selected category">−</button>
+          </div>
         </div>
         <input type="number" id="amount" placeholder="Amount (₹)" min="0" step="1">
         <button class="add-btn" id="addExpenseBtn">Add</button>
       </div>
     </section>
 
-    <!-- Expense List & Recent Activity -->
+    <!-- Smart Analyzer - Now moved up -->
+    <section class="ai-card">
+      <h2>🧠 Smart Analyzer</h2>
+      <div class="ai-grid">
+        <div class="ai-box">
+          <h3>Top Category</h3>
+          <p id="aiTopCategory">-</p>
+        </div>
+        <div class="ai-box">
+          <h3>Risk Level</h3>
+          <p id="aiRisk">-</p>
+        </div>
+        <div class="ai-box">
+          <h3>AI Suggestion</h3>
+          <p id="aiSuggestion">-</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chart & Recent Activity Side by Side -->
+    <div class="dashboard-grid">
+      <!-- Chart Container -->
+      <div class="chart-container" id="chartContainer">
+        <h3>Expense by Category</h3>
+        <canvas id="categoryChart" width="400" height="300"></canvas>
+      </div>
+
+      <!-- Recent Activity -->
+      <section class="recent-activity">
+        <h2>🕒 Recent Activity</h2>
+        <div id="recentList" class="recent-list"></div>
+      </section>
+    </div>
+
+    <!-- Expense List - Now at the bottom -->
     <section class="history-section">
       <h2 id="history-heading">Expense List</h2>
       <div class="scroll-container">
         <ul id="expenseList"></ul>
       </div>
     </section>
-
-    <!-- Recent Activity (last 5 expenses) -->
-    <section class="recent-activity">
-      <h2>🕒 Recent Activity</h2>
-      <div id="recentList" class="recent-list"></div>
-    </section>
-
-    <!-- Chart & AI Insights -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
-      <div class="chart-container" id="chartContainer">
-        <h3>Expense by Category</h3>
-        <canvas id="categoryChart" width="400" height="300"></canvas>
-      </div>
-      <section class="ai-card">
-        <h2>🧠 Smart Analyzer</h2>
-        <div class="ai-grid">
-          <div class="ai-box"><h3>Top Category</h3><p id="aiTopCategory">-</p></div>
-          <div class="ai-box"><h3>Risk Level</h3><p id="aiRisk">-</p></div>
-          <div class="ai-box"><h3>AI Suggestion</h3><p id="aiSuggestion">-</p></div>
-        </div>
-      </section>
-    </div>
   </div>
 
   <script src="js/dashboard.js"></script>

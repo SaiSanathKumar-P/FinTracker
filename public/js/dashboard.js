@@ -1,5 +1,5 @@
 /**
- * FinTrack Dashboard – Professional with category management
+ * FinTrack Dashboard – Professional with Budget Toggle & Glow Effects
  */
 
 const API_BASE = '/api/expenses';
@@ -14,6 +14,7 @@ let useMock = false;
 let mockExpenses = [];
 let mockBudget = 0;
 let chartInstance = null;
+let currentBudgetPeriod = 'monthly'; // 'monthly', 'weekly', 'daily'
 
 // Custom categories array (predefined + user added)
 let categories = [
@@ -30,6 +31,8 @@ const elements = {
   budgetUsage: document.getElementById('budgetUsage'),
   budgetInput: document.getElementById('budgetInput'),
   budgetValue: document.getElementById('budgetValue'),
+  weeklyValue: document.getElementById('weeklyValue'),
+  dailyValue: document.getElementById('dailyValue'),
   saveBudgetBtn: document.getElementById('saveBudgetBtn'),
   expenseList: document.getElementById('expenseList'),
   addExpenseBtn: document.getElementById('addExpenseBtn'),
@@ -47,7 +50,11 @@ const elements = {
   aiSuggestion: document.getElementById('aiSuggestion'),
   logoutBtn: document.getElementById('logoutBtn'),
   recentList: document.getElementById('recentList'),
-  chartContainer: document.getElementById('chartContainer')
+  chartContainer: document.getElementById('chartContainer'),
+  monthlySlider: document.getElementById('monthlySlider'),
+  weeklySlider: document.getElementById('weeklySlider'),
+  dailySlider: document.getElementById('dailySlider'),
+  budgetToggleBtns: document.querySelectorAll('.budget-toggle-btn')
 };
 
 // ========== Utilities ==========
@@ -175,6 +182,56 @@ function generateMockAnalysis() {
   return Promise.resolve({ topCategory, riskLevel: risk, suggestion: sugg });
 }
 
+// ========== Budget Period Toggle ==========
+function initBudgetToggle() {
+  elements.budgetToggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remove active class from all buttons
+      elements.budgetToggleBtns.forEach(b => b.classList.remove('active'));
+      // Add active class to clicked button
+      btn.classList.add('active');
+      
+      // Get selected period
+      const period = btn.getAttribute('data-period');
+      currentBudgetPeriod = period;
+      
+      // Hide all sliders
+      if (elements.monthlySlider) elements.monthlySlider.style.display = 'none';
+      if (elements.weeklySlider) elements.weeklySlider.style.display = 'none';
+      if (elements.dailySlider) elements.dailySlider.style.display = 'none';
+      
+      // Show selected slider
+      if (period === 'monthly') {
+        elements.monthlySlider.style.display = 'block';
+      } else if (period === 'weekly') {
+        elements.weeklySlider.style.display = 'block';
+        updateWeeklyBudget();
+      } else if (period === 'daily') {
+        elements.dailySlider.style.display = 'block';
+        updateDailyBudget();
+      }
+    });
+  });
+}
+
+function updateWeeklyBudget() {
+  if (elements.weeklyValue && monthlyBudget > 0) {
+    const weeklyBudget = monthlyBudget / 4.33; // Average weeks in a month
+    elements.weeklyValue.innerText = weeklyBudget.toFixed(2);
+  } else if (elements.weeklyValue) {
+    elements.weeklyValue.innerText = '0';
+  }
+}
+
+function updateDailyBudget() {
+  if (elements.dailyValue && monthlyBudget > 0) {
+    const dailyBudget = monthlyBudget / 30; // Average days in a month
+    elements.dailyValue.innerText = dailyBudget.toFixed(2);
+  } else if (elements.dailyValue) {
+    elements.dailyValue.innerText = '0';
+  }
+}
+
 // ========== Dropdown Management ==========
 function rebuildDropdown() {
   const menu = elements.dropdownMenu;
@@ -282,18 +339,31 @@ function updateBudgetValue(val) {
   if (elements.budgetInput) {
     const percent = (val / elements.budgetInput.max) * 100;
     elements.budgetInput.style.backgroundSize = percent + '% 100%';
+    
+    // Add glow effect based on percentage
+    const glowIntensity = 0.3 + (percent / 100) * 0.7;
+    elements.budgetInput.style.boxShadow = `0 0 ${15 + percent * 0.5}px rgba(56,189,248,${glowIntensity})`;
   }
+  
+  // Update weekly and daily values
+  monthlyBudget = Number(val);
+  updateWeeklyBudget();
+  updateDailyBudget();
 }
 
 async function setBudget() {
   if (!elements.budgetInput) return;
   monthlyBudget = Number(elements.budgetInput.value);
+  
+  // Save to mock storage or API
   try { 
     await apiRequest('/budget', { 
       method: 'POST', 
       body: JSON.stringify({ budget: monthlyBudget }) 
     }); 
+    showMessage('Budget saved successfully!');
   } catch {}
+  
   if (useMock) mockBudget = monthlyBudget;
   loadExpenses();
 }
@@ -421,6 +491,7 @@ function updateChart() {
     },
     options: { 
       responsive: true, 
+      maintainAspectRatio: false,
       plugins: { 
         legend: { position: 'bottom' } 
       } 
@@ -457,7 +528,7 @@ function setupEventListeners() {
   
   if (elements.budgetInput) {
     elements.budgetInput.addEventListener('input', (e) => updateBudgetValue(e.target.value));
-    elements.budgetInput.addEventListener('change', setBudget);
+    // Remove the 'change' event listener so it only saves on button click
   }
   
   [elements.titleInput, elements.amountInput].forEach(inp => 
@@ -465,6 +536,8 @@ function setupEventListeners() {
       if (e.key === 'Enter') addExpense(); 
     })
   );
+  
+  initBudgetToggle();
 }
 
 // ========== Init ==========
@@ -479,6 +552,14 @@ async function initDashboard() {
   rebuildDropdown();
   initCategoryDropdown();
   setupEventListeners();
+  
+  // Set initial budget value from storage if exists
+  if (mockBudget > 0) {
+    if (elements.budgetInput) {
+      elements.budgetInput.value = mockBudget;
+      updateBudgetValue(mockBudget);
+    }
+  }
   
   try { 
     await loadExpenses(); 

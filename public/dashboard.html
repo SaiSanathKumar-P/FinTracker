@@ -2,119 +2,100 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <meta name="description" content="FinTrack Dashboard – manage expenses, budgets, and get AI insights.">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>FinTrack – Dashboard</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     body { opacity: 0; transition: opacity 0.2s; }
     body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
-    /* Offline indicator */
-    .offline-badge {
-      background: #f59e0b;
-      color: #0f172a;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-left: 1rem;
-    }
+    .offline-badge { background: #f59e0b; color: #0f172a; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-left: 1rem; }
+    .chart-container { background: var(--card-bg); border-radius: 20px; padding: 1.5rem; margin-top: 2rem; }
+    .recent-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 0.5rem; }
+    .reset-btn { background: #ef4444; color: white; border: none; border-radius: 20px; padding: 6px 16px; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+    .reset-btn:hover { background: #dc2626; transform: scale(1.05); }
   </style>
 </head>
 <body class="auto-mode">
   <div class="dashboard-wrapper">
-    <!-- Top Bar -->
-    <header class="topbar" role="banner">
+    <header class="topbar">
       <h1 class="logo">FinTrack</h1>
       <div class="topbar-right">
-        <span id="apiStatus" class="offline-badge" style="display: none;">Offline Mode</span>
-        <button class="logout-btn" id="logoutBtn" aria-label="Logout">Logout</button>
+        <span id="apiStatus" class="offline-badge" style="display:none;">Offline Mode</span>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
       </div>
     </header>
 
     <!-- Summary Cards -->
-    <section class="summary-grid" aria-label="Financial summary">
-      <article class="summary-card">
-        <h2>Total Expenses</h2>
-        <p class="amount">₹ <span id="totalAmount">0</span></p>
-      </article>
-
+    <section class="summary-grid">
+      <article class="summary-card"><h2>Total Expenses</h2><p class="amount">₹ <span id="totalAmount">0</span></p></article>
       <article class="summary-card budget-card">
         <h2>🎯 Monthly Budget</h2>
-        <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0" aria-label="Set monthly budget">
+        <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0">
         <p class="amount">₹ <span id="budgetValue">0</span></p>
         <button class="save-budget-btn" id="saveBudgetBtn">Save Budget</button>
       </article>
-
-      <article class="summary-card">
-        <h2>Remaining</h2>
-        <p class="amount">₹ <span id="remainingAmount">0</span></p>
-      </article>
-
-      <article class="summary-card">
-        <h2>Budget Usage</h2>
-        <p class="amount" id="budgetUsage">0% Used</p>
-      </article>
+      <article class="summary-card"><h2>Remaining</h2><p class="amount">₹ <span id="remainingAmount">0</span></p></article>
+      <article class="summary-card"><h2>Budget Usage</h2><p class="amount" id="budgetUsage">0% Used</p></article>
     </section>
 
     <!-- Add Expense Form -->
-    <section class="modern-form" aria-labelledby="add-expense-heading">
-      <h2 id="add-expense-heading">Add New Expense</h2>
+    <section class="modern-form">
+      <h2>Add New Expense</h2>
       <div class="form-row">
-        <input type="text" id="title" placeholder="Expense Title (e.g., Lunch)" aria-label="Expense title">
-
-        <!-- Custom Category Selector -->
+        <input type="text" id="title" placeholder="Expense Title">
         <div class="custom-select-wrapper" id="categoryWrapper">
-          <button class="custom-select-trigger" id="categoryTrigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Select category">
-            <span id="selected-display">Select Category</span>
-            <span class="arrow" aria-hidden="true"></span>
+          <button class="custom-select-trigger" id="categoryTrigger">
+            <span id="selected-display">Select Category</span><span class="arrow"></span>
           </button>
-          <div class="custom-options" id="dropdownMenu" role="listbox" aria-labelledby="categoryTrigger">
-            <div class="option" role="option" data-value="Food">🍔 Food</div>
-            <div class="option" role="option" data-value="Transport">🚗 Transport</div>
-            <div class="option" role="option" data-value="Shopping">🛍 Shopping</div>
-            <div class="option" role="option" data-value="Education">📚 Education</div>
-            <div class="option" role="option" data-value="Entertainment">🎬 Entertainment</div>
+          <div class="custom-options" id="dropdownMenu">
+            <div class="option" data-value="Food">🍔 Food</div>
+            <div class="option" data-value="Transport">🚗 Transport</div>
+            <div class="option" data-value="Shopping">🛍 Shopping</div>
+            <div class="option" data-value="Education">📚 Education</div>
+            <div class="option" data-value="Entertainment">🎬 Entertainment</div>
           </div>
-          <input type="hidden" id="category-select" value="">
+          <input type="hidden" id="category-select">
         </div>
-
-        <input type="number" id="amount" placeholder="Amount (₹)" min="0" step="1" aria-label="Expense amount">
+        <input type="number" id="amount" placeholder="Amount (₹)" min="0" step="1">
         <button class="add-btn" id="addExpenseBtn">Add</button>
       </div>
     </section>
 
-    <!-- Expense History -->
-    <section class="history-section" aria-labelledby="history-heading">
-      <h2 id="history-heading">Expense List</h2>
-      <div class="scroll-container" tabindex="0" role="region" aria-label="List of expenses">
-        <ul id="expenseList" aria-live="polite"></ul>
+    <!-- Expense List & Recent Activity -->
+    <section class="history-section">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <h2 id="history-heading">Expense List</h2>
+        <button id="resetMockBtn" class="reset-btn">Reset Demo Data</button>
+      </div>
+      <div class="scroll-container">
+        <ul id="expenseList"></ul>
       </div>
     </section>
 
-    <!-- AI Smart Analyzer -->
-    <section class="ai-card" aria-labelledby="ai-heading">
-      <h2 id="ai-heading">🧠 Smart Spending Analyzer</h2>
-      <div class="ai-grid">
-        <div class="ai-box">
-          <h3>Top Category</h3>
-          <p id="aiTopCategory" aria-live="polite">-</p>
-        </div>
-        <div class="ai-box">
-          <h3>Risk Level</h3>
-          <p id="aiRisk" aria-live="polite">-</p>
-        </div>
-        <div class="ai-box">
-          <h3>AI Suggestion</h3>
-          <p id="aiSuggestion" aria-live="polite">-</p>
-        </div>
-      </div>
+    <!-- Recent Activity (last 5 expenses) -->
+    <section class="recent-activity" style="margin-top: 2rem;">
+      <h2>🕒 Recent Activity</h2>
+      <div id="recentList" class="recent-list"></div>
     </section>
+
+    <!-- Chart & AI Insights -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+      <div class="chart-container">
+        <h3>Expense by Category</h3>
+        <canvas id="categoryChart" width="400" height="300"></canvas>
+      </div>
+      <section class="ai-card">
+        <h2>🧠 Smart Analyzer</h2>
+        <div class="ai-grid">
+          <div class="ai-box"><h3>Top Category</h3><p id="aiTopCategory">-</p></div>
+          <div class="ai-box"><h3>Risk Level</h3><p id="aiRisk">-</p></div>
+          <div class="ai-box"><h3>AI Suggestion</h3><p id="aiSuggestion">-</p></div>
+        </div>
+      </section>
+    </div>
   </div>
 
-  <!-- Load dashboard logic (everything is inside this single file) -->
   <script src="js/dashboard.js"></script>
 </body>
 </html>

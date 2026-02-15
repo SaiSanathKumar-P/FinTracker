@@ -1,12 +1,11 @@
 /**
- * FinTrack Dashboard JavaScript – Professional version with offline fallback
- * Works with real backend or falls back to localStorage mock if server unreachable.
+ * FinTrack Dashboard – Professional with offline fallback & extra features
  */
 
 // ==================== CONFIG ====================
-const API_BASE = '/api/expenses';          // Change to full URL if needed, e.g. 'https://your-backend.com/api/expenses'
+const API_BASE = '/api/expenses';               // change if needed
 const TOKEN_KEY = 'token';
-const MOCK_MODE_KEY = 'finTrack_useMock';   // localStorage flag to remember mock mode
+const MOCK_MODE_KEY = 'finTrack_useMock';
 
 // Prevent back button after logout
 window.history.pushState(null, null, window.location.href);
@@ -14,8 +13,8 @@ window.onpopstate = () => window.history.go(1);
 
 // ==================== STATE ====================
 let monthlyBudget = 0;
-let useMock = false;                         // start with real API, switch on first failure
-let mockExpenses = [];                        // local mock data
+let useMock = false;
+let mockExpenses = [];
 let mockBudget = 0;
 
 // ==================== DOM ELEMENTS ====================
@@ -48,25 +47,67 @@ function getToken() {
 }
 
 function requireAuth() {
-  if (!getToken() && !useMock) {   // in mock mode we don't require a token
+  if (!getToken() && !useMock) {
     window.location.href = 'login.html';
   }
 }
 
 function showMessage(msg, isError = true) {
-  alert(msg); // Replace with a nicer toast if you wish
+  alert(msg); // can be replaced with a toast later
 }
 
-// Show/hide offline badge
+// Show/hide offline badge and add retry button
 function setOfflineMode(enabled) {
   if (elements.apiStatus) {
     elements.apiStatus.style.display = enabled ? 'inline-block' : 'none';
+    if (enabled) {
+      // Add a retry button if not already present
+      if (!document.getElementById('retryBtn')) {
+        const retry = document.createElement('button');
+        retry.id = 'retryBtn';
+        retry.textContent = '↻ Retry Connection';
+        retry.style.marginLeft = '10px';
+        retry.style.padding = '4px 10px';
+        retry.style.borderRadius = '20px';
+        retry.style.border = 'none';
+        retry.style.background = '#3b82f6';
+        retry.style.color = 'white';
+        retry.style.cursor = 'pointer';
+        retry.addEventListener('click', tryReconnect);
+        elements.apiStatus.parentNode.appendChild(retry);
+      }
+    } else {
+      const retry = document.getElementById('retryBtn');
+      if (retry) retry.remove();
+    }
   }
   useMock = enabled;
   localStorage.setItem(MOCK_MODE_KEY, enabled ? 'true' : 'false');
 }
 
-// ==================== MOCK DATA INIT ====================
+// Try to reconnect to backend
+async function tryReconnect() {
+  const retryBtn = document.getElementById('retryBtn');
+  if (retryBtn) retryBtn.disabled = true;
+  useMock = false; // temporarily disable mock
+  try {
+    // Test a simple request (e.g., fetch expenses)
+    await fetch(`${API_BASE}`, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    // If success, turn off offline mode and reload data
+    setOfflineMode(false);
+    await loadExpenses();
+    await loadSmartAnalysis();
+  } catch (e) {
+    setOfflineMode(true); // stay in mock
+    alert('Still unable to reach server. Using offline mode.');
+  } finally {
+    if (retryBtn) retryBtn.disabled = false;
+  }
+}
+
+// ==================== MOCK DATA ====================
 function loadMockFromStorage() {
   try {
     const stored = localStorage.getItem('finTrack_mockExpenses');
@@ -84,9 +125,8 @@ function saveMockToStorage() {
   localStorage.setItem('finTrack_mockBudget', mockBudget.toString());
 }
 
-// ==================== API REQUEST (with fallback) ====================
+// ==================== API REQUEST (silent fallback) ====================
 async function apiRequest(url, options = {}) {
-  // If we are already in mock mode, bypass real API
   if (useMock) {
     return handleMockRequest(url, options);
   }
@@ -115,23 +155,20 @@ async function apiRequest(url, options = {}) {
   } catch (error) {
     console.warn('API request failed, switching to mock mode:', error);
     setOfflineMode(true);
-    loadMockFromStorage();  // load any existing mock data
-    // Re-run the request as mock
+    loadMockFromStorage();
+    // Silently retry as mock (no alert)
     return handleMockRequest(url, options);
   }
 }
 
-// ==================== MOCK REQUEST HANDLER ====================
+// ==================== MOCK HANDLER ====================
 function handleMockRequest(url, options) {
   const method = options.method || 'GET';
   const body = options.body ? JSON.parse(options.body) : null;
 
-  // GET / (list expenses)
   if (method === 'GET' && url === '') {
     return Promise.resolve(mockExpenses);
   }
-
-  // POST /add
   if (method === 'POST' && url === '/add') {
     const newExpense = {
       _id: 'mock_' + Date.now(),
@@ -144,31 +181,23 @@ function handleMockRequest(url, options) {
     saveMockToStorage();
     return Promise.resolve(newExpense);
   }
-
-  // DELETE /:id
   if (method === 'DELETE' && url.startsWith('/')) {
     const id = url.substring(1);
     mockExpenses = mockExpenses.filter(e => e._id !== id);
     saveMockToStorage();
     return Promise.resolve(null);
   }
-
-  // POST /budget (save budget)
   if (method === 'POST' && url === '/budget') {
     mockBudget = body.budget;
     saveMockToStorage();
     return Promise.resolve({});
   }
-
-  // GET /analyze
   if (method === 'GET' && url === '/analyze') {
     return generateMockAnalysis();
   }
-
   return Promise.reject(new Error('Mock: unknown endpoint'));
 }
 
-// Generate AI analysis from mock data
 function generateMockAnalysis() {
   if (mockExpenses.length === 0) {
     return Promise.resolve({
@@ -177,7 +206,6 @@ function generateMockAnalysis() {
       suggestion: 'Add some expenses to get insights'
     });
   }
-
   const categoryTotals = {};
   mockExpenses.forEach(e => {
     const cat = e.category || 'Other';
@@ -207,26 +235,19 @@ function generateMockAnalysis() {
   } else {
     suggestion = 'Set a budget to get risk analysis.';
   }
-
-  return Promise.resolve({
-    topCategory,
-    riskLevel,
-    suggestion
-  });
+  return Promise.resolve({ topCategory, riskLevel, suggestion });
 }
 
-// ==================== DROPDOWN INIT ====================
+// ==================== DROPDOWN ====================
 function initCategoryDropdown() {
   const { categoryTrigger, categoryWrapper, dropdownOptions, categoryHidden, selectedDisplay } = elements;
-  if (!categoryTrigger || !categoryWrapper) return;
-
+  if (!categoryTrigger) return;
   categoryTrigger.addEventListener('click', (e) => {
     e.stopPropagation();
     const expanded = categoryTrigger.getAttribute('aria-expanded') === 'true' ? false : true;
     categoryTrigger.setAttribute('aria-expanded', expanded);
     categoryWrapper.classList.toggle('open');
   });
-
   dropdownOptions.forEach(opt => {
     opt.addEventListener('click', () => {
       const value = opt.getAttribute('data-value') || opt.textContent.trim().replace(/[^a-zA-Z]/g, '');
@@ -236,7 +257,6 @@ function initCategoryDropdown() {
       categoryWrapper.classList.remove('open');
       categoryTrigger.setAttribute('aria-expanded', 'false');
     });
-
     opt.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -244,14 +264,12 @@ function initCategoryDropdown() {
       }
     });
   });
-
   document.addEventListener('click', (e) => {
     if (!categoryWrapper.contains(e.target)) {
       categoryWrapper.classList.remove('open');
       categoryTrigger.setAttribute('aria-expanded', 'false');
     }
   });
-
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && categoryWrapper.classList.contains('open')) {
       categoryWrapper.classList.remove('open');
@@ -272,21 +290,13 @@ function updateBudgetValue(val) {
 async function setBudget() {
   if (!elements.budgetInput) return;
   monthlyBudget = Number(elements.budgetInput.value);
-
   try {
-    await apiRequest('/budget', {
-      method: 'POST',
-      body: JSON.stringify({ budget: monthlyBudget })
-    });
-    if (!useMock) showMessage('Budget saved successfully!', false);
+    await apiRequest('/budget', { method: 'POST', body: JSON.stringify({ budget: monthlyBudget }) });
   } catch (error) {
     console.warn('Budget save failed:', error);
   }
-
-  // In mock mode, update mockBudget
   if (useMock) mockBudget = monthlyBudget;
-
-  loadExpenses(); // refresh remaining
+  loadExpenses();
 }
 
 // ==================== EXPENSES ====================
@@ -299,7 +309,6 @@ async function addExpense() {
     showMessage('Please select a category and fill all fields');
     return;
   }
-
   if (isNaN(amount) || Number(amount) <= 0) {
     showMessage('Amount must be a positive number');
     return;
@@ -310,17 +319,12 @@ async function addExpense() {
       method: 'POST',
       body: JSON.stringify({ title, category, amount: Number(amount) })
     });
-
-    // Clear inputs
     elements.titleInput.value = '';
     elements.amountInput.value = '';
     elements.categoryHidden.value = '';
     if (elements.selectedDisplay) elements.selectedDisplay.innerText = 'Select Category';
-
     await loadExpenses();
     await loadSmartAnalysis();
-
-    if (!useMock) showMessage('Expense added!', false);
   } catch (error) {
     console.error('Add expense error:', error);
   }
@@ -330,10 +334,8 @@ async function loadExpenses() {
   try {
     const expenses = await apiRequest('');
     if (!expenses) return;
-
     const list = elements.expenseList;
     list.innerHTML = '';
-
     let total = 0;
     expenses.forEach(exp => {
       total += Number(exp.amount);
@@ -344,18 +346,14 @@ async function loadExpenses() {
       `;
       list.appendChild(li);
     });
-
-    // Attach delete handlers
     document.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const id = e.target.getAttribute('data-id');
         if (id) deleteExpense(id);
       });
     });
-
     if (elements.totalAmount) elements.totalAmount.innerText = total.toFixed(2);
 
-    // Use appropriate budget (mockBudget if in mock mode, else monthlyBudget)
     const currentBudget = useMock ? mockBudget : monthlyBudget;
     if (currentBudget > 0) {
       const remaining = currentBudget - total;
@@ -373,14 +371,27 @@ async function loadExpenses() {
 
 async function deleteExpense(id) {
   if (!id) return;
-  if (!confirm('Are you sure you want to delete this expense?')) return;
-
+  if (!confirm('Delete this expense?')) return;
   try {
     await apiRequest(`/${id}`, { method: 'DELETE' });
     await loadExpenses();
     await loadSmartAnalysis();
   } catch (error) {
-    console.error('Delete expense error:', error);
+    console.error('Delete error:', error);
+  }
+}
+
+// ==================== CLEAR ALL (new feature) ====================
+function clearAllExpenses() {
+  if (!confirm('Delete ALL expenses? This cannot be undone.')) return;
+  if (useMock) {
+    mockExpenses = [];
+    saveMockToStorage();
+    loadExpenses();
+    loadSmartAnalysis();
+  } else {
+    // For real backend, you'd need a bulk delete endpoint; here we just inform.
+    alert('Clear all is only available in offline mode.');
   }
 }
 
@@ -389,12 +400,11 @@ async function loadSmartAnalysis() {
   try {
     const data = await apiRequest('/analyze');
     if (!data) return;
-
     if (elements.aiTopCategory) elements.aiTopCategory.innerText = data.topCategory || '-';
     if (elements.aiRisk) elements.aiRisk.innerText = data.riskLevel || '-';
     if (elements.aiSuggestion) elements.aiSuggestion.innerText = data.suggestion || '-';
   } catch (error) {
-    console.error('Load analysis error:', error);
+    console.error('Analysis error:', error);
   }
 }
 
@@ -419,30 +429,40 @@ function setupEventListeners() {
   if (elements.amountInput) {
     elements.amountInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addExpense(); });
   }
+  // Add a clear all button in the expense list section
+  const historyHeading = document.getElementById('history-heading');
+  if (historyHeading && !document.getElementById('clearAllBtn')) {
+    const clearBtn = document.createElement('button');
+    clearBtn.id = 'clearAllBtn';
+    clearBtn.textContent = 'Clear All';
+    clearBtn.style.marginLeft = '1rem';
+    clearBtn.style.padding = '4px 12px';
+    clearBtn.style.background = '#ef4444';
+    clearBtn.style.color = 'white';
+    clearBtn.style.border = 'none';
+    clearBtn.style.borderRadius = '20px';
+    clearBtn.style.cursor = 'pointer';
+    clearBtn.addEventListener('click', clearAllExpenses);
+    historyHeading.appendChild(clearBtn);
+  }
 }
 
 // ==================== INIT ====================
 async function initDashboard() {
-  // Check if we previously used mock mode
   const wasMock = localStorage.getItem(MOCK_MODE_KEY) === 'true';
   if (wasMock) {
     setOfflineMode(true);
     loadMockFromStorage();
   }
-
   requireAuth();
-
   initCategoryDropdown();
   setupEventListeners();
-
-  // Try to load data (will auto-switch to mock on failure)
   try {
     await loadExpenses();
     await loadSmartAnalysis();
   } catch (error) {
-    console.error('Initial data load failed:', error);
+    console.error('Initial load failed:', error);
   }
 }
 
-// Start
 initDashboard();

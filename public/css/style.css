@@ -1286,4 +1286,66 @@ h3{font-size:20px;}
 
 }
 
+@media (max-width: 768px){
+  body{
+    zoom: 0.97;
+  }
+}
+
+/* ===================================
+   CLEAN MOBILE COMPACT LAYOUT FIX
+=================================== */
+
+@media (max-width: 768px){
+
+/* Remove huge section spacing */
+.hero-section,
+.features-section,
+.split-section,
+.how-section{
+  padding: 50px 20px !important;
+  min-height: auto !important;
+}
+
+/* Reduce hero heading */
+.hero-left h1{
+  font-size: 28px !important;
+}
+
+/* Reduce section titles */
+.features-section h2,
+.split-text h2,
+.how-section h2{
+  font-size: 24px !important;
+  margin-bottom: 25px !important;
+}
+
+/* Reduce feature card padding */
+.feature-card{
+  padding: 20px !important;
+}
+
+/* Remove fixed image heights */
+.feature-card img{
+  height: auto !important;
+}
+
+/* Reduce gap between stacked sections */
+.features-grid,
+.steps,
+.how-grid{
+  gap: 20px !important;
+}
+
+/* Make hero image smaller */
+.hero-right img{
+  max-width: 220px !important;
+}
+
+/* Reduce split image size */
+.split-image img{
+  max-width: 220px !important;
+}
+
+}
 

@@ -1,63 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-  <title>FinTrack Login</title>
-  <link rel="stylesheet" href="css/auth.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="description" content="Login to FinTrack – your student finance companion.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>FinTrack – Login</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { opacity: 0; transition: opacity 0.2s; }
+    body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
+  </style>
 </head>
-<body>
-
-<div class="auth-container">
-
-  <!-- LEFT SIDE -->
-  <div class="auth-left">
+<body class="auto-mode">
+  <div class="auth-container">
+    <!-- LEFT BRAND SECTION -->
+    <aside class="auth-left" role="complementary" aria-label="Brand information">
       <h1>FinTrack</h1>
       <p>Smart Student Expense Management</p>
-
       <img src="images/3d-render-secure-login-password-illustration.png"
-           alt="Login Illustration"
-           class="brand-icon">
-  </div>
+           alt="Secure login illustration" class="brand-icon" width="300" height="300" loading="eager">
+    </aside>
 
-  <!-- RIGHT SIDE -->
-  <div class="auth-right">
-
+    <!-- RIGHT FORM SECTION -->
+    <main class="auth-right" role="main">
       <h2>Welcome Back 👋</h2>
       <p class="subtitle">Login to continue managing your finances</p>
 
-      <form id="loginForm">
-          <div class="input-group">
-              <input type="email" id="email" placeholder="Email" required>
-          </div>
-
-          <div class="input-group">
-              <input type="password" id="password" placeholder="Password" required>
-          </div>
-
-          <button type="submit" class="login-btn">Login</button>
+      <form id="loginForm" action="#" method="post" novalidate>
+        <div class="input-group">
+          <label for="email" class="visually-hidden">Email address</label>
+          <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" inputmode="email">
+        </div>
+        <div class="input-group">
+          <label for="password" class="visually-hidden">Password</label>
+          <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="login-btn">Login</button>
       </form>
 
       <p class="register-link">
-          Don't have account?
-          <a href="register.html">Register</a>
+        Don't have an account? <a href="register.html">Register</a>
       </p>
 
+      <!-- Optional demo credentials hint (remove in production) -->
+      <p class="demo-hint" style="font-size:0.8rem; margin-top:1rem; opacity:0.7;">Demo: student@example.com / password123</p>
+    </main>
   </div>
 
-</div>
+  <script>
+    (function() {
+      // Apply saved theme
+      try {
+        const savedTheme = localStorage.getItem('theme') || 'auto-mode';
+        document.body.className = savedTheme;
+      } catch (e) {}
 
-<script src="js/auth.js">
-  const savedTheme = localStorage.getItem("theme");
-
-if (savedTheme) {
-  document.body.classList.add(savedTheme);
-} else {
-  document.body.classList.add("auto-mode");
-}
-</script>
+      // Simple login handler (demo only – replace with real auth)
+      document.getElementById('loginForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
+        if (email && pass) {
+          // Demo: redirect to dashboard (no actual validation)
+          window.location.href = 'dashboard.html';
+        } else {
+          alert('Please fill in both fields');
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
-
-

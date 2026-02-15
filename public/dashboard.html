@@ -7,38 +7,16 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
+    /* Minimal overrides – keep only essential */
     body { opacity: 0; transition: opacity 0.2s; }
     body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
-    /* Chart container initially hidden */
     #chartContainer { display: none; }
-    /* Category add button */
-    .category-add-btn {
-      background: var(--primary-500);
-      color: white;
-      border: none;
-      border-radius: var(--radius-full);
-      width: 40px;
-      height: 40px;
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      box-shadow: 0 4px 10px rgba(56,189,248,0.3);
-    }
-    .category-add-btn:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 20px var(--primary-500);
-    }
-    .form-row .custom-select-wrapper {
-      flex: 2; /* give more space for dropdown + button */
-    }
-    .category-row {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      flex: 1;
+    /* Optional: ensure consistent height across inputs and select trigger */
+    .form-row input,
+    .form-row .custom-select-trigger,
+    .form-row .add-btn {
+      height: 52px;
+      box-sizing: border-box;
     }
   </style>
 </head>

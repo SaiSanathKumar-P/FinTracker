@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FinTrack Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auto-mode">
+
+<div class="dashboard-wrapper">
+
+  <div class="topbar">
+    <h1>FinTrack</h1>
+    <div class="topbar-right">
+       <button class="logout-btn" onclick="logoutUser()">Logout</button>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <h3>Total Expenses</h3>
+      <h2>₹ <span id="totalAmount">0</span></h2>
+    </div>
+
+    <div class="summary-card budget-card">
+      <h3>🎯 Monthly Budget</h3>
+      <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0" oninput="updateBudgetValue(this.value)">
+      <p>₹ <span id="budgetValue">0</span></p>
+      <button class="save-budget-btn" onclick="setBudget()">Save Budget</button>
+    </div>
+
+    <div class="summary-card">
+      <h3>Remaining</h3>
+      <h2>₹ <span id="remainingAmount">0</span></h2>
+    </div>
+
+    <div class="summary-card">
+      <h3>Budget Usage</h3>
+      <h2 id="budgetUsage">0% Used</h2>
+    </div>
+  </div>
+
+  <div class="modern-form">
+    <h2>Add New Expense</h2>
+    <div class="form-row">
+      <input type="text" id="title" placeholder="Expense Title">
+
+      <div class="custom-select-wrapper" id="categoryWrapper">
+        <div class="custom-select-trigger" onclick="toggleDropdown()">
+          <span id="selected-display">Select Category</span>
+          <div class="arrow"></div>
+        </div>
+        <div class="custom-options" id="dropdownMenu">
+          <div class="option" onclick="selectOption('Food', '🍔 Food')">🍔 Food</div>
+          <div class="option" onclick="selectOption('Transport', '🚗 Transport')">🚗 Transport</div>
+          <div class="option" onclick="selectOption('Shopping', '🛍 Shopping')">🛍 Shopping</div>
+          <div class="option" onclick="selectOption('Education', '📚 Education')">📚 Education</div>
+          <div class="option" onclick="selectOption('Entertainment', '🎬 Entertainment')">🎬 Entertainment</div>
+        </div>
+        <input type="hidden" id="category-select" value="">
+      </div>
+
+      <input id="amount" type="number" placeholder="Amount">
+      <button class="add-btn" onclick="addExpense()">Add</button>
+    </div>
+  </div>
+
+  <div class="history-section">
+    <h2>Expense List</h2>
+    <div class="scroll-container">
+        <ul id="expenseList"></ul>
+    </div>
+  </div>
+
+  <div class="ai-card">
+    <h2>🧠 Smart Spending Analyzer</h2>
+    <div class="ai-grid">
+      <div class="ai-box">
+        <h4>Top Category</h4>
+        <p id="aiTopCategory">-</p>
+      </div>
+      <div class="ai-box">
+        <h4>Risk Level</h4>
+        <p id="aiRisk">-</p>
+      </div>
+      <div class="ai-box">
+        <h4>AI Suggestion</h4>
+        <p id="aiSuggestion">-</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/dashboard.js"></script>
+<script>
+    // Minimal JS to handle the custom dropdown toggle
+    function toggleDropdown() {
+        document.getElementById('categoryWrapper').classList.toggle('open');
+    }
+
+    function selectOption(val, text) {
+        document.getElementById('selected-display').innerText = text;
+        document.getElementById('category-select').value = val;
+        document.getElementById('categoryWrapper').classList.remove('open');
+    }
+
+    // Close when clicking outside
+    window.onclick = function(e) {
+        if (!e.target.closest('.custom-select-wrapper')) {
+            document.getElementById('categoryWrapper').classList.remove('open');
+        }
+    }
+</script>
+</body>
+</html>

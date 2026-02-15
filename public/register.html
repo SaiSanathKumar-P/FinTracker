@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <meta name="description" content="Create your FinTrack account and start managing your student finances smartly.">
+  <meta name="description" content="Create your FinTrack account.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>FinTrack – Register</title>
@@ -15,21 +15,16 @@
 </head>
 <body class="auto-mode">
   <div class="auth-container">
-    <!-- LEFT BRAND SECTION -->
     <aside class="auth-left" role="complementary" aria-label="Brand information">
       <h1>FinTrack</h1>
       <p>Take control of your student finances</p>
       <img src="images/Register.png" alt="Register illustration" class="brand-icon" width="300" height="300" loading="eager">
     </aside>
-
-    <!-- RIGHT FORM SECTION -->
     <main class="auth-right" role="main">
       <img src="images/Regi.jpg" alt="Finance visual" class="auth-image" width="200" height="200" loading="lazy">
-
       <h2>Create Account 🚀</h2>
       <p class="subtitle">Start your smart finance journey</p>
-
-      <form id="registerForm" action="#" method="post" novalidate>
+      <form id="registerForm" novalidate>
         <div class="input-group">
           <label for="fullname" class="visually-hidden">Full Name</label>
           <input type="text" id="fullname" name="fullname" placeholder="Full Name" required autocomplete="name">
@@ -52,22 +47,18 @@
         </div>
         <button type="submit" class="login-btn">Register</button>
       </form>
-
       <p class="register-link">
         Already have an account? <a href="login.html">Login</a>
       </p>
     </main>
   </div>
-
   <script>
     (function() {
-      // Apply saved theme
       try {
         const savedTheme = localStorage.getItem('theme') || 'auto-mode';
         document.body.className = savedTheme;
       } catch (e) {}
 
-      // Simple registration handler (demo only)
       document.getElementById('registerForm')?.addEventListener('submit', function(e) {
         e.preventDefault();
         const name = document.getElementById('fullname').value;
@@ -76,9 +67,9 @@
         const year = document.getElementById('year').value;
         const pass = document.getElementById('password').value;
         if (name && email && college && year && pass) {
-          // Demo: redirect to login (in real app, you'd send data to server)
-          alert('Account created successfully! Please login.');
-          window.location.href = 'login.html';
+          // Set dummy token and redirect to dashboard
+          localStorage.setItem('token', 'demo-token-' + Date.now());
+          window.location.href = 'dashboard.html';
         } else {
           alert('Please fill all fields');
         }

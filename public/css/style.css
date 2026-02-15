@@ -1211,8 +1211,11 @@ img{
   max-width: 100%;
   height: auto;
 }
-
+.features-title {
+    font-size: 28px;   /* decrease size */
+  }
 }
+
 
 
 

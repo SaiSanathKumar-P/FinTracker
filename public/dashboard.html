@@ -11,6 +11,16 @@
   <style>
     body { opacity: 0; transition: opacity 0.2s; }
     body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
+    /* Offline indicator */
+    .offline-badge {
+      background: #f59e0b;
+      color: #0f172a;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 1rem;
+    }
   </style>
 </head>
 <body class="auto-mode">
@@ -19,6 +29,7 @@
     <header class="topbar" role="banner">
       <h1 class="logo">FinTrack</h1>
       <div class="topbar-right">
+        <span id="apiStatus" class="offline-badge" style="display: none;">Offline Mode</span>
         <button class="logout-btn" id="logoutBtn" aria-label="Logout">Logout</button>
       </div>
     </header>
@@ -48,13 +59,13 @@
       </article>
     </section>
 
-    <!-- Add Expense Form (modern) -->
+    <!-- Add Expense Form -->
     <section class="modern-form" aria-labelledby="add-expense-heading">
       <h2 id="add-expense-heading">Add New Expense</h2>
       <div class="form-row">
         <input type="text" id="title" placeholder="Expense Title (e.g., Lunch)" aria-label="Expense title">
 
-        <!-- Custom Category Selector (accessible) -->
+        <!-- Custom Category Selector -->
         <div class="custom-select-wrapper" id="categoryWrapper">
           <button class="custom-select-trigger" id="categoryTrigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Select category">
             <span id="selected-display">Select Category</span>
@@ -103,70 +114,7 @@
     </section>
   </div>
 
-  <!-- Include dashboard logic (external JS recommended) -->
+  <!-- Load dashboard logic (everything is inside this single file) -->
   <script src="js/dashboard.js"></script>
-  <script>
-    // Minimal custom dropdown handling + theme application
-    (function() {
-      // Apply theme
-      try { document.body.className = localStorage.getItem('theme') || 'auto-mode'; } catch (e) {}
-
-      // Custom dropdown with keyboard accessibility
-      const trigger = document.getElementById('categoryTrigger');
-      const wrapper = document.getElementById('categoryWrapper');
-      const options = document.querySelectorAll('.option');
-      const selectedDisplay = document.getElementById('selected-display');
-      const hiddenInput = document.getElementById('category-select');
-
-      if (trigger && wrapper) {
-        trigger.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const expanded = trigger.getAttribute('aria-expanded') === 'true' ? false : true;
-          trigger.setAttribute('aria-expanded', expanded);
-          wrapper.classList.toggle('open');
-        });
-
-        options.forEach(opt => {
-          opt.addEventListener('click', () => {
-            const value = opt.getAttribute('data-value') || opt.textContent.trim().replace(/[^a-zA-Z]/g, '');
-            const displayText = opt.textContent.trim();
-            selectedDisplay.textContent = displayText;
-            hiddenInput.value = value;
-            wrapper.classList.remove('open');
-            trigger.setAttribute('aria-expanded', 'false');
-          });
-
-          // Keyboard support
-          opt.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              opt.click();
-            }
-          });
-        });
-
-        // Close on outside click
-        document.addEventListener('click', (e) => {
-          if (!wrapper.contains(e.target)) {
-            wrapper.classList.remove('open');
-            trigger.setAttribute('aria-expanded', 'false');
-          }
-        });
-
-        // Close on Escape
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && wrapper.classList.contains('open')) {
-            wrapper.classList.remove('open');
-            trigger.setAttribute('aria-expanded', 'false');
-          }
-        });
-      }
-
-      // Logout handler
-      document.getElementById('logoutBtn')?.addEventListener('click', () => {
-        window.location.href = 'login.html';
-      });
-    })();
-  </script>
 </body>
 </html>

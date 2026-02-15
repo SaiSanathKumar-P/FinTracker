@@ -370,6 +370,10 @@ header {
 }
 
 /* Theme Dropdown - Enhanced */
+.theme-dropdown {
+  position: relative;
+  display: inline-block;
+}
 
 .theme-btn {
   padding: var(--space-sm) var(--space-lg);
@@ -1771,4 +1775,3 @@ footer a:hover {
 
 /* ========== END OF STYLESHEET ========== */
 /* Total lines: ~2150 */
-

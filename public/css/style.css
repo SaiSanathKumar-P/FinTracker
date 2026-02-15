@@ -1135,3 +1135,36 @@ body.light-mode .theme-select {
 ::-webkit-scrollbar-thumb {
   animation: pulseGlow 2s infinite;
 }
+
+/* --- Responsiveness for Tablets and Mobiles --- */
+
+/* For screens smaller than 768px (Tablets/Phones) */
+@media (max-width: 768px) {
+    .glass-card {
+        width: 90%; /* Card takes up more screen width on small devices */
+        padding: 20px;
+        margin: 10px auto;
+    }
+
+    h1 {
+        font-size: 1.8rem; /* Shrink text so it doesn't wrap awkwardly */
+    }
+
+    .dashboard-grid {
+        display: flex;
+        flex-direction: column; /* Stack stats on top of each other instead of side-by-side */
+    }
+}
+
+/* For very small screens smaller than 480px (Phones) */
+@media (max-width: 480px) {
+    .nav-buttons {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .logout-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}

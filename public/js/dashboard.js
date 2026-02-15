@@ -1,5 +1,5 @@
 /**
- * FinTrack Dashboard – Professional with offline fallback, charts & recent activity
+ * FinTrack Dashboard – Professional, with custom categories & chart visibility
  */
 
 const API_BASE = '/api/expenses';
@@ -14,6 +14,15 @@ let useMock = false;
 let mockExpenses = [];
 let mockBudget = 0;
 let chartInstance = null;
+
+// Custom categories array (predefined + user added)
+let categories = [
+  { value: 'Food', label: '🍔 Food' },
+  { value: 'Transport', label: '🚗 Transport' },
+  { value: 'Shopping', label: '🛍 Shopping' },
+  { value: 'Education', label: '📚 Education' },
+  { value: 'Entertainment', label: '🎬 Entertainment' }
+];
 
 const elements = {
   totalAmount: document.getElementById('totalAmount'),
@@ -30,14 +39,14 @@ const elements = {
   selectedDisplay: document.getElementById('selected-display'),
   categoryTrigger: document.getElementById('categoryTrigger'),
   categoryWrapper: document.getElementById('categoryWrapper'),
-  dropdownOptions: document.querySelectorAll('.option'),
+  dropdownMenu: document.getElementById('dropdownMenu'),
+  addCategoryBtn: document.getElementById('addCategoryBtn'),
   aiTopCategory: document.getElementById('aiTopCategory'),
   aiRisk: document.getElementById('aiRisk'),
   aiSuggestion: document.getElementById('aiSuggestion'),
   logoutBtn: document.getElementById('logoutBtn'),
-  apiStatus: document.getElementById('apiStatus'),
   recentList: document.getElementById('recentList'),
-  resetMockBtn: document.getElementById('resetMockBtn')
+  chartContainer: document.getElementById('chartContainer')
 };
 
 // ========== Utilities ==========
@@ -46,7 +55,7 @@ function requireAuth() { if (!getToken() && !useMock) window.location.href = 'lo
 function showMessage(msg) { alert(msg); }
 
 function setOfflineMode(enabled) {
-  if (elements.apiStatus) elements.apiStatus.style.display = enabled ? 'inline-block' : 'none';
+  // Offline badge removed – we handle silently
   useMock = enabled;
   localStorage.setItem(MOCK_MODE_KEY, enabled ? 'true' : 'false');
 }
@@ -57,15 +66,19 @@ function loadMockFromStorage() {
     mockExpenses = stored ? JSON.parse(stored) : [];
     const storedBudget = localStorage.getItem('finTrack_mockBudget');
     mockBudget = storedBudget ? parseFloat(storedBudget) : 0;
+    // Load custom categories if any
+    const storedCats = localStorage.getItem('finTrack_categories');
+    if (storedCats) categories = JSON.parse(storedCats);
   } catch { mockExpenses = []; mockBudget = 0; }
 }
 
 function saveMockToStorage() {
   localStorage.setItem('finTrack_mockExpenses', JSON.stringify(mockExpenses));
   localStorage.setItem('finTrack_mockBudget', mockBudget.toString());
+  localStorage.setItem('finTrack_categories', JSON.stringify(categories));
 }
 
-// ========== API with fallback (no redirect on 401) ==========
+// ========== API with fallback ==========
 async function apiRequest(url, options = {}) {
   if (useMock) return handleMockRequest(url, options);
   const token = getToken();
@@ -127,18 +140,75 @@ function generateMockAnalysis() {
   return Promise.resolve({ topCategory, riskLevel: risk, suggestion: sugg });
 }
 
-// ========== Dropdown ==========
-function initCategoryDropdown() {
-  const t = elements.categoryTrigger, w = elements.categoryWrapper, opts = elements.dropdownOptions, hid = elements.categoryHidden, disp = elements.selectedDisplay;
-  if (!t) return;
-  t.addEventListener('click', (e) => { e.stopPropagation(); w.classList.toggle('open'); t.setAttribute('aria-expanded', w.classList.contains('open')); });
+// ========== Dropdown Management ==========
+function rebuildDropdown() {
+  const menu = elements.dropdownMenu;
+  menu.innerHTML = ''; // clear
+  categories.forEach(cat => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.setAttribute('data-value', cat.value);
+    div.textContent = cat.label;
+    menu.appendChild(div);
+  });
+  // Re-attach listeners to new options
+  attachDropdownListeners();
+}
+
+function attachDropdownListeners() {
+  const opts = document.querySelectorAll('.option');
   opts.forEach(opt => {
     opt.addEventListener('click', () => {
       const val = opt.getAttribute('data-value') || opt.textContent.trim().replace(/[^a-zA-Z]/g,'');
-      disp.textContent = opt.textContent.trim(); hid.value = val; w.classList.remove('open'); t.setAttribute('aria-expanded','false');
+      elements.selectedDisplay.textContent = opt.textContent.trim();
+      elements.categoryHidden.value = val;
+      elements.categoryWrapper.classList.remove('open');
+      elements.categoryTrigger.setAttribute('aria-expanded','false');
     });
   });
-  document.addEventListener('click', (e) => { if (!w.contains(e.target)) { w.classList.remove('open'); t.setAttribute('aria-expanded','false'); } });
+}
+
+function initCategoryDropdown() {
+  if (!elements.categoryTrigger) return;
+  // Toggle dropdown
+  elements.categoryTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const expanded = elements.categoryTrigger.getAttribute('aria-expanded') === 'true' ? false : true;
+    elements.categoryTrigger.setAttribute('aria-expanded', expanded);
+    elements.categoryWrapper.classList.toggle('open');
+  });
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (!elements.categoryWrapper.contains(e.target)) {
+      elements.categoryWrapper.classList.remove('open');
+      elements.categoryTrigger.setAttribute('aria-expanded','false');
+    }
+  });
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && elements.categoryWrapper.classList.contains('open')) {
+      elements.categoryWrapper.classList.remove('open');
+      elements.categoryTrigger.setAttribute('aria-expanded','false');
+    }
+  });
+  // Initial attach
+  attachDropdownListeners();
+}
+
+// Add new category
+function addCategory() {
+  const newCat = prompt('Enter new category name (e.g., "Coffee", "Gym"):');
+  if (!newCat || newCat.trim() === '') return;
+  const value = newCat.trim().replace(/\s+/g, '');
+  const label = newCat.trim();
+  // Check duplicate
+  if (categories.some(c => c.value.toLowerCase() === value.toLowerCase())) {
+    alert('Category already exists!');
+    return;
+  }
+  categories.push({ value, label });
+  saveMockToStorage();
+  rebuildDropdown();
 }
 
 // ========== Budget ==========
@@ -211,20 +281,28 @@ function updateRecentActivity(expenses) {
     </div>`).join('') : '<p>No recent expenses</p>';
 }
 
-// ========== Chart ==========
+// ========== Chart with visibility ==========
 function updateChart() {
   const ctx = document.getElementById('categoryChart')?.getContext('2d');
   if (!ctx) return;
-  const categories = {};
-  (useMock ? mockExpenses : []).forEach(e => categories[e.category] = (categories[e.category] || 0) + e.amount);
+  const expenses = useMock ? mockExpenses : []; // in real app, would come from API
+  const hasExpenses = expenses.length > 0;
+  if (!hasExpenses) {
+    if (elements.chartContainer) elements.chartContainer.style.display = 'none';
+    return;
+  }
+  if (elements.chartContainer) elements.chartContainer.style.display = 'block';
+
+  const categoriesMap = {};
+  expenses.forEach(e => categoriesMap[e.category] = (categoriesMap[e.category] || 0) + e.amount);
   if (chartInstance) chartInstance.destroy();
   chartInstance = new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: Object.keys(categories),
+      labels: Object.keys(categoriesMap),
       datasets: [{
-        data: Object.values(categories),
-        backgroundColor: ['#38bdf8', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444']
+        data: Object.values(categoriesMap),
+        backgroundColor: ['#38bdf8', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444', '#ec4899', '#14b8a6']
       }]
     },
     options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
@@ -243,12 +321,6 @@ async function loadSmartAnalysis() {
 // ========== Logout ==========
 function logoutUser() { localStorage.removeItem(TOKEN_KEY); window.location.href = 'login.html'; }
 
-// ========== Reset Mock Data ==========
-function resetMockData() {
-  if (!useMock) { alert('Only available in offline mode'); return; }
-  if (confirm('Delete all mock expenses?')) { mockExpenses = []; mockBudget = 0; saveMockToStorage(); loadExpenses(); loadSmartAnalysis(); updateChart(); }
-}
-
 // ========== Event Listeners ==========
 function setupEventListeners() {
   elements.addExpenseBtn?.addEventListener('click', addExpense);
@@ -258,7 +330,7 @@ function setupEventListeners() {
     elements.budgetInput.addEventListener('change', setBudget);
   }
   elements.logoutBtn?.addEventListener('click', logoutUser);
-  elements.resetMockBtn?.addEventListener('click', resetMockData);
+  elements.addCategoryBtn?.addEventListener('click', addCategory);
   [elements.titleInput, elements.amountInput].forEach(inp => inp?.addEventListener('keypress', (e) => { if (e.key === 'Enter') addExpense(); }));
 }
 
@@ -267,6 +339,7 @@ async function initDashboard() {
   const wasMock = localStorage.getItem(MOCK_MODE_KEY) === 'true';
   if (wasMock) { setOfflineMode(true); loadMockFromStorage(); }
   requireAuth();
+  rebuildDropdown(); // ensure dropdown shows saved categories
   initCategoryDropdown();
   setupEventListeners();
   try { await loadExpenses(); await loadSmartAnalysis(); } catch (error) { console.error(error); }

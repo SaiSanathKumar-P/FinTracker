@@ -1,5 +1,5 @@
 /**
- * FinTrack Dashboard – Professional, with custom categories & chart visibility
+ * FinTrack Dashboard – Professional with category management
  */
 
 const API_BASE = '/api/expenses';
@@ -41,6 +41,7 @@ const elements = {
   categoryWrapper: document.getElementById('categoryWrapper'),
   dropdownMenu: document.getElementById('dropdownMenu'),
   addCategoryBtn: document.getElementById('addCategoryBtn'),
+  removeCategoryBtn: document.getElementById('removeCategoryBtn'),
   aiTopCategory: document.getElementById('aiTopCategory'),
   aiRisk: document.getElementById('aiRisk'),
   aiSuggestion: document.getElementById('aiSuggestion'),
@@ -55,7 +56,6 @@ function requireAuth() { if (!getToken() && !useMock) window.location.href = 'lo
 function showMessage(msg) { alert(msg); }
 
 function setOfflineMode(enabled) {
-  // Offline badge removed – we handle silently
   useMock = enabled;
   localStorage.setItem(MOCK_MODE_KEY, enabled ? 'true' : 'false');
 }
@@ -66,10 +66,12 @@ function loadMockFromStorage() {
     mockExpenses = stored ? JSON.parse(stored) : [];
     const storedBudget = localStorage.getItem('finTrack_mockBudget');
     mockBudget = storedBudget ? parseFloat(storedBudget) : 0;
-    // Load custom categories if any
     const storedCats = localStorage.getItem('finTrack_categories');
     if (storedCats) categories = JSON.parse(storedCats);
-  } catch { mockExpenses = []; mockBudget = 0; }
+  } catch { 
+    mockExpenses = []; 
+    mockBudget = 0; 
+  }
 }
 
 function saveMockToStorage() {
@@ -111,39 +113,73 @@ function handleMockRequest(url, options) {
   const body = options.body ? JSON.parse(options.body) : null;
   if (method === 'GET' && url === '') return Promise.resolve(mockExpenses);
   if (method === 'POST' && url === '/add') {
-    const newExpense = { _id: 'mock_' + Date.now(), title: body.title, category: body.category, amount: body.amount, date: new Date().toISOString() };
-    mockExpenses.push(newExpense); saveMockToStorage(); return Promise.resolve(newExpense);
+    const newExpense = { 
+      _id: 'mock_' + Date.now(), 
+      title: body.title, 
+      category: body.category, 
+      amount: body.amount, 
+      date: new Date().toISOString() 
+    };
+    mockExpenses.push(newExpense); 
+    saveMockToStorage(); 
+    return Promise.resolve(newExpense);
   }
   if (method === 'DELETE' && url.startsWith('/')) {
-    const id = url.substring(1); mockExpenses = mockExpenses.filter(e => e._id !== id); saveMockToStorage(); return Promise.resolve(null);
+    const id = url.substring(1); 
+    mockExpenses = mockExpenses.filter(e => e._id !== id); 
+    saveMockToStorage(); 
+    return Promise.resolve(null);
   }
-  if (method === 'POST' && url === '/budget') { mockBudget = body.budget; saveMockToStorage(); return Promise.resolve({}); }
+  if (method === 'POST' && url === '/budget') { 
+    mockBudget = body.budget; 
+    saveMockToStorage(); 
+    return Promise.resolve({}); 
+  }
   if (method === 'GET' && url === '/analyze') return generateMockAnalysis();
   return Promise.reject(new Error('Mock: unknown endpoint'));
 }
 
 function generateMockAnalysis() {
-  if (mockExpenses.length === 0) return Promise.resolve({ topCategory: '-', riskLevel: '-', suggestion: 'Add expenses to get insights' });
+  if (mockExpenses.length === 0) return Promise.resolve({ 
+    topCategory: '-', 
+    riskLevel: '-', 
+    suggestion: 'Add expenses to get insights' 
+  });
+  
   const catTotals = {};
   mockExpenses.forEach(e => catTotals[e.category || 'Other'] = (catTotals[e.category || 'Other'] || 0) + e.amount);
   const top = Object.entries(catTotals).sort((a,b) => b[1]-a[1])[0];
   const topCategory = top ? `${top[0]} (₹${top[1].toFixed(2)})` : '-';
   const total = mockExpenses.reduce((s,e) => s + e.amount, 0);
   let risk = '-', sugg = '-';
+  
   if (mockBudget > 0) {
     const usage = total / mockBudget * 100;
-    if (usage < 50) { risk = 'Low Risk'; sugg = 'You are spending well within budget.'; }
-    else if (usage < 80) { risk = 'Medium Risk'; sugg = 'You\'ve used over half your budget.'; }
-    else if (usage < 100) { risk = 'High Risk'; sugg = 'Close to exceeding budget.'; }
-    else { risk = 'Overspent'; sugg = 'You have exceeded your budget.'; }
-  } else sugg = 'Set a budget to get risk analysis.';
+    if (usage < 50) { 
+      risk = 'Low Risk'; 
+      sugg = 'You are spending well within budget.'; 
+    } else if (usage < 80) { 
+      risk = 'Medium Risk'; 
+      sugg = 'You\'ve used over half your budget.'; 
+    } else if (usage < 100) { 
+      risk = 'High Risk'; 
+      sugg = 'Close to exceeding budget.'; 
+    } else { 
+      risk = 'Overspent'; 
+      sugg = 'You have exceeded your budget.'; 
+    }
+  } else { 
+    sugg = 'Set a budget to get risk analysis.'; 
+  }
+  
   return Promise.resolve({ topCategory, riskLevel: risk, suggestion: sugg });
 }
 
 // ========== Dropdown Management ==========
 function rebuildDropdown() {
   const menu = elements.dropdownMenu;
-  menu.innerHTML = ''; // clear
+  menu.innerHTML = '';
+  
   categories.forEach(cat => {
     const div = document.createElement('div');
     div.className = 'option';
@@ -151,7 +187,7 @@ function rebuildDropdown() {
     div.textContent = cat.label;
     menu.appendChild(div);
   });
-  // Re-attach listeners to new options
+  
   attachDropdownListeners();
 }
 
@@ -159,39 +195,39 @@ function attachDropdownListeners() {
   const opts = document.querySelectorAll('.option');
   opts.forEach(opt => {
     opt.addEventListener('click', () => {
-      const val = opt.getAttribute('data-value') || opt.textContent.trim().replace(/[^a-zA-Z]/g,'');
+      const val = opt.getAttribute('data-value');
       elements.selectedDisplay.textContent = opt.textContent.trim();
       elements.categoryHidden.value = val;
       elements.categoryWrapper.classList.remove('open');
-      elements.categoryTrigger.setAttribute('aria-expanded','false');
+      elements.categoryTrigger.setAttribute('aria-expanded', 'false');
     });
   });
 }
 
 function initCategoryDropdown() {
   if (!elements.categoryTrigger) return;
-  // Toggle dropdown
+  
   elements.categoryTrigger.addEventListener('click', (e) => {
     e.stopPropagation();
     const expanded = elements.categoryTrigger.getAttribute('aria-expanded') === 'true' ? false : true;
     elements.categoryTrigger.setAttribute('aria-expanded', expanded);
     elements.categoryWrapper.classList.toggle('open');
   });
-  // Close on outside click
+  
   document.addEventListener('click', (e) => {
     if (!elements.categoryWrapper.contains(e.target)) {
       elements.categoryWrapper.classList.remove('open');
-      elements.categoryTrigger.setAttribute('aria-expanded','false');
+      elements.categoryTrigger.setAttribute('aria-expanded', 'false');
     }
   });
-  // Close on Escape
+  
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && elements.categoryWrapper.classList.contains('open')) {
       elements.categoryWrapper.classList.remove('open');
-      elements.categoryTrigger.setAttribute('aria-expanded','false');
+      elements.categoryTrigger.setAttribute('aria-expanded', 'false');
     }
   });
-  // Initial attach
+  
   attachDropdownListeners();
 }
 
@@ -199,27 +235,65 @@ function initCategoryDropdown() {
 function addCategory() {
   const newCat = prompt('Enter new category name (e.g., "Coffee", "Gym"):');
   if (!newCat || newCat.trim() === '') return;
+  
   const value = newCat.trim().replace(/\s+/g, '');
   const label = newCat.trim();
-  // Check duplicate
+  
   if (categories.some(c => c.value.toLowerCase() === value.toLowerCase())) {
     alert('Category already exists!');
     return;
   }
+  
   categories.push({ value, label });
   saveMockToStorage();
   rebuildDropdown();
 }
 
+// Remove selected category
+function removeCategory() {
+  const selectedValue = elements.categoryHidden.value;
+  if (!selectedValue) {
+    alert('Please select a category first');
+    return;
+  }
+  
+  // Check if it's a predefined category
+  const predefinedValues = ['Food', 'Transport', 'Shopping', 'Education', 'Entertainment'];
+  if (predefinedValues.includes(selectedValue)) {
+    alert('Cannot remove predefined categories');
+    return;
+  }
+  
+  if (confirm(`Remove category "${selectedValue}"?`)) {
+    categories = categories.filter(c => c.value !== selectedValue);
+    saveMockToStorage();
+    
+    // Clear selection
+    elements.selectedDisplay.textContent = 'Select Category';
+    elements.categoryHidden.value = '';
+    
+    rebuildDropdown();
+  }
+}
+
 // ========== Budget ==========
 function updateBudgetValue(val) {
   if (elements.budgetValue) elements.budgetValue.innerText = val;
-  if (elements.budgetInput) elements.budgetInput.style.backgroundSize = (val / elements.budgetInput.max * 100) + '% 100%';
+  if (elements.budgetInput) {
+    const percent = (val / elements.budgetInput.max) * 100;
+    elements.budgetInput.style.backgroundSize = percent + '% 100%';
+  }
 }
+
 async function setBudget() {
   if (!elements.budgetInput) return;
   monthlyBudget = Number(elements.budgetInput.value);
-  try { await apiRequest('/budget', { method: 'POST', body: JSON.stringify({ budget: monthlyBudget }) }); } catch {}
+  try { 
+    await apiRequest('/budget', { 
+      method: 'POST', 
+      body: JSON.stringify({ budget: monthlyBudget }) 
+    }); 
+  } catch {}
   if (useMock) mockBudget = monthlyBudget;
   loadExpenses();
 }
@@ -229,21 +303,38 @@ async function addExpense() {
   const title = elements.titleInput?.value.trim();
   const category = elements.categoryHidden?.value;
   const amount = elements.amountInput?.value.trim();
+  
   if (!title || !category || !amount) return showMessage('Please fill all fields');
   if (isNaN(amount) || Number(amount) <= 0) return showMessage('Amount must be positive');
+  
   try {
-    await apiRequest('/add', { method: 'POST', body: JSON.stringify({ title, category, amount: Number(amount) }) });
-    elements.titleInput.value = ''; elements.amountInput.value = ''; elements.categoryHidden.value = ''; elements.selectedDisplay.innerText = 'Select Category';
-    await loadExpenses(); await loadSmartAnalysis(); updateChart();
-  } catch (error) { console.error(error); }
+    await apiRequest('/add', { 
+      method: 'POST', 
+      body: JSON.stringify({ title, category, amount: Number(amount) }) 
+    });
+    
+    elements.titleInput.value = ''; 
+    elements.amountInput.value = ''; 
+    elements.categoryHidden.value = ''; 
+    elements.selectedDisplay.innerText = 'Select Category';
+    
+    await loadExpenses(); 
+    await loadSmartAnalysis(); 
+    updateChart();
+  } catch (error) { 
+    console.error(error); 
+  }
 }
 
 async function loadExpenses() {
   try {
     const expenses = await apiRequest('');
     if (!expenses) return;
-    const list = elements.expenseList; list.innerHTML = '';
+    
+    const list = elements.expenseList; 
+    list.innerHTML = '';
     let total = 0;
+    
     expenses.forEach(exp => {
       total += Number(exp.amount);
       const li = document.createElement('li');
@@ -251,23 +342,41 @@ async function loadExpenses() {
                       <button class="delete-btn" data-id="${exp._id}">✖ Delete</button>`;
       list.appendChild(li);
     });
-    document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', (e) => deleteExpense(e.target.dataset.id)));
+    
+    document.querySelectorAll('.delete-btn').forEach(btn => 
+      btn.addEventListener('click', (e) => deleteExpense(e.target.dataset.id))
+    );
+    
     if (elements.totalAmount) elements.totalAmount.innerText = total.toFixed(2);
+    
     const currentBudget = useMock ? mockBudget : monthlyBudget;
     if (currentBudget > 0) {
       const remaining = currentBudget - total;
       if (elements.remainingAmount) elements.remainingAmount.innerText = remaining.toFixed(2);
       const percent = total / currentBudget * 100;
       if (elements.budgetUsage) elements.budgetUsage.innerText = percent.toFixed(1) + '% Used';
-    } else { if (elements.remainingAmount) elements.remainingAmount.innerText = '0'; if (elements.budgetUsage) elements.budgetUsage.innerText = '0% Used'; }
+    } else { 
+      if (elements.remainingAmount) elements.remainingAmount.innerText = '0'; 
+      if (elements.budgetUsage) elements.budgetUsage.innerText = '0% Used'; 
+    }
+    
     updateRecentActivity(expenses);
     updateChart();
-  } catch (error) { console.error(error); }
+  } catch (error) { 
+    console.error(error); 
+  }
 }
 
 async function deleteExpense(id) {
   if (!id || !confirm('Delete this expense?')) return;
-  try { await apiRequest(`/${id}`, { method: 'DELETE' }); await loadExpenses(); await loadSmartAnalysis(); updateChart(); } catch (error) { console.error(error); }
+  try { 
+    await apiRequest(`/${id}`, { method: 'DELETE' }); 
+    await loadExpenses(); 
+    await loadSmartAnalysis(); 
+    updateChart(); 
+  } catch (error) { 
+    console.error(error); 
+  }
 }
 
 function updateRecentActivity(expenses) {
@@ -285,17 +394,22 @@ function updateRecentActivity(expenses) {
 function updateChart() {
   const ctx = document.getElementById('categoryChart')?.getContext('2d');
   if (!ctx) return;
-  const expenses = useMock ? mockExpenses : []; // in real app, would come from API
+  
+  const expenses = useMock ? mockExpenses : [];
   const hasExpenses = expenses.length > 0;
+  
   if (!hasExpenses) {
     if (elements.chartContainer) elements.chartContainer.style.display = 'none';
     return;
   }
+  
   if (elements.chartContainer) elements.chartContainer.style.display = 'block';
 
   const categoriesMap = {};
   expenses.forEach(e => categoriesMap[e.category] = (categoriesMap[e.category] || 0) + e.amount);
+  
   if (chartInstance) chartInstance.destroy();
+  
   chartInstance = new Chart(ctx, {
     type: 'doughnut',
     data: {
@@ -305,44 +419,73 @@ function updateChart() {
         backgroundColor: ['#38bdf8', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444', '#ec4899', '#14b8a6']
       }]
     },
-    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    options: { 
+      responsive: true, 
+      plugins: { 
+        legend: { position: 'bottom' } 
+      } 
+    }
   });
 }
 
 // ========== AI ==========
 async function loadSmartAnalysis() {
-  try { const data = await apiRequest('/analyze'); if (!data) return;
+  try { 
+    const data = await apiRequest('/analyze'); 
+    if (!data) return;
     if (elements.aiTopCategory) elements.aiTopCategory.innerText = data.topCategory || '-';
     if (elements.aiRisk) elements.aiRisk.innerText = data.riskLevel || '-';
     if (elements.aiSuggestion) elements.aiSuggestion.innerText = data.suggestion || '-';
-  } catch (error) { console.error(error); }
+  } catch (error) { 
+    console.error(error); 
+  }
 }
 
 // ========== Logout ==========
-function logoutUser() { localStorage.removeItem(TOKEN_KEY); window.location.href = 'login.html'; }
+function logoutUser() { 
+  localStorage.removeItem(TOKEN_KEY); 
+  window.location.href = 'login.html'; 
+}
 
 // ========== Event Listeners ==========
 function setupEventListeners() {
   elements.addExpenseBtn?.addEventListener('click', addExpense);
   elements.saveBudgetBtn?.addEventListener('click', setBudget);
+  elements.logoutBtn?.addEventListener('click', logoutUser);
+  elements.addCategoryBtn?.addEventListener('click', addCategory);
+  elements.removeCategoryBtn?.addEventListener('click', removeCategory);
+  
   if (elements.budgetInput) {
     elements.budgetInput.addEventListener('input', (e) => updateBudgetValue(e.target.value));
     elements.budgetInput.addEventListener('change', setBudget);
   }
-  elements.logoutBtn?.addEventListener('click', logoutUser);
-  elements.addCategoryBtn?.addEventListener('click', addCategory);
-  [elements.titleInput, elements.amountInput].forEach(inp => inp?.addEventListener('keypress', (e) => { if (e.key === 'Enter') addExpense(); }));
+  
+  [elements.titleInput, elements.amountInput].forEach(inp => 
+    inp?.addEventListener('keypress', (e) => { 
+      if (e.key === 'Enter') addExpense(); 
+    })
+  );
 }
 
 // ========== Init ==========
 async function initDashboard() {
   const wasMock = localStorage.getItem(MOCK_MODE_KEY) === 'true';
-  if (wasMock) { setOfflineMode(true); loadMockFromStorage(); }
+  if (wasMock) { 
+    setOfflineMode(true); 
+    loadMockFromStorage(); 
+  }
+  
   requireAuth();
-  rebuildDropdown(); // ensure dropdown shows saved categories
+  rebuildDropdown();
   initCategoryDropdown();
   setupEventListeners();
-  try { await loadExpenses(); await loadSmartAnalysis(); } catch (error) { console.error(error); }
+  
+  try { 
+    await loadExpenses(); 
+    await loadSmartAnalysis(); 
+  } catch (error) { 
+    console.error(error); 
+  }
 }
 
 initDashboard();

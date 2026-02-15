@@ -149,16 +149,6 @@ header{
 #expenseChart{
   margin-top:20px;
 }
-
-/* MOBILE RESPONSIVE */
-@media(max-width:768px){
-  .dashboard-container{
-    width:90%;
-  }
-  .form-container{
-    width:90%;
-  }
-}
 /* HERO SECTION */
 .hero{
   text-align:center;
@@ -1139,49 +1129,161 @@ body.light-mode .theme-select {
     }
 }
 
-/* ================= MOBILE OPTIMIZATION ================= */
+/* ===================================================
+   MOBILE RESPONSIVE FIX (GLOBAL)
+=================================================== */
 
 @media (max-width: 768px){
 
-  header{
-    padding:15px 20px;
-  }
-
-  .hero-section{
-    flex-direction:column;
-    text-align:center;
-    padding:60px 20px;
-  }
-
-  .hero-left h1{
-    font-size:32px;
-  }
-
-  .hero-left p{
-    font-size:16px;
-  }
-
-  .hero-right img{
-    max-width:280px;
-  }
-
-  .features-grid,
-  .how-grid{
-    gap:20px;
-  }
-
-  .feature-card,
-  .how-card{
-    width:100%;
-  }
-
-  .split-section{
-    flex-direction:column;
-    padding:60px 20px;
-    text-align:center;
-  }
-
-  .split-text h2{
-    font-size:28px;
-  }
+/* Prevent side scroll */
+html, body{
+  overflow-x: hidden;
 }
+
+/* HEADER */
+header{
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px;
+}
+
+.logo{
+  font-size: 20px;
+  text-align: center;
+}
+
+/* NAV BUTTONS */
+.nav-btn,
+.theme-btn,
+.btn{
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+/* ================= HERO SECTION ================= */
+
+.hero-section{
+  flex-direction: column;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.hero-left h1{
+  font-size: 30px;
+  line-height: 1.3;
+}
+
+.hero-left p{
+  font-size: 15px;
+}
+
+.hero-right img{
+  max-width: 260px;
+  width: 100%;
+}
+
+/* ================= FEATURES ================= */
+
+.features-grid,
+.features{
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feature-card{
+  width: 100%;
+}
+
+/* ================= SPLIT SECTION ================= */
+
+.split-section{
+  flex-direction: column;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.split-image img{
+  max-width: 260px;
+}
+
+/* ================= FORMS ================= */
+
+.form-container,
+.dashboard-container,
+.modern-form{
+  width: 92%;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.form-row{
+  flex-direction: column;
+}
+
+.form-row input,
+.form-row select{
+  width: 100%;
+}
+
+/* ================= DASHBOARD ================= */
+
+.summary-grid{
+  grid-template-columns: 1fr;
+}
+
+.cards{
+  flex-direction: column;
+}
+
+.card{
+  width: 100%;
+}
+
+/* ================= CHARTS ================= */
+
+.charts,
+.charts-grid{
+  grid-template-columns: 1fr;
+}
+
+.charts canvas,
+.charts-grid canvas{
+  width: 100% !important;
+}
+
+/* ================= AI BOX ================= */
+
+.ai-grid{
+  flex-direction: column;
+}
+
+.ai-box{
+  width: 100%;
+}
+
+/* ================= IMAGES FIX ================= */
+
+img{
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ================= BUTTON SIZE ================= */
+
+button,
+.add-btn,
+.save-budget-btn{
+  font-size: 14px;
+  padding: 12px;
+}
+
+/* ================= HEADINGS ================= */
+
+h1{font-size:28px;}
+h2{font-size:24px;}
+h3{font-size:20px;}
+
+}
+
+

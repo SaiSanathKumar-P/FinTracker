@@ -1,20 +1,22 @@
 /**
- * FinTrack Dashboard JavaScript
- * Handles all dashboard functionality: expense management, budget, AI insights, and API communication.
- * Version: 2.0 (Professional & Optimized)
- * Author: FinTrack Team
+ * FinTrack Dashboard JavaScript – Professional version with offline fallback
+ * Works with real backend or falls back to localStorage mock if server unreachable.
  */
 
-// ==================== CONFIGURATION & CONSTANTS ====================
-const API_BASE = '/api/expenses';               // Base API endpoint (relative for production)
-const TOKEN_KEY = 'token';                       // LocalStorage key for JWT
+// ==================== CONFIG ====================
+const API_BASE = '/api/expenses';          // Change to full URL if needed, e.g. 'https://your-backend.com/api/expenses'
+const TOKEN_KEY = 'token';
+const MOCK_MODE_KEY = 'finTrack_useMock';   // localStorage flag to remember mock mode
 
 // Prevent back button after logout
 window.history.pushState(null, null, window.location.href);
 window.onpopstate = () => window.history.go(1);
 
 // ==================== STATE ====================
-let monthlyBudget = 0;                            // Current monthly budget (from slider or server)
+let monthlyBudget = 0;
+let useMock = false;                         // start with real API, switch on first failure
+let mockExpenses = [];                        // local mock data
+let mockBudget = 0;
 
 // ==================== DOM ELEMENTS ====================
 const elements = {
@@ -36,44 +38,59 @@ const elements = {
   aiTopCategory: document.getElementById('aiTopCategory'),
   aiRisk: document.getElementById('aiRisk'),
   aiSuggestion: document.getElementById('aiSuggestion'),
-  logoutBtn: document.getElementById('logoutBtn')
+  logoutBtn: document.getElementById('logoutBtn'),
+  apiStatus: document.getElementById('apiStatus')
 };
 
-// ==================== UTILITY FUNCTIONS ====================
-
-/**
- * Get JWT token from localStorage
- * @returns {string|null}
- */
+// ==================== UTILITIES ====================
 function getToken() {
   return localStorage.getItem(TOKEN_KEY);
 }
 
-/**
- * Check if user is authenticated; redirect to login if not
- */
 function requireAuth() {
-  const token = getToken();
-  if (!token) {
+  if (!getToken() && !useMock) {   // in mock mode we don't require a token
     window.location.href = 'login.html';
   }
 }
 
-/**
- * Show error message to user (can be enhanced with toast)
- * @param {string} message
- */
-function showError(message) {
-  alert(message); // Replace with a nicer UI notification if desired
+function showMessage(msg, isError = true) {
+  alert(msg); // Replace with a nicer toast if you wish
 }
 
-/**
- * Generic fetch wrapper with error handling and token injection
- * @param {string} url - API endpoint (relative)
- * @param {object} options - Fetch options (method, body, etc.)
- * @returns {Promise<any>} - Parsed JSON response
- */
+// Show/hide offline badge
+function setOfflineMode(enabled) {
+  if (elements.apiStatus) {
+    elements.apiStatus.style.display = enabled ? 'inline-block' : 'none';
+  }
+  useMock = enabled;
+  localStorage.setItem(MOCK_MODE_KEY, enabled ? 'true' : 'false');
+}
+
+// ==================== MOCK DATA INIT ====================
+function loadMockFromStorage() {
+  try {
+    const stored = localStorage.getItem('finTrack_mockExpenses');
+    mockExpenses = stored ? JSON.parse(stored) : [];
+    const storedBudget = localStorage.getItem('finTrack_mockBudget');
+    mockBudget = storedBudget ? parseFloat(storedBudget) : 0;
+  } catch (e) {
+    mockExpenses = [];
+    mockBudget = 0;
+  }
+}
+
+function saveMockToStorage() {
+  localStorage.setItem('finTrack_mockExpenses', JSON.stringify(mockExpenses));
+  localStorage.setItem('finTrack_mockBudget', mockBudget.toString());
+}
+
+// ==================== API REQUEST (with fallback) ====================
 async function apiRequest(url, options = {}) {
+  // If we are already in mock mode, bypass real API
+  if (useMock) {
+    return handleMockRequest(url, options);
+  }
+
   const token = getToken();
   const headers = {
     'Content-Type': 'application/json',
@@ -82,45 +99,127 @@ async function apiRequest(url, options = {}) {
   };
 
   try {
-    const response = await fetch(`${API_BASE}${url}`, {
-      ...options,
-      headers
-    });
+    const response = await fetch(`${API_BASE}${url}`, { ...options, headers });
 
-    // Handle unauthorized (token expired/invalid)
     if (response.status === 401) {
       localStorage.removeItem(TOKEN_KEY);
       window.location.href = 'login.html';
       return null;
     }
 
-    // Parse JSON only if content exists
     const data = response.status !== 204 ? await response.json() : null;
-
     if (!response.ok) {
-      const errorMsg = data?.message || `Request failed with status ${response.status}`;
-      throw new Error(errorMsg);
+      throw new Error(data?.message || `HTTP ${response.status}`);
     }
-
     return data;
   } catch (error) {
-    console.error('API Request Error:', error);
-    showError(error.message || 'Network error. Please check your connection.');
-    throw error; // Re-throw for caller to handle if needed
+    console.warn('API request failed, switching to mock mode:', error);
+    setOfflineMode(true);
+    loadMockFromStorage();  // load any existing mock data
+    // Re-run the request as mock
+    return handleMockRequest(url, options);
   }
 }
 
-// ==================== CUSTOM DROPDOWN (CATEGORY SELECTOR) ====================
+// ==================== MOCK REQUEST HANDLER ====================
+function handleMockRequest(url, options) {
+  const method = options.method || 'GET';
+  const body = options.body ? JSON.parse(options.body) : null;
 
-/**
- * Initialize custom dropdown with keyboard accessibility
- */
+  // GET / (list expenses)
+  if (method === 'GET' && url === '') {
+    return Promise.resolve(mockExpenses);
+  }
+
+  // POST /add
+  if (method === 'POST' && url === '/add') {
+    const newExpense = {
+      _id: 'mock_' + Date.now(),
+      title: body.title,
+      category: body.category,
+      amount: body.amount,
+      date: new Date().toISOString()
+    };
+    mockExpenses.push(newExpense);
+    saveMockToStorage();
+    return Promise.resolve(newExpense);
+  }
+
+  // DELETE /:id
+  if (method === 'DELETE' && url.startsWith('/')) {
+    const id = url.substring(1);
+    mockExpenses = mockExpenses.filter(e => e._id !== id);
+    saveMockToStorage();
+    return Promise.resolve(null);
+  }
+
+  // POST /budget (save budget)
+  if (method === 'POST' && url === '/budget') {
+    mockBudget = body.budget;
+    saveMockToStorage();
+    return Promise.resolve({});
+  }
+
+  // GET /analyze
+  if (method === 'GET' && url === '/analyze') {
+    return generateMockAnalysis();
+  }
+
+  return Promise.reject(new Error('Mock: unknown endpoint'));
+}
+
+// Generate AI analysis from mock data
+function generateMockAnalysis() {
+  if (mockExpenses.length === 0) {
+    return Promise.resolve({
+      topCategory: '-',
+      riskLevel: '-',
+      suggestion: 'Add some expenses to get insights'
+    });
+  }
+
+  const categoryTotals = {};
+  mockExpenses.forEach(e => {
+    const cat = e.category || 'Other';
+    categoryTotals[cat] = (categoryTotals[cat] || 0) + e.amount;
+  });
+  const topCat = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
+  const topCategory = topCat ? `${topCat[0]} (₹${topCat[1].toFixed(2)})` : '-';
+
+  const total = mockExpenses.reduce((s, e) => s + e.amount, 0);
+  let riskLevel = '-';
+  let suggestion = '-';
+  if (mockBudget > 0) {
+    const usage = (total / mockBudget) * 100;
+    if (usage < 50) {
+      riskLevel = 'Low Risk';
+      suggestion = 'You are spending well within budget. Great job!';
+    } else if (usage < 80) {
+      riskLevel = 'Medium Risk';
+      suggestion = 'You\'ve used over half your budget. Keep an eye on spending.';
+    } else if (usage < 100) {
+      riskLevel = 'High Risk';
+      suggestion = 'You are close to exceeding your budget. Consider reducing expenses.';
+    } else {
+      riskLevel = 'Overspent';
+      suggestion = 'You have exceeded your budget. Review your expenses and adjust.';
+    }
+  } else {
+    suggestion = 'Set a budget to get risk analysis.';
+  }
+
+  return Promise.resolve({
+    topCategory,
+    riskLevel,
+    suggestion
+  });
+}
+
+// ==================== DROPDOWN INIT ====================
 function initCategoryDropdown() {
   const { categoryTrigger, categoryWrapper, dropdownOptions, categoryHidden, selectedDisplay } = elements;
-
   if (!categoryTrigger || !categoryWrapper) return;
 
-  // Toggle dropdown
   categoryTrigger.addEventListener('click', (e) => {
     e.stopPropagation();
     const expanded = categoryTrigger.getAttribute('aria-expanded') === 'true' ? false : true;
@@ -128,7 +227,6 @@ function initCategoryDropdown() {
     categoryWrapper.classList.toggle('open');
   });
 
-  // Select option
   dropdownOptions.forEach(opt => {
     opt.addEventListener('click', () => {
       const value = opt.getAttribute('data-value') || opt.textContent.trim().replace(/[^a-zA-Z]/g, '');
@@ -139,7 +237,6 @@ function initCategoryDropdown() {
       categoryTrigger.setAttribute('aria-expanded', 'false');
     });
 
-    // Keyboard support
     opt.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -148,7 +245,6 @@ function initCategoryDropdown() {
     });
   });
 
-  // Close on outside click
   document.addEventListener('click', (e) => {
     if (!categoryWrapper.contains(e.target)) {
       categoryWrapper.classList.remove('open');
@@ -156,7 +252,6 @@ function initCategoryDropdown() {
     }
   });
 
-  // Close on Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && categoryWrapper.classList.contains('open')) {
       categoryWrapper.classList.remove('open');
@@ -165,67 +260,53 @@ function initCategoryDropdown() {
   });
 }
 
-// ==================== BUDGET FUNCTIONS ====================
-
-/**
- * Update budget value display when slider moves
- * @param {number} val - Current slider value
- */
+// ==================== BUDGET ====================
 function updateBudgetValue(val) {
-  if (elements.budgetValue) {
-    elements.budgetValue.innerText = val;
-  }
-  // Update slider background (for webkit browsers)
+  if (elements.budgetValue) elements.budgetValue.innerText = val;
   if (elements.budgetInput) {
     const percent = (val / elements.budgetInput.max) * 100;
     elements.budgetInput.style.backgroundSize = percent + '% 100%';
   }
 }
 
-/**
- * Save budget from slider input
- */
 async function setBudget() {
   if (!elements.budgetInput) return;
   monthlyBudget = Number(elements.budgetInput.value);
 
-  // Optionally send to server (if API supports)
   try {
     await apiRequest('/budget', {
       method: 'POST',
       body: JSON.stringify({ budget: monthlyBudget })
     });
-    showError('Budget saved successfully!'); // Using showError as temp alert
+    if (!useMock) showMessage('Budget saved successfully!', false);
   } catch (error) {
-    console.warn('Budget save to server failed, using local only:', error);
+    console.warn('Budget save failed:', error);
   }
 
-  // Update UI
-  loadExpenses(); // This will recalc remaining based on new monthlyBudget
+  // In mock mode, update mockBudget
+  if (useMock) mockBudget = monthlyBudget;
+
+  loadExpenses(); // refresh remaining
 }
 
-// ==================== EXPENSE FUNCTIONS ====================
-
-/**
- * Add a new expense
- */
+// ==================== EXPENSES ====================
 async function addExpense() {
   const title = elements.titleInput?.value.trim();
   const category = elements.categoryHidden?.value;
   const amount = elements.amountInput?.value.trim();
 
   if (!title || !category || !amount) {
-    showError('Please select a category and fill all fields');
+    showMessage('Please select a category and fill all fields');
     return;
   }
 
   if (isNaN(amount) || Number(amount) <= 0) {
-    showError('Amount must be a positive number');
+    showMessage('Amount must be a positive number');
     return;
   }
 
   try {
-    const data = await apiRequest('/add', {
+    await apiRequest('/add', {
       method: 'POST',
       body: JSON.stringify({ title, category, amount: Number(amount) })
     });
@@ -234,37 +315,28 @@ async function addExpense() {
     elements.titleInput.value = '';
     elements.amountInput.value = '';
     elements.categoryHidden.value = '';
-    if (elements.selectedDisplay) {
-      elements.selectedDisplay.innerText = 'Select Category';
-    }
+    if (elements.selectedDisplay) elements.selectedDisplay.innerText = 'Select Category';
 
-    // Refresh lists
     await loadExpenses();
     await loadSmartAnalysis();
 
-    showError('Expense added successfully!'); // Temporary success message
+    if (!useMock) showMessage('Expense added!', false);
   } catch (error) {
-    // Error already handled by apiRequest
     console.error('Add expense error:', error);
   }
 }
 
-/**
- * Load and display all expenses
- */
 async function loadExpenses() {
   try {
-    const expenses = await apiRequest(''); // GET /api/expenses
+    const expenses = await apiRequest('');
     if (!expenses) return;
 
     const list = elements.expenseList;
     list.innerHTML = '';
 
     let total = 0;
-
     expenses.forEach(exp => {
       total += Number(exp.amount);
-
       const li = document.createElement('li');
       li.innerHTML = `
         <span><strong>${exp.title}</strong> (${exp.category || 'Other'}) - ₹${Number(exp.amount).toFixed(2)}</span>
@@ -273,7 +345,7 @@ async function loadExpenses() {
       list.appendChild(li);
     });
 
-    // Attach delete handlers to each delete button
+    // Attach delete handlers
     document.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const id = e.target.getAttribute('data-id');
@@ -281,24 +353,16 @@ async function loadExpenses() {
       });
     });
 
-    // Update total display
-    if (elements.totalAmount) {
-      elements.totalAmount.innerText = total.toFixed(2);
-    }
+    if (elements.totalAmount) elements.totalAmount.innerText = total.toFixed(2);
 
-    // Update remaining and budget usage if budget is set
-    if (monthlyBudget > 0) {
-      const remaining = monthlyBudget - total;
-      if (elements.remainingAmount) {
-        elements.remainingAmount.innerText = remaining.toFixed(2);
-      }
-
-      const percent = (total / monthlyBudget) * 100;
-      if (elements.budgetUsage) {
-        elements.budgetUsage.innerText = percent.toFixed(1) + '% Used';
-      }
+    // Use appropriate budget (mockBudget if in mock mode, else monthlyBudget)
+    const currentBudget = useMock ? mockBudget : monthlyBudget;
+    if (currentBudget > 0) {
+      const remaining = currentBudget - total;
+      if (elements.remainingAmount) elements.remainingAmount.innerText = remaining.toFixed(2);
+      const percent = (total / currentBudget) * 100;
+      if (elements.budgetUsage) elements.budgetUsage.innerText = percent.toFixed(1) + '% Used';
     } else {
-      // No budget set
       if (elements.remainingAmount) elements.remainingAmount.innerText = '0';
       if (elements.budgetUsage) elements.budgetUsage.innerText = '0% Used';
     }
@@ -307,10 +371,6 @@ async function loadExpenses() {
   }
 }
 
-/**
- * Delete an expense by ID
- * @param {string} id - Expense ID
- */
 async function deleteExpense(id) {
   if (!id) return;
   if (!confirm('Are you sure you want to delete this expense?')) return;
@@ -324,102 +384,65 @@ async function deleteExpense(id) {
   }
 }
 
-// ==================== AI SMART ANALYZER ====================
-
-/**
- * Load AI analysis data and update UI
- */
+// ==================== AI ANALYZER ====================
 async function loadSmartAnalysis() {
   try {
     const data = await apiRequest('/analyze');
     if (!data) return;
 
-    if (elements.aiTopCategory) {
-      elements.aiTopCategory.innerText = data.topCategory || '-';
-    }
-    if (elements.aiRisk) {
-      elements.aiRisk.innerText = data.riskLevel || '-';
-    }
-    if (elements.aiSuggestion) {
-      elements.aiSuggestion.innerText = data.suggestion || '-';
-    }
+    if (elements.aiTopCategory) elements.aiTopCategory.innerText = data.topCategory || '-';
+    if (elements.aiRisk) elements.aiRisk.innerText = data.riskLevel || '-';
+    if (elements.aiSuggestion) elements.aiSuggestion.innerText = data.suggestion || '-';
   } catch (error) {
     console.error('Load analysis error:', error);
   }
 }
 
 // ==================== LOGOUT ====================
-
-/**
- * Log out user: remove token and redirect to login
- */
 function logoutUser() {
   localStorage.removeItem(TOKEN_KEY);
   window.location.href = 'login.html';
 }
 
 // ==================== EVENT LISTENERS ====================
-
 function setupEventListeners() {
-  // Add expense button
-  if (elements.addExpenseBtn) {
-    elements.addExpenseBtn.addEventListener('click', addExpense);
-  }
-
-  // Save budget button
-  if (elements.saveBudgetBtn) {
-    elements.saveBudgetBtn.addEventListener('click', setBudget);
-  }
-
-  // Budget slider live update
+  if (elements.addExpenseBtn) elements.addExpenseBtn.addEventListener('click', addExpense);
+  if (elements.saveBudgetBtn) elements.saveBudgetBtn.addEventListener('click', setBudget);
   if (elements.budgetInput) {
     elements.budgetInput.addEventListener('input', (e) => updateBudgetValue(e.target.value));
-    elements.budgetInput.addEventListener('change', setBudget); // Also save on release
+    elements.budgetInput.addEventListener('change', setBudget);
   }
-
-  // Logout button
-  if (elements.logoutBtn) {
-    elements.logoutBtn.addEventListener('click', logoutUser);
-  }
-
-  // Allow Enter to submit expense from input fields
+  if (elements.logoutBtn) elements.logoutBtn.addEventListener('click', logoutUser);
   if (elements.titleInput) {
-    elements.titleInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') addExpense();
-    });
+    elements.titleInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addExpense(); });
   }
   if (elements.amountInput) {
-    elements.amountInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') addExpense();
-    });
+    elements.amountInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addExpense(); });
   }
 }
 
-// ==================== INITIALIZATION ====================
-
-/**
- * Initialize dashboard: check auth, load data, set up UI
- */
+// ==================== INIT ====================
 async function initDashboard() {
-  requireAuth(); // Redirect if no token
+  // Check if we previously used mock mode
+  const wasMock = localStorage.getItem(MOCK_MODE_KEY) === 'true';
+  if (wasMock) {
+    setOfflineMode(true);
+    loadMockFromStorage();
+  }
 
-  // Initialize custom dropdown
+  requireAuth();
+
   initCategoryDropdown();
-
-  // Set up event listeners
   setupEventListeners();
 
-  // Load initial data
+  // Try to load data (will auto-switch to mock on failure)
   try {
     await loadExpenses();
     await loadSmartAnalysis();
   } catch (error) {
     console.error('Initial data load failed:', error);
   }
-
-  // Optionally fetch budget from server if API supports
-  // For now, we rely on slider default
 }
 
-// Start the dashboard
+// Start
 initDashboard();

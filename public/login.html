@@ -2,64 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <meta name="description" content="Login to FinTrack – your student finance companion.">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>FinTrack – Login</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
     body { opacity: 0; transition: opacity 0.2s; }
     body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
+    .floating-label-group { position: relative; margin-bottom: 1.5rem; }
+    .floating-label-group input { width: 100%; padding: 1rem 0.75rem 0.5rem; border-radius: 10px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-primary); font-size: 1rem; outline: none; transition: 0.2s; }
+    .floating-label-group label { position: absolute; left: 0.75rem; top: 0.75rem; color: var(--text-muted); pointer-events: none; transition: 0.2s; font-size: 1rem; }
+    .floating-label-group input:focus ~ label,
+    .floating-label-group input:not(:placeholder-shown) ~ label { top: -0.5rem; left: 0.5rem; font-size: 0.75rem; background: var(--bg-secondary); padding: 0 0.25rem; color: var(--primary-500); }
+    .floating-label-group input::placeholder { color: transparent; }
+    .social-login { display: flex; gap: 1rem; justify-content: center; margin: 1.5rem 0; }
+    .social-btn { flex: 1; padding: 0.75rem; border-radius: 30px; border: 1px solid var(--border-color); background: transparent; color: var(--text-primary); font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .social-btn:hover { background: var(--primary-500); color: white; border-color: var(--primary-500); }
   </style>
 </head>
 <body class="auto-mode">
   <div class="auth-container">
-    <aside class="auth-left" role="complementary" aria-label="Brand information">
+    <aside class="auth-left">
       <h1>FinTrack</h1>
       <p>Smart Student Expense Management</p>
-      <img src="images/3d-render-secure-login-password-illustration.png"
-           alt="Secure login illustration" class="brand-icon" width="300" height="300" loading="eager">
+      <img src="images/3d-render-secure-login-password-illustration.png" alt="Login" class="brand-icon floating" width="300">
     </aside>
-    <main class="auth-right" role="main">
+    <main class="auth-right">
       <h2>Welcome Back 👋</h2>
-      <p class="subtitle">Login to continue managing your finances</p>
-      <form id="loginForm" novalidate>
-        <div class="input-group">
-          <label for="email" class="visually-hidden">Email address</label>
-          <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" inputmode="email">
+      <p class="subtitle">Login to continue</p>
+      <form id="loginForm">
+        <div class="floating-label-group">
+          <input type="email" id="email" placeholder=" " required>
+          <label for="email">Email</label>
         </div>
-        <div class="input-group">
-          <label for="password" class="visually-hidden">Password</label>
-          <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password">
+        <div class="floating-label-group">
+          <input type="password" id="password" placeholder=" " required>
+          <label for="password">Password</label>
         </div>
         <button type="submit" class="login-btn">Login</button>
       </form>
-      <p class="register-link">
-        Don't have an account? <a href="register.html">Register</a>
-      </p>
+      <div class="social-login">
+        <button class="social-btn">📧 Google</button>
+        <button class="social-btn">📘 Facebook</button>
+      </div>
+      <p class="register-link">Don't have an account? <a href="register.html">Register</a></p>
     </main>
   </div>
   <script>
     (function() {
-      // Apply saved theme
-      try {
-        const savedTheme = localStorage.getItem('theme') || 'auto-mode';
-        document.body.className = savedTheme;
-      } catch (e) {}
-
-      // Login handler – sets a dummy token so dashboard works in mock mode
+      try { document.body.className = localStorage.getItem('theme') || 'auto-mode'; } catch(e) {}
       document.getElementById('loginForm')?.addEventListener('submit', function(e) {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
         if (email && pass) {
-          // Set a dummy token (you can replace with real auth later)
-          localStorage.setItem('token', 'demo-token-' + Date.now());
+          localStorage.setItem('token', 'demo-' + Date.now());
           window.location.href = 'dashboard.html';
-        } else {
-          alert('Please fill in both fields');
-        }
+        } else alert('Please fill all fields');
       });
     })();
   </script>

@@ -1098,3 +1098,40 @@ body.light-mode .theme-select {
   font-size: 15px;
   color: #cbd5e1;
 }
+/* ================= CUSTOM SCROLLBAR ================= */
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0f1f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00f0ff, #0066ff);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00ffcc, #0099ff);
+  box-shadow: 0 0 18px rgba(0, 240, 255, 1);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #00f0ff #0a0f1f;
+}
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 8px #00f0ff; }
+  50% { box-shadow: 0 0 16px #00f0ff; }
+  100% { box-shadow: 0 0 8px #00f0ff; }
+}
+
+::-webkit-scrollbar-thumb {
+  animation: pulseGlow 2s infinite;
+}

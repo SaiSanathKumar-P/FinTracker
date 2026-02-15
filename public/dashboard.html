@@ -33,12 +33,41 @@
         <h2>Total Expenses</h2>
         <p class="amount">₹ <span id="totalAmount">0</span></p>
       </article>
+      
+      <!-- Budget Card with Toggle -->
       <article class="summary-card budget-card">
-        <h2>🎯 Monthly Budget</h2>
-        <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0">
-        <p class="amount">₹ <span id="budgetValue">0</span></p>
+        <div class="budget-header">
+          <h2>🎯 Budget</h2>
+          <div class="budget-toggle">
+            <button class="budget-toggle-btn active" data-period="monthly">Month</button>
+            <button class="budget-toggle-btn" data-period="weekly">Week</button>
+            <button class="budget-toggle-btn" data-period="daily">Day</button>
+          </div>
+        </div>
+        
+        <!-- Monthly Budget Slider -->
+        <div class="budget-slider-container" id="monthlySlider">
+          <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0">
+          <p class="amount">₹ <span id="budgetValue">0</span> <span class="budget-period">/month</span></p>
+        </div>
+        
+        <!-- Weekly Budget Display (Calculated) -->
+        <div class="budget-slider-container" id="weeklySlider" style="display: none;">
+          <div class="calculated-budget">
+            <p class="amount">₹ <span id="weeklyValue">0</span> <span class="budget-period">/week</span></p>
+          </div>
+        </div>
+        
+        <!-- Daily Budget Display (Calculated) -->
+        <div class="budget-slider-container" id="dailySlider" style="display: none;">
+          <div class="calculated-budget">
+            <p class="amount">₹ <span id="dailyValue">0</span> <span class="budget-period">/day</span></p>
+          </div>
+        </div>
+        
         <button class="save-budget-btn" id="saveBudgetBtn">Save Budget</button>
       </article>
+      
       <article class="summary-card">
         <h2>Remaining</h2>
         <p class="amount">₹ <span id="remainingAmount">0</span></p>
@@ -73,43 +102,43 @@
       </div>
     </section>
 
-    <!-- Smart Analyzer - Now moved up -->
-    <section class="ai-card">
-      <h2>🧠 Smart Analyzer</h2>
-      <div class="ai-grid">
-        <div class="ai-box">
-          <h3>Top Category</h3>
-          <p id="aiTopCategory">-</p>
-        </div>
-        <div class="ai-box">
-          <h3>Risk Level</h3>
-          <p id="aiRisk">-</p>
-        </div>
-        <div class="ai-box">
-          <h3>AI Suggestion</h3>
-          <p id="aiSuggestion">-</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Chart & Recent Activity Side by Side -->
-    <div class="dashboard-grid">
-      <!-- Chart Container -->
+    <!-- Chart & Smart Analyzer Side by Side (Fixed Layout) -->
+    <div class="dashboard-split">
+      <!-- Chart Container (Left) -->
       <div class="chart-container" id="chartContainer">
-        <h3>Expense by Category</h3>
+        <h3>📊 Expense by Category</h3>
         <canvas id="categoryChart" width="400" height="300"></canvas>
       </div>
 
-      <!-- Recent Activity -->
-      <section class="recent-activity">
-        <h2>🕒 Recent Activity</h2>
-        <div id="recentList" class="recent-list"></div>
+      <!-- Smart Analyzer (Right) -->
+      <section class="ai-card">
+        <h2>🧠 Smart Analyzer</h2>
+        <div class="ai-grid">
+          <div class="ai-box">
+            <h3>Top Category</h3>
+            <p id="aiTopCategory">-</p>
+          </div>
+          <div class="ai-box">
+            <h3>Risk Level</h3>
+            <p id="aiRisk">-</p>
+          </div>
+          <div class="ai-box">
+            <h3>AI Suggestion</h3>
+            <p id="aiSuggestion">-</p>
+          </div>
+        </div>
       </section>
     </div>
 
-    <!-- Expense List - Now at the bottom -->
+    <!-- Recent Activity -->
+    <section class="recent-activity">
+      <h2>🕒 Recent Activity</h2>
+      <div id="recentList" class="recent-list"></div>
+    </section>
+
+    <!-- Expense List (Bottom) -->
     <section class="history-section">
-      <h2 id="history-heading">Expense List</h2>
+      <h2 id="history-heading">📋 Expense List</h2>
       <div class="scroll-container">
         <ul id="expenseList"></ul>
       </div>

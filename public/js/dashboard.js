@@ -127,6 +127,7 @@ function saveMockToStorage() {
 
 // ==================== API REQUEST (silent fallback) ====================
 async function apiRequest(url, options = {}) {
+  // If already in mock mode, bypass real API
   if (useMock) {
     return handleMockRequest(url, options);
   }
@@ -141,10 +142,12 @@ async function apiRequest(url, options = {}) {
   try {
     const response = await fetch(`${API_BASE}${url}`, { ...options, headers });
 
+    // If unauthorized, switch to mock mode instead of redirecting
     if (response.status === 401) {
-      localStorage.removeItem(TOKEN_KEY);
-      window.location.href = 'login.html';
-      return null;
+      console.warn('Received 401, switching to mock mode');
+      setOfflineMode(true);
+      loadMockFromStorage();
+      return handleMockRequest(url, options);
     }
 
     const data = response.status !== 204 ? await response.json() : null;
@@ -156,7 +159,6 @@ async function apiRequest(url, options = {}) {
     console.warn('API request failed, switching to mock mode:', error);
     setOfflineMode(true);
     loadMockFromStorage();
-    // Silently retry as mock (no alert)
     return handleMockRequest(url, options);
   }
 }
@@ -466,3 +468,4 @@ async function initDashboard() {
 }
 
 initDashboard();
+

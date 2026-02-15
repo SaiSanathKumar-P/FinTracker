@@ -398,18 +398,6 @@ header {
   gap: var(--space-xs);
 }
 
-.theme-btn::after {
-  content: "▾";
-  font-size: var(--text-lg);
-  line-height: 1;
-  margin-left: var(--space-xs);
-  transition: transform var(--transition-fast);
-}
-
-.theme-dropdown.active .theme-btn::after {
-  transform: rotate(180deg);
-}
-
 .theme-btn:hover {
   background: var(--input-bg);
   box-shadow: var(--shadow-glow);
@@ -1436,13 +1424,14 @@ label {
   margin-bottom: -4px;
 }
 
+/* Locate .custom-options and remove the backdrop-filter line */
 .custom-options {
   position: absolute;
   top: calc(100% + var(--space-xs));
   left: 0;
   right: 0;
-  background: var(--bg-secondary);
-  backdrop-filter: blur(20px);
+  background: var(--bg-secondary); /* Keeps it solid and clear */
+  /* backdrop-filter: blur(20px); <--- DELETE OR COMMENT THIS LINE */
   border-radius: var(--radius-md);
   border: 1px solid var(--primary-500);
   box-shadow: var(--shadow-xl);
@@ -1453,7 +1442,6 @@ label {
   z-index: var(--z-dropdown);
   padding: var(--space-xs);
 }
-
 .custom-select-wrapper.open .custom-options {
   opacity: 1;
   visibility: visible;
@@ -2338,4 +2326,5 @@ footer a:hover {
   flex: 1;
   min-width: 250px;
 }
+
 

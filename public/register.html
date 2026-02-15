@@ -1,73 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-  <title>FinTrack Register</title>
-  <link rel="stylesheet" href="css/auth.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="description" content="Create your FinTrack account and start managing your student finances smartly.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>FinTrack – Register</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { opacity: 0; transition: opacity 0.2s; }
+    body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
+  </style>
 </head>
-<body>
+<body class="auto-mode">
+  <div class="auth-container">
+    <!-- LEFT BRAND SECTION -->
+    <aside class="auth-left" role="complementary" aria-label="Brand information">
+      <h1>FinTrack</h1>
+      <p>Take control of your student finances</p>
+      <img src="images/Register.png" alt="Register illustration" class="brand-icon" width="300" height="300" loading="eager">
+    </aside>
 
-<div class="auth-container">
+    <!-- RIGHT FORM SECTION -->
+    <main class="auth-right" role="main">
+      <img src="images/Regi.jpg" alt="Finance visual" class="auth-image" width="200" height="200" loading="lazy">
 
-    <!-- LEFT SIDE -->
-    <div class="auth-left">
-        <h1>FinTrack</h1>
-        <p>Take control of your student finances</p>
-        <img src="images/Register.png" class="brand-icon">
-    </div>
+      <h2>Create Account 🚀</h2>
+      <p class="subtitle">Start your smart finance journey</p>
 
-    <!-- RIGHT SIDE -->
-    <div class="auth-right">
-        <img src="images/Regi.jpg" alt="Finance Image" class="auth-image">
-
-    <h2>Create Account 🚀</h2>
-    <p class="subtitle">Start your smart finance journey</p>
-
-    <form id="registerForm">
-
+      <form id="registerForm" action="#" method="post" novalidate>
         <div class="input-group">
-            <input type="text" id="name" placeholder="Full Name" required>
+          <label for="fullname" class="visually-hidden">Full Name</label>
+          <input type="text" id="fullname" name="fullname" placeholder="Full Name" required autocomplete="name">
         </div>
-
         <div class="input-group">
-            <input type="email" id="email" placeholder="Email" required>
+          <label for="email" class="visually-hidden">Email</label>
+          <input type="email" id="email" name="email" placeholder="Email" required autocomplete="email" inputmode="email">
         </div>
-
         <div class="input-group">
-            <input type="text" id="college" placeholder="College Name" required>
+          <label for="college" class="visually-hidden">College Name</label>
+          <input type="text" id="college" name="college" placeholder="College Name" required autocomplete="off">
         </div>
-
         <div class="input-group">
-            <input type="text" id="year" placeholder="Year" required>
+          <label for="year" class="visually-hidden">Year of Study</label>
+          <input type="text" id="year" name="year" placeholder="Year (e.g., 2nd)" required autocomplete="off">
         </div>
-
         <div class="input-group">
-            <input type="password" id="password" placeholder="Password" required>
+          <label for="password" class="visually-hidden">Password</label>
+          <input type="password" id="password" name="password" placeholder="Password" required autocomplete="new-password" minlength="6">
         </div>
-
         <button type="submit" class="login-btn">Register</button>
+      </form>
 
-    </form>
+      <p class="register-link">
+        Already have an account? <a href="login.html">Login</a>
+      </p>
+    </main>
+  </div>
 
-    <p class="register-link">
-        Already have account?
-        <a href="login.html">Login</a>
-    </p>
+  <script>
+    (function() {
+      // Apply saved theme
+      try {
+        const savedTheme = localStorage.getItem('theme') || 'auto-mode';
+        document.body.className = savedTheme;
+      } catch (e) {}
 
-</div>
-
-<script src="js/auth.js">
-  const savedTheme = localStorage.getItem("theme");
-
-if (savedTheme) {
-  document.body.classList.add(savedTheme);
-} else {
-  document.body.classList.add("auto-mode");
-}
-</script>
+      // Simple registration handler (demo only)
+      document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('fullname').value;
+        const email = document.getElementById('email').value;
+        const college = document.getElementById('college').value;
+        const year = document.getElementById('year').value;
+        const pass = document.getElementById('password').value;
+        if (name && email && college && year && pass) {
+          // Demo: redirect to login (in real app, you'd send data to server)
+          alert('Account created successfully! Please login.');
+          window.location.href = 'login.html';
+        } else {
+          alert('Please fill all fields');
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
-
-

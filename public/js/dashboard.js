@@ -159,22 +159,27 @@ function generateMockAnalysis() {
   const topCategory = top ? `${top[0]} (₹${top[1].toFixed(2)})` : '-';
   const total = mockExpenses.reduce((s,e) => s + e.amount, 0);
   let risk = '-', sugg = '-';
-  
   if (mockBudget > 0) {
-    const usage = total / mockBudget * 100;
-    if (usage < 50) { 
-      risk = 'Low Risk'; 
-      sugg = 'You are spending well within budget.'; 
-    } else if (usage < 80) { 
-      risk = 'Medium Risk'; 
-      sugg = 'You\'ve used over half your budget.'; 
-    } else if (usage < 100) { 
-      risk = 'High Risk'; 
-      sugg = 'Close to exceeding budget.'; 
-    } else { 
-      risk = 'Overspent'; 
-      sugg = 'You have exceeded your budget.'; 
-    }
+  const usage = total / mockBudget * 100;
+
+  if (usage < 50) {
+    risk = 'Low Risk';
+    sugg = 'Great! You are managing your student budget well.';
+  } 
+  else if (usage < 80) {
+    risk = 'Medium Risk';
+    sugg = 'Try reducing small daily expenses like snacks or coffee.';
+  } 
+  else if (usage < 100) {
+    risk = 'High Risk';
+    sugg = 'You are close to exceeding your budget. Be careful!';
+  } 
+  else {
+    risk = 'Overspent';
+    sugg = 'You exceeded your budget. Consider cutting non-essential spending.';
+  }
+}
+
   } else { 
     sugg = 'Set a budget to get risk analysis.'; 
   }
@@ -290,48 +295,48 @@ function initCategoryDropdown() {
 
 // Add new category
 function addCategory() {
-  const newCat = prompt('Enter new category name (e.g., "Coffee", "Gym"):');
-  if (!newCat || newCat.trim() === '') return;
-  
-  const value = newCat.trim().replace(/\s+/g, '');
-  const label = newCat.trim();
-  
-  if (categories.some(c => c.value.toLowerCase() === value.toLowerCase())) {
-    alert('Category already exists!');
+  const newCat = prompt('Enter new category name:');
+  if (!newCat) return;
+
+  const clean = newCat.trim();
+  if (clean === '') return;
+
+  if (categories.some(c => c.value.toLowerCase() === clean.toLowerCase())) {
+    alert('Category already exists');
     return;
   }
-  
-  categories.push({ value, label });
+
+  categories.push({ value: clean, label: clean });
   saveMockToStorage();
   rebuildDropdown();
 }
 
+
 // Remove selected category
 function removeCategory() {
-  const selectedValue = elements.categoryHidden.value;
-  if (!selectedValue) {
-    alert('Please select a category first');
+  const selected = elements.categoryHidden.value;
+
+  if (!selected) {
+    alert('Select a category first');
     return;
   }
-  
-  // Check if it's a predefined category
-  const predefinedValues = ['Food', 'Transport', 'Shopping', 'Education', 'Entertainment'];
-  if (predefinedValues.includes(selectedValue)) {
-    alert('Cannot remove predefined categories');
+
+  const fixed = ['Food','Transport','Shopping','Education','Entertainment'];
+
+  if (fixed.includes(selected)) {
+    alert('Default categories cannot be removed');
     return;
   }
-  
-  if (confirm(`Remove category "${selectedValue}"?`)) {
-    categories = categories.filter(c => c.value !== selectedValue);
-    saveMockToStorage();
-    
-    // Clear selection
-    elements.selectedDisplay.textContent = 'Select Category';
-    elements.categoryHidden.value = '';
-    
-    rebuildDropdown();
-  }
+
+  categories = categories.filter(c => c.value !== selected);
+  saveMockToStorage();
+
+  elements.selectedDisplay.innerText = 'Select Category';
+  elements.categoryHidden.value = '';
+
+  rebuildDropdown();
 }
+
 
 // ========== Budget ==========
 function updateBudgetValue(val) {
@@ -601,4 +606,5 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 

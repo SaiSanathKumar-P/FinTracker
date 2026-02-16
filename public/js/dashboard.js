@@ -487,14 +487,6 @@ async function deleteExpense(id) {
     console.error(error); 
   }
 }
-function resetExpenseFormUI() {
-  const formRow = document.querySelector(".form-row");
-  if (!formRow) return;
-
-  formRow.classList.remove("active");
-  formRow.classList.add("idle");
-}
-
 function updateRecentActivity(expenses) {
   if (!elements.recentList) return;
   const recent = [...expenses].sort((a,b) => new Date(b.date||0) - new Date(a.date||0)).slice(0,5);
@@ -613,15 +605,6 @@ function setupEventListeners() {
       if (e.key === 'Enter') addExpense(); 
     })
   );
-  const formRow = document.querySelector(".form-row");
-
-if (formRow) {
-  formRow.addEventListener("click", () => {
-    formRow.classList.add("active");
-    formRow.classList.remove("idle");
-  });
-}
-
   
   initBudgetToggle();
 }
@@ -656,6 +639,7 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 
 
 

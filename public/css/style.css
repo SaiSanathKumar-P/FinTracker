@@ -2260,22 +2260,23 @@ footer a:hover {
   }
 
 }
-/* =====================================================
-   FORM ACTIVE / RESET STATES (OVERRIDE)
-===================================================== */
+
+/* ===== FORM ACTIVE / RESET STATES ===== */
 
 .form-row.active {
   filter: blur(0);
   box-shadow: 0 0 25px rgba(56,189,248,0.6);
 }
 
+.form-row {
+  transition: filter 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* When form is idle */
 .form-row.idle {
   filter: none;
   box-shadow: none;
 }
 
-.form-row {
-  transition: filter 0.3s ease, box-shadow 0.3s ease;
-}
 
 

@@ -2091,3 +2091,173 @@ footer a:hover {
 .cursor-not-allowed { cursor: not-allowed; }
 
 /* ========== END OF STYLESHEET ========== */
+/* =====================================================
+   REGISTER PAGE PREMIUM GLASS UPGRADE (OVERRIDES)
+===================================================== */
+
+/* Full page center alignment */
+.auth-container{
+  min-height:100vh;
+  display:flex;
+}
+
+/* LEFT SIDE (Brand Panel) */
+.auth-left{
+  background:linear-gradient(135deg,#0b1220,#0f172a,#1e293b);
+  position:relative;
+  overflow:hidden;
+}
+
+.auth-left::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 30% 30%,rgba(56,189,248,0.25),transparent 40%),
+    radial-gradient(circle at 70% 70%,rgba(14,165,233,0.25),transparent 40%);
+}
+
+/* FinTrack title */
+.auth-left h1{
+  font-size:56px;
+  letter-spacing:1px;
+}
+
+.auth-left p{
+  font-size:18px;
+  color:#cbd5e1;
+}
+
+/* Big Illustration */
+.brand-icon{
+  width:320px;
+  border-radius:20px;
+  box-shadow:0 0 60px rgba(56,189,248,0.35);
+}
+
+/* -------------------------------------------------- */
+/* RIGHT SIDE GLASS CARD */
+/* -------------------------------------------------- */
+
+.auth-glass-card{
+  background:rgba(15,23,42,0.85);
+  backdrop-filter:blur(25px);
+  -webkit-backdrop-filter:blur(25px);
+  border-left:1px solid rgba(255,255,255,0.08);
+}
+
+/* Floating Card Look */
+.auth-right{
+  justify-content:center;
+}
+
+/* Circular Top Image */
+.auth-image{
+  width:140px;
+  height:140px;
+  object-fit:cover;
+  border-radius:50%;
+  border:4px solid rgba(56,189,248,0.6);
+  box-shadow:0 0 30px rgba(56,189,248,0.6);
+}
+
+/* Title */
+.auth-right h2{
+  font-size:34px;
+  margin-top:10px;
+}
+
+/* Subtitle */
+.auth-right .subtitle{
+  font-size:16px;
+  margin-bottom:35px;
+}
+
+/* -------------------------------------------------- */
+/* FLOATING INPUT DESIGN */
+/* -------------------------------------------------- */
+
+.floating-label-group{
+  position:relative;
+  margin-bottom:22px;
+}
+
+.floating-label-group input{
+  width:100%;
+  padding:16px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.18);
+  color:white;
+  font-size:15px;
+  outline:none;
+  transition:0.3s;
+}
+
+.floating-label-group input:focus{
+  border-color:#38bdf8;
+  box-shadow:0 0 0 3px rgba(56,189,248,0.25);
+}
+
+.floating-label-group label{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#94a3b8;
+  font-size:14px;
+  pointer-events:none;
+  transition:0.3s;
+  background:transparent;
+}
+
+/* Float up */
+.floating-label-group input:focus + label,
+.floating-label-group input:not(:placeholder-shown) + label{
+  top:-8px;
+  left:10px;
+  font-size:12px;
+  padding:0 6px;
+  background:#0f172a;
+  color:#38bdf8;
+}
+
+/* -------------------------------------------------- */
+/* REGISTER BUTTON */
+/* -------------------------------------------------- */
+
+.login-btn{
+  margin-top:10px;
+  padding:14px;
+  font-size:16px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+  box-shadow:0 0 25px rgba(56,189,248,0.6);
+}
+
+.login-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 40px rgba(56,189,248,0.9);
+}
+
+/* -------------------------------------------------- */
+/* MOBILE FIX */
+/* -------------------------------------------------- */
+
+@media(max-width:768px){
+
+  .auth-left{
+    min-height:40vh;
+  }
+
+  .brand-icon{
+    width:220px;
+  }
+
+  .auth-image{
+    width:110px;
+    height:110px;
+  }
+
+}
+

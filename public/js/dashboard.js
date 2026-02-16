@@ -425,6 +425,7 @@ async function addExpense() {
     elements.amountInput.value = ''; 
     elements.categoryHidden.value = ''; 
     elements.selectedDisplay.innerText = 'Select Category';
+    resetExpenseFormUI();
     
     await loadExpenses(); 
     await loadSmartAnalysis(); 
@@ -485,6 +486,13 @@ async function deleteExpense(id) {
   } catch (error) { 
     console.error(error); 
   }
+}
+function resetExpenseFormUI() {
+  const formRow = document.querySelector(".form-row");
+  if (!formRow) return;
+
+  formRow.classList.remove("active");
+  formRow.classList.add("idle");
 }
 
 function updateRecentActivity(expenses) {
@@ -605,6 +613,15 @@ function setupEventListeners() {
       if (e.key === 'Enter') addExpense(); 
     })
   );
+  const formRow = document.querySelector(".form-row");
+
+if (formRow) {
+  formRow.addEventListener("click", () => {
+    formRow.classList.add("active");
+    formRow.classList.remove("idle");
+  });
+}
+
   
   initBudgetToggle();
 }
@@ -639,6 +656,7 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 
 
 

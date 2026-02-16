@@ -2,7 +2,7 @@
  * FinTrack Dashboard – Professional with Budget Toggle & Glow Effects
  */
 
-const API_BASE = '/api/expenses';
+const API_BASE = window.location.origin + '/api/expenses';
 const TOKEN_KEY = 'token';
 const MOCK_MODE_KEY = 'finTrack_useMock';
 
@@ -462,39 +462,70 @@ function updateRecentActivity(expenses) {
 
 // ========== Chart with visibility ==========
 function updateChart() {
-  const ctx = document.getElementById('categoryChart')?.getContext('2d');
-  if (!ctx) return;
-  
-  const expenses = useMock ? mockExpenses : [];
-  const hasExpenses = expenses.length > 0;
-  
-  if (!hasExpenses) {
-    if (elements.chartContainer) elements.chartContainer.style.display = 'none';
+  const canvas = document.getElementById('categoryChart');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+
+  // Use mock data OR live list items
+  let expenses = [];
+
+  if (useMock) {
+    expenses = mockExpenses;
+  } else {
+    document.querySelectorAll('#expenseList li').forEach(li => {
+      const text = li.innerText;
+      const match = text.match(/\((.*?)\).*₹([\d.]+)/);
+      if (match) {
+        expenses.push({
+          category: match[1],
+          amount: Number(match[2])
+        });
+      }
+    });
+  }
+
+  if (expenses.length === 0) {
+    if (elements.chartContainer)
+      elements.chartContainer.style.display = 'none';
     return;
   }
-  
-  if (elements.chartContainer) elements.chartContainer.style.display = 'block';
+
+  if (elements.chartContainer)
+    elements.chartContainer.style.display = 'block';
 
   const categoriesMap = {};
-  expenses.forEach(e => categoriesMap[e.category] = (categoriesMap[e.category] || 0) + e.amount);
-  
+
+  expenses.forEach(e => {
+    categoriesMap[e.category] =
+      (categoriesMap[e.category] || 0) + e.amount;
+  });
+
   if (chartInstance) chartInstance.destroy();
-  
+
   chartInstance = new Chart(ctx, {
     type: 'doughnut',
     data: {
       labels: Object.keys(categoriesMap),
       datasets: [{
         data: Object.values(categoriesMap),
-        backgroundColor: ['#38bdf8', '#f59e0b', '#10b981', '#8b5cf6', '#ef4444', '#ec4899', '#14b8a6']
+        backgroundColor: [
+          '#38bdf8',
+          '#f59e0b',
+          '#10b981',
+          '#8b5cf6',
+          '#ef4444',
+          '#ec4899',
+          '#14b8a6'
+        ]
       }]
     },
-    options: { 
-      responsive: true, 
+    options: {
+      responsive: true,
       maintainAspectRatio: false,
-      plugins: { 
-        legend: { position: 'bottom' } 
-      } 
+      plugins: {
+        legend: { position: 'bottom' }
+      }
     }
   });
 }
@@ -570,3 +601,4 @@ async function initDashboard() {
 }
 
 initDashboard();
+

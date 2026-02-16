@@ -147,45 +147,67 @@ function handleMockRequest(url, options) {
 }
 
 function generateMockAnalysis() {
-  if (mockExpenses.length === 0) return Promise.resolve({ 
-    topCategory: '-', 
-    riskLevel: '-', 
-    suggestion: 'Add expenses to get insights' 
-  });
-  
+
+  if (mockExpenses.length === 0) {
+    return Promise.resolve({
+      topCategory: "-",
+      riskLevel: "-",
+      suggestion: "Add expenses to get insights"
+    });
+  }
+
   const catTotals = {};
-  mockExpenses.forEach(e => catTotals[e.category || 'Other'] = (catTotals[e.category || 'Other'] || 0) + e.amount);
-  const top = Object.entries(catTotals).sort((a,b) => b[1]-a[1])[0];
-  const topCategory = top ? `${top[0]} (₹${top[1].toFixed(2)})` : '-';
-  const total = mockExpenses.reduce((s,e) => s + e.amount, 0);
-  let risk = '-', sugg = '-';
+
+  mockExpenses.forEach(e => {
+    catTotals[e.category || "Other"] =
+      (catTotals[e.category || "Other"] || 0) + e.amount;
+  });
+
+  const top = Object.entries(catTotals)
+    .sort((a, b) => b[1] - a[1])[0];
+
+  const topCategory = top
+    ? `${top[0]} (₹${top[1].toFixed(2)})`
+    : "-";
+
+  const total = mockExpenses.reduce((s, e) => s + e.amount, 0);
+
+  let risk = "-";
+  let sugg = "-";
+
   if (mockBudget > 0) {
-  const usage = total / mockBudget * 100;
 
-  if (usage < 50) {
-    risk = 'Low Risk';
-    sugg = 'Great! You are managing your student budget well.';
-  } 
-  else if (usage < 80) {
-    risk = 'Medium Risk';
-    sugg = 'Try reducing small daily expenses like snacks or coffee.';
-  } 
-  else if (usage < 100) {
-    risk = 'High Risk';
-    sugg = 'You are close to exceeding your budget. Be careful!';
-  } 
-  else {
-    risk = 'Overspent';
-    sugg = 'You exceeded your budget. Consider cutting non-essential spending.';
+    const usage = (total / mockBudget) * 100;
+
+    if (usage < 50) {
+      risk = "Low Risk";
+      sugg = "Great! You are managing your student budget well.";
+    }
+    else if (usage < 80) {
+      risk = "Medium Risk";
+      sugg = "Try reducing small daily expenses like snacks or coffee.";
+    }
+    else if (usage < 100) {
+      risk = "High Risk";
+      sugg = "You are close to exceeding your budget.";
+    }
+    else {
+      risk = "Overspent";
+      sugg = "You exceeded your budget. Cut non-essential spending.";
+    }
+
+  } else {
+    sugg = "Set a budget to get risk analysis.";
   }
+
+  return Promise.resolve({
+    topCategory,
+    riskLevel: risk,
+    suggestion: sugg
+  });
+
 }
 
-  } else { 
-    sugg = 'Set a budget to get risk analysis.'; 
-  }
-  
-  return Promise.resolve({ topCategory, riskLevel: risk, suggestion: sugg });
-}
 
 // ========== Budget Period Toggle ==========
 function initBudgetToggle() {
@@ -254,16 +276,27 @@ function rebuildDropdown() {
 }
 
 function attachDropdownListeners() {
-  const opts = document.querySelectorAll('.option');
-  opts.forEach(opt => {
-    opt.addEventListener('click', () => {
-      const val = opt.getAttribute('data-value');
-      elements.selectedDisplay.textContent = opt.textContent.trim();
-      elements.categoryHidden.value = val;
-      elements.categoryWrapper.classList.remove('open');
-      elements.categoryTrigger.setAttribute('aria-expanded', 'false');
+
+  elements.dropdownMenu
+    .querySelectorAll(".option")
+    .forEach(opt => {
+
+      opt.onclick = () => {
+
+        const val = opt.getAttribute("data-value");
+
+        elements.selectedDisplay.textContent =
+          opt.textContent;
+
+        elements.categoryHidden.value = val;
+
+        elements.categoryWrapper.classList.remove("open");
+        elements.categoryTrigger.setAttribute("aria-expanded", "false");
+
+      };
+
     });
-  });
+
 }
 
 function initCategoryDropdown() {
@@ -606,5 +639,6 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 
 

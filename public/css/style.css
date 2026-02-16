@@ -2263,20 +2263,36 @@ footer a:hover {
 
 /* ===== FORM ACTIVE / RESET STATES ===== */
 
-.form-row.active {
-  filter: blur(0);
-  box-shadow: 0 0 25px rgba(56,189,248,0.6);
+/* ===== FIX DROPDOWN LAYERING ISSUE ===== */
+
+/* Make form a stacking context */
+.modern-form {
+  position: relative;
+  z-index: 50;
 }
 
-.form-row {
-  transition: filter 0.3s ease, box-shadow 0.3s ease;
+/* Make category wrapper higher */
+.custom-select-wrapper {
+  position: relative;
+  z-index: 2000;
 }
 
-/* When form is idle */
-.form-row.idle {
-  filter: none;
-  box-shadow: none;
+/* Force dropdown menu above everything */
+.custom-options {
+  position: absolute;
+  z-index: 5000 !important;
 }
+
+/* Push chart & analyzer behind form */
+.chart-container,
+.ai-card,
+.recent-activity,
+.history-section {
+  position: relative;
+  z-index: 1;
+}
+
+
 
 
 

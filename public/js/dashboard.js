@@ -13,8 +13,7 @@ let monthlyBudget = 0;
 let useMock = false;
 let mockExpenses = [];
 let mockBudget = 0;
-let chartInstance = null;
-let currentBudgetPeriod = 'monthly'; // 'monthly', 'weekly', 'daily'
+let chartInstance = null;// 'monthly', 'weekly', 'daily'
 
 // Custom categories array (predefined + user added)
 let categories = [
@@ -31,8 +30,6 @@ const elements = {
   budgetUsage: document.getElementById('budgetUsage'),
   budgetInput: document.getElementById('budgetInput'),
   budgetValue: document.getElementById('budgetValue'),
-  weeklyValue: document.getElementById('weeklyValue'),
-  dailyValue: document.getElementById('dailyValue'),
   saveBudgetBtn: document.getElementById('saveBudgetBtn'),
   expenseList: document.getElementById('expenseList'),
   addExpenseBtn: document.getElementById('addExpenseBtn'),
@@ -52,9 +49,10 @@ const elements = {
   recentList: document.getElementById('recentList'),
   chartContainer: document.getElementById('chartContainer'),
   monthlySlider: document.getElementById('monthlySlider'),
-  weeklySlider: document.getElementById('weeklySlider'),
-  dailySlider: document.getElementById('dailySlider'),
-  budgetToggleBtns: document.querySelectorAll('.budget-toggle-btn')
+  aiMonthly: document.getElementById('aiMonthly'),
+aiWeekly: document.getElementById('aiWeekly'),
+aiDaily: document.getElementById('aiDaily'),
+
 };
 
 // ========== Utilities ==========
@@ -249,6 +247,16 @@ function updateWeeklyBudget() {
     elements.weeklyValue.innerText = '0';
   }
 }
+function updateBudgetBreakdown() {
+
+  const monthly = monthlyBudget || 0;
+  const weekly = monthly / 4.33;
+  const daily = monthly / 30;
+
+  elements.aiMonthly.innerText = `₹${monthly.toFixed(2)}`;
+  elements.aiWeekly.innerText  = `₹${weekly.toFixed(2)}`;
+  elements.aiDaily.innerText   = `₹${daily.toFixed(2)}`;
+}
 
 function updateDailyBudget() {
   if (elements.dailyValue && monthlyBudget > 0) {
@@ -373,21 +381,16 @@ function removeCategory() {
 
 // ========== Budget ==========
 function updateBudgetValue(val) {
-  if (elements.budgetValue) elements.budgetValue.innerText = val;
-  if (elements.budgetInput) {
-    const percent = (val / elements.budgetInput.max) * 100;
-    elements.budgetInput.style.backgroundSize = percent + '% 100%';
-    
-    // Add glow effect based on percentage
-    const glowIntensity = 0.3 + (percent / 100) * 0.7;
-    elements.budgetInput.style.boxShadow = `0 0 ${15 + percent * 0.5}px rgba(56,189,248,${glowIntensity})`;
-  }
-  
-  // Update weekly and daily values
+
   monthlyBudget = Number(val);
-  updateWeeklyBudget();
-  updateDailyBudget();
+  elements.budgetValue.innerText = val;
+
+  const percent = (val / elements.budgetInput.max) * 100;
+  elements.budgetInput.style.backgroundSize = percent + '% 100%';
+
+  updateBudgetBreakdown();
 }
+
 
 async function setBudget() {
   if (!elements.budgetInput) return;
@@ -395,11 +398,14 @@ async function setBudget() {
   
   // Save to mock storage or API
   try { 
-    await apiRequest('/budget', { 
-      method: 'POST', 
-      body: JSON.stringify({ budget: monthlyBudget }) 
-    }); 
-    showMessage('Budget saved successfully!');
+    await apiRequest('/budget', {
+  method: 'POST',
+  body: JSON.stringify({ budget: monthlyBudget })
+});
+
+updateBudgetBreakdown();
+showMessage('Budget saved successfully!');
+
   } catch {}
   
   if (useMock) mockBudget = monthlyBudget;
@@ -605,8 +611,6 @@ function setupEventListeners() {
       if (e.key === 'Enter') addExpense(); 
     })
   );
-  
-  initBudgetToggle();
 }
 
 // ========== Init ==========
@@ -639,6 +643,7 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 
 
 

@@ -45,4 +45,37 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/auth/google/callback"
+    },
+    (accessToken, refreshToken, profile, done) => {
+      return done(null, profile);
+    }
+  )
+);
+
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((obj, done) => done(null, obj));
+app.get("/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get("/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login.html" }),
+  (req, res) => {
+
+    const token = jwt.sign(
+      { email: req.user.emails[0].value },
+      "fintrack_jwt_secret",
+      { expiresIn: "7d" }
+    );
+
+    res.redirect(`/dashboard.html?token=${token}`);
+  }
+);
+
 

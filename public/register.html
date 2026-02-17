@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinTrack – Register</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style> /* same floating-label styles as login */ </style>
+</head>
+<body class="auto-mode">
+  <div class="auth-container">
+    <aside class="auth-left">
+      <h1>FinTrack</h1>
+      <p>Take control of your student finances</p>
+      <img src="images/Register.png" alt="Register" class="brand-icon floating" width="300">
+    </aside>
+    <main class="auth-right auth-glass-card">
+      <img src="images/Regi.jpg" alt="Finance" class="auth-image" width="150">
+      <h2>Create Account 🚀</h2>
+      <p class="subtitle">Start your smart finance journey</p>
+      <form id="registerForm">
+        <div class="floating-label-group"><input type="text" id="fullname" placeholder=" " required><label>Full Name</label></div>
+        <div class="floating-label-group"><input type="email" id="email" placeholder=" " required><label>Email</label></div>
+        <div class="floating-label-group"><input type="text" id="college" placeholder=" " required><label>College</label></div>
+        <div class="floating-label-group"><input type="text" id="year" placeholder=" " required><label>Year</label></div>
+        <div class="floating-label-group"><input type="password" id="password" placeholder=" " required minlength="6"><label>Password</label></div>
+        <button type="submit" class="login-btn">Register</button>
+      </form>
+      <p class="register-link">Already have an account? <a href="login.html">Login</a></p>
+    </main>
+  </div>
+  <script>
+    (function() {
+      try { document.body.className = localStorage.getItem('theme') || 'auto-mode'; } catch(e) {}
+      document.getElementById('registerForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const fields = ['fullname','email','college','year','password'];
+        if(fields.every(id => document.getElementById(id).value.trim())) {
+          localStorage.setItem('token', 'demo-' + Date.now());
+          window.location.href = 'dashboard.html';
+        } else alert('Please fill all fields');
+      });
+    })();
+  </script>
+</body>
+</html>
+

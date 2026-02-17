@@ -13,8 +13,8 @@ let monthlyBudget = 0;
 let useMock = false;
 let mockExpenses = [];
 let mockBudget = 0;
-let chartInstance = null;      // pie
-let timelineChartInstance = null;  // bar
+let chartInstance = null;      // pie chart
+let timelineChartInstance = null;  // bar chart
 
 // Custom categories array (predefined + user added)
 let categories = [
@@ -24,17 +24,25 @@ let categories = [
   { value: 'Education', label: '📚 Education' },
   { value: 'Entertainment', label: '🎬 Entertainment' }
 ];
+
 // ================= COLOR REGISTRY =================
+// First color is always blue (#38bdf8), others are random vibrant colors
 let categoryColors = {};
 
 function getRandomColor() {
+  // Generate vibrant colors with good saturation and lightness
   const hue = Math.floor(Math.random() * 360);
-  return `hsl(${hue}, 80%, 55%)`; // vibrant color
+  return `hsl(${hue}, 80%, 65%)`; // 65% lightness for better visibility on dark backgrounds
 }
 
 function getCategoryColor(category) {
   if (!categoryColors[category]) {
-    categoryColors[category] = getRandomColor();
+    // If this is the first category being colored, always use blue
+    if (Object.keys(categoryColors).length === 0) {
+      categoryColors[category] = '#38bdf8'; // Primary blue
+    } else {
+      categoryColors[category] = getRandomColor();
+    }
   }
   return categoryColors[category];
 }
@@ -63,11 +71,9 @@ const elements = {
   logoutBtn: document.getElementById('logoutBtn'),
   recentList: document.getElementById('recentList'),
   chartContainer: document.getElementById('chartContainer'),
-  monthlySlider: document.getElementById('monthlySlider'),
   aiMonthly: document.getElementById('aiMonthly'),
-aiWeekly: document.getElementById('aiWeekly'),
-aiDaily: document.getElementById('aiDaily'),
-
+  aiWeekly: document.getElementById('aiWeekly'),
+  aiDaily: document.getElementById('aiDaily'),
 };
 
 // ========== Utilities ==========
@@ -160,7 +166,6 @@ function handleMockRequest(url, options) {
 }
 
 function generateMockAnalysis() {
-
   if (mockExpenses.length === 0) {
     return Promise.resolve({
       topCategory: "-",
@@ -170,7 +175,6 @@ function generateMockAnalysis() {
   }
 
   const catTotals = {};
-
   mockExpenses.forEach(e => {
     catTotals[e.category || "Other"] =
       (catTotals[e.category || "Other"] || 0) + e.amount;
@@ -189,7 +193,6 @@ function generateMockAnalysis() {
   let sugg = "-";
 
   if (mockBudget > 0) {
-
     const usage = (total / mockBudget) * 100;
 
     if (usage < 50) {
@@ -208,7 +211,6 @@ function generateMockAnalysis() {
       risk = "Overspent";
       sugg = "You exceeded your budget. Cut non-essential spending.";
     }
-
   } else {
     sugg = "Set a budget to get risk analysis.";
   }
@@ -218,16 +220,13 @@ function generateMockAnalysis() {
     riskLevel: risk,
     suggestion: sugg
   });
-
 }
 
-
-// ========== Budget Period Toggle ==========
+// ========== Budget Functions ==========
 function updateBudgetBreakdown() {
-
   if (!elements.aiMonthly) return;
 
-  const monthly = monthlyBudget || 0;
+  const monthly = monthlyBudget || mockBudget || 0;
   const weekly = monthly / 4.33;
   const daily = monthly / 30;
 
@@ -236,7 +235,37 @@ function updateBudgetBreakdown() {
   elements.aiDaily.innerText   = `₹${daily.toFixed(2)}`;
 }
 
+function updateBudgetValue(val) {
+  monthlyBudget = Number(val);
+  elements.budgetValue.innerText = val;
+  
+  const percent = (val / elements.budgetInput.max) * 100;
+  elements.budgetInput.style.backgroundSize = percent + '% 100%';
+  
+  // Add glow effect based on percentage
+  const glowIntensity = 0.3 + (percent / 100) * 0.7;
+  elements.budgetInput.style.boxShadow = `0 0 ${15 + percent * 0.5}px rgba(56,189,248,${glowIntensity})`;
+  
+  updateBudgetBreakdown();
+}
 
+async function setBudget() {
+  if (!elements.budgetInput) return;
+  monthlyBudget = Number(elements.budgetInput.value);
+  
+  try { 
+    await apiRequest('/budget', {
+      method: 'POST',
+      body: JSON.stringify({ budget: monthlyBudget })
+    });
+    
+    updateBudgetBreakdown();
+    showMessage('Budget saved successfully!');
+  } catch {}
+  
+  if (useMock) mockBudget = monthlyBudget;
+  loadExpenses();
+}
 
 // ========== Dropdown Management ==========
 function rebuildDropdown() {
@@ -255,27 +284,17 @@ function rebuildDropdown() {
 }
 
 function attachDropdownListeners() {
-
   elements.dropdownMenu
     .querySelectorAll(".option")
     .forEach(opt => {
-
       opt.onclick = () => {
-
         const val = opt.getAttribute("data-value");
-
-        elements.selectedDisplay.textContent =
-          opt.textContent;
-
+        elements.selectedDisplay.textContent = opt.textContent;
         elements.categoryHidden.value = val;
-
         elements.categoryWrapper.classList.remove("open");
         elements.categoryTrigger.setAttribute("aria-expanded", "false");
-
       };
-
     });
-
 }
 
 function initCategoryDropdown() {
@@ -323,7 +342,6 @@ function addCategory() {
   rebuildDropdown();
 }
 
-
 // Remove selected category
 function removeCategory() {
   const selected = elements.categoryHidden.value;
@@ -349,40 +367,6 @@ function removeCategory() {
   rebuildDropdown();
 }
 
-
-// ========== Budget ==========
-function updateBudgetValue(val) {
-
-  monthlyBudget = Number(val);
-  elements.budgetValue.innerText = val;
-
-  const percent = (val / elements.budgetInput.max) * 100;
-  elements.budgetInput.style.backgroundSize = percent + '% 100%';
-
-  updateBudgetBreakdown();
-}
-
-
-async function setBudget() {
-  if (!elements.budgetInput) return;
-  monthlyBudget = Number(elements.budgetInput.value);
-  
-  // Save to mock storage or API
-  try { 
-    await apiRequest('/budget', {
-  method: 'POST',
-  body: JSON.stringify({ budget: monthlyBudget })
-});
-
-updateBudgetBreakdown();
-showMessage('Budget saved successfully!');
-
-  } catch {}
-  
-  if (useMock) mockBudget = monthlyBudget;
-  loadExpenses();
-}
-
 // ========== Expenses ==========
 async function addExpense() {
   const title = elements.titleInput?.value.trim();
@@ -405,7 +389,6 @@ async function addExpense() {
     
     await loadExpenses(); 
     await loadSmartAnalysis(); 
-    updateChart();
   } catch (error) { 
     console.error(error); 
   }
@@ -446,8 +429,9 @@ async function loadExpenses() {
     }
     
     updateRecentActivity(expenses);
-    updateChart();
+    updatePieChart(expenses);
     updateTimelineChart(expenses);
+    updateBudgetBreakdown();
   } catch (error) { 
     console.error(error); 
   }
@@ -459,11 +443,11 @@ async function deleteExpense(id) {
     await apiRequest(`/${id}`, { method: 'DELETE' }); 
     await loadExpenses(); 
     await loadSmartAnalysis(); 
-    updateChart(); 
   } catch (error) { 
     console.error(error); 
   }
 }
+
 function updateRecentActivity(expenses) {
   if (!elements.recentList) return;
   const recent = [...expenses].sort((a,b) => new Date(b.date||0) - new Date(a.date||0)).slice(0,5);
@@ -475,47 +459,36 @@ function updateRecentActivity(expenses) {
     </div>`).join('') : '<p>No recent expenses</p>';
 }
 
-// ========== Chart with visibility ==========
-function updateChart() {
+// ========== PIE CHART ==========
+function updatePieChart(expenses) {
   const canvas = document.getElementById('categoryChart');
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
 
-  // Use mock data OR live list items
-  let expenses = [];
-
-  if (useMock) {
-    expenses = mockExpenses;
-  } else {
-    document.querySelectorAll('#expenseList li').forEach(li => {
-      const text = li.innerText;
-      const match = text.match(/\((.*?)\).*₹([\d.]+)/);
-      if (match) {
-        expenses.push({
-          category: match[1],
-          amount: Number(match[2])
-        });
-      }
-    });
-  }
   if (expenses.length === 0) {
-    if (elements.chartContainer)
-      elements.chartContainer.style.display = 'none';
+    if (elements.chartContainer) {
+      // Don't hide completely, just show empty state
+      canvas.style.display = 'none';
+    }
     return;
   }
 
-  if (elements.chartContainer)
-    elements.chartContainer.style.display = 'block';
+  canvas.style.display = 'block';
+  if (elements.chartContainer) elements.chartContainer.style.display = 'block';
 
   const categoriesMap = {};
-
   expenses.forEach(e => {
-    categoriesMap[e.category] =
-      (categoriesMap[e.category] || 0) + e.amount;
+    categoriesMap[e.category] = (categoriesMap[e.category] || 0) + e.amount;
   });
 
   if (chartInstance) chartInstance.destroy();
+
+  // Get colors for each category (first one will be blue)
+  const colors = Object.keys(categoriesMap).map((cat, index) => {
+    if (index === 0) return '#38bdf8'; // First category always blue
+    return getCategoryColor(cat);
+  });
 
   chartInstance = new Chart(ctx, {
     type: 'doughnut',
@@ -523,51 +496,68 @@ function updateChart() {
       labels: Object.keys(categoriesMap),
       datasets: [{
         data: Object.values(categoriesMap),
-        backgroundColor: Object.keys(categoriesMap).map(cat =>
-  getCategoryColor(cat)
-)
-
+        backgroundColor: colors,
+        borderColor: 'rgba(255,255,255,0.2)',
+        borderWidth: 2
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'bottom' }
+        legend: { 
+          position: 'bottom',
+          labels: {
+            color: '#ffffff',
+            font: { size: 12, weight: 'bold' }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15,23,42,0.9)',
+          titleColor: '#ffffff',
+          bodyColor: '#e2e8f0',
+          borderColor: '#38bdf8',
+          borderWidth: 1
+        }
       }
     }
   });
 }
-function updateTimelineChart(expenses) {
 
+// ========== TIMELINE BAR CHART ==========
+function updateTimelineChart(expenses) {
   const canvas = document.getElementById("timelineChart");
   if (!canvas) return;
 
   const ctx = canvas.getContext("2d");
 
-  const dateMap = {};
+  if (expenses.length === 0) {
+    canvas.style.display = 'none';
+    return;
+  }
 
+  canvas.style.display = 'block';
+
+  // Group expenses by date
+  const dateMap = {};
   expenses.forEach(e => {
     const date = new Date(e.date || Date.now()).toLocaleDateString();
-
     if (!dateMap[date]) dateMap[date] = {};
-    dateMap[date][e.category] =
-      (dateMap[date][e.category] || 0) + Number(e.amount);
+    dateMap[date][e.category] = (dateMap[date][e.category] || 0) + Number(e.amount);
   });
 
-  const labels = Object.keys(dateMap);
+  const labels = Object.keys(dateMap).sort((a,b) => new Date(a) - new Date(b));
+  
+  // Get all unique categories
+  const allCategories = [...new Set(expenses.map(e => e.category))];
+  
   const datasets = [];
 
-  const allCategories = new Set();
-  expenses.forEach(e => allCategories.add(e.category));
-
-  allCategories.forEach(category => {
-
-    const data = labels.map(d =>
-      dateMap[d][category] || 0
-    );
-
-    const color = getCategoryColor(category);
+  allCategories.forEach((category, index) => {
+    const data = labels.map(date => dateMap[date][category] || 0);
+    
+    // Get color (first category blue, others random)
+    const color = index === 0 ? '#38bdf8' : getCategoryColor(category);
 
     datasets.push({
       label: category,
@@ -575,44 +565,63 @@ function updateTimelineChart(expenses) {
       backgroundColor: color,
       borderColor: color,
       borderWidth: 1,
-      borderRadius: 12
+      borderRadius: 8,
+      barPercentage: 0.7,
+      categoryPercentage: 0.8
     });
-
   });
 
-  if (timelineChartInstance)
-    timelineChartInstance.destroy();
+  if (timelineChartInstance) timelineChartInstance.destroy();
 
   timelineChartInstance = new Chart(ctx, {
     type: "bar",
-    data: {
-      labels,
-      datasets
-    },
+    data: { labels, datasets },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: {
-          position: "bottom"
+        legend: { 
+          position: "bottom",
+          labels: {
+            color: '#ffffff',
+            font: { size: 11 }
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15,23,42,0.9)',
+          titleColor: '#ffffff',
+          bodyColor: '#e2e8f0'
         }
       },
       scales: {
-        x: {
-          stacked: true
-        },
-        y: {
+        x: { 
           stacked: true,
-          beginAtZero: true
+          ticks: { color: '#cbd5e1' },
+          grid: { color: 'rgba(255,255,255,0.1)' }
+        },
+        y: { 
+          stacked: true, 
+          beginAtZero: true,
+          max: monthlyBudget || mockBudget || 1000,
+          ticks: { 
+            color: '#cbd5e1',
+            callback: function(value) {
+              return '₹' + value;
+            }
+          },
+          grid: { color: 'rgba(255,255,255,0.1)' },
+          title: {
+            display: true,
+            text: 'Amount (₹)',
+            color: '#94a3b8'
+          }
         }
       }
     }
   });
-
 }
 
-
-// ========== AI ==========
+// ========== AI Analysis ==========
 async function loadSmartAnalysis() {
   try { 
     const data = await apiRequest('/analyze'); 
@@ -641,7 +650,7 @@ function setupEventListeners() {
   
   if (elements.budgetInput) {
     elements.budgetInput.addEventListener('input', (e) => updateBudgetValue(e.target.value));
-    // Remove the 'change' event listener so it only saves on button click
+    // Budget only saves on button click, not on slider move
   }
   
   [elements.titleInput, elements.amountInput].forEach(inp => 
@@ -670,6 +679,8 @@ async function initDashboard() {
       elements.budgetInput.value = mockBudget;
       updateBudgetValue(mockBudget);
     }
+  } else {
+    updateBudgetBreakdown();
   }
   
   try { 
@@ -681,14 +692,3 @@ async function initDashboard() {
 }
 
 initDashboard();
-
-
-
-
-
-
-
-
-
-
-

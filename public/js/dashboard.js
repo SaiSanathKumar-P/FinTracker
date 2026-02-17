@@ -558,8 +558,6 @@ function updateTimelineChart(expenses) {
   const labels = Object.keys(dateMap);
   const datasets = [];
 
-  Object.keys(categoryColors).forEach(() => {}); // keeps colors alive
-
   const allCategories = new Set();
   expenses.forEach(e => allCategories.add(e.category));
 
@@ -569,11 +567,15 @@ function updateTimelineChart(expenses) {
       dateMap[d][category] || 0
     );
 
+    const color = getCategoryColor(category);
+
     datasets.push({
       label: category,
-      data,
-      backgroundColor: getCategoryColor(category),
-      borderRadius: 10
+      data: data,
+      backgroundColor: color,
+      borderColor: color,
+      borderWidth: 1,
+      borderRadius: 12
     });
 
   });
@@ -583,20 +585,32 @@ function updateTimelineChart(expenses) {
 
   timelineChartInstance = new Chart(ctx, {
     type: "bar",
-    data: { labels, datasets },
+    data: {
+      labels,
+      datasets
+    },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: { position: "bottom" }
+        legend: {
+          position: "bottom"
+        }
       },
       scales: {
-        x: { stacked: true },
-        y: { stacked: true, beginAtZero: true }
+        x: {
+          stacked: true
+        },
+        y: {
+          stacked: true,
+          beginAtZero: true
+        }
       }
     }
   });
 
 }
+
 
 // ========== AI ==========
 async function loadSmartAnalysis() {
@@ -667,6 +681,7 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 
 
 

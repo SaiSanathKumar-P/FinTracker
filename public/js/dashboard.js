@@ -37,13 +37,29 @@ function getRandomColor() {
 
 function getCategoryColor(category) {
   if (!categoryColors[category]) {
-    // If this is the first category being colored, always use blue
+
+    // First ever category → BLUE
     if (Object.keys(categoryColors).length === 0) {
-      categoryColors[category] = '#38bdf8'; // Primary blue
-    } else {
-      categoryColors[category] = getRandomColor();
+      categoryColors[category] = '#38bdf8';
     }
+
+    // All others → RANDOM (never blue)
+    else {
+      let color;
+      do {
+        color = getRandomColor();
+      } while (color === '#38bdf8');   // prevent blue duplication
+
+      categoryColors[category] = color;
+    }
+
+    // Save colors
+    localStorage.setItem(
+      "finTrack_categoryColors",
+      JSON.stringify(categoryColors)
+    );
   }
+
   return categoryColors[category];
 }
 
@@ -485,10 +501,9 @@ function updatePieChart(expenses) {
   if (chartInstance) chartInstance.destroy();
 
   // Get colors for each category (first one will be blue)
-  const colors = Object.keys(categoriesMap).map((cat, index) => {
-    if (index === 0) return '#38bdf8'; // First category always blue
-    return getCategoryColor(cat);
-  });
+const colors = Object.keys(categoriesMap).map(cat =>
+  getCategoryColor(cat)
+);
 
   chartInstance = new Chart(ctx, {
     type: 'doughnut',
@@ -557,7 +572,7 @@ function updateTimelineChart(expenses) {
     const data = labels.map(date => dateMap[date][category] || 0);
     
     // Get color (first category blue, others random)
-    const color = index === 0 ? '#38bdf8' : getCategoryColor(category);
+    const color = getCategoryColor(category);
 
     datasets.push({
       label: category,
@@ -662,6 +677,10 @@ function setupEventListeners() {
 
 // ========== Init ==========
 async function initDashboard() {
+  const savedColors = localStorage.getItem("finTrack_categoryColors");
+if (savedColors) {
+  categoryColors = JSON.parse(savedColors);
+}
   const wasMock = localStorage.getItem(MOCK_MODE_KEY) === 'true';
   if (wasMock) { 
     setOfflineMode(true); 
@@ -692,3 +711,4 @@ async function initDashboard() {
 }
 
 initDashboard();
+

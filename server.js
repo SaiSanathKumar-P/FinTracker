@@ -32,3 +32,17 @@ mongoose.connect(process.env.MONGO_URI)
   app.listen(PORT, ()=> console.log("Server running on", PORT));
 })
 .catch(err=> console.log(err));
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const session = require("express-session");
+const jwt = require("jsonwebtoken");
+
+app.use(session({
+  secret: "fintrack_secret",
+  resave: false,
+  saveUninitialized: true
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+

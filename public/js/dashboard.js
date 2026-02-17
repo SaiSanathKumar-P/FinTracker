@@ -24,6 +24,20 @@ let categories = [
   { value: 'Education', label: '📚 Education' },
   { value: 'Entertainment', label: '🎬 Entertainment' }
 ];
+// ================= COLOR REGISTRY =================
+let categoryColors = {};
+
+function getRandomColor() {
+  const hue = Math.floor(Math.random() * 360);
+  return `hsl(${hue}, 80%, 55%)`; // vibrant color
+}
+
+function getCategoryColor(category) {
+  if (!categoryColors[category]) {
+    categoryColors[category] = getRandomColor();
+  }
+  return categoryColors[category];
+}
 
 const elements = {
   totalAmount: document.getElementById('totalAmount'),
@@ -509,15 +523,10 @@ function updateChart() {
       labels: Object.keys(categoriesMap),
       datasets: [{
         data: Object.values(categoriesMap),
-        backgroundColor: [
-          '#38bdf8',
-          '#f59e0b',
-          '#10b981',
-          '#8b5cf6',
-          '#ef4444',
-          '#ec4899',
-          '#14b8a6'
-        ]
+        backgroundColor: Object.keys(categoriesMap).map(cat =>
+  getCategoryColor(cat)
+)
+
       }]
     },
     options: {
@@ -536,60 +545,59 @@ function updateTimelineChart(expenses) {
 
   const ctx = canvas.getContext("2d");
 
-  // Group expenses by date
   const dateMap = {};
 
   expenses.forEach(e => {
-    const date = new Date(e.date || Date.now())
-      .toLocaleDateString();
+    const date = new Date(e.date || Date.now()).toLocaleDateString();
 
-    dateMap[date] = (dateMap[date] || 0) + Number(e.amount);
+    if (!dateMap[date]) dateMap[date] = {};
+    dateMap[date][e.category] =
+      (dateMap[date][e.category] || 0) + Number(e.amount);
   });
 
   const labels = Object.keys(dateMap);
-  const values = Object.values(dateMap);
+  const datasets = [];
 
-  if (timelineChartInstance) {
+  Object.keys(categoryColors).forEach(() => {}); // keeps colors alive
+
+  const allCategories = new Set();
+  expenses.forEach(e => allCategories.add(e.category));
+
+  allCategories.forEach(category => {
+
+    const data = labels.map(d =>
+      dateMap[d][category] || 0
+    );
+
+    datasets.push({
+      label: category,
+      data,
+      backgroundColor: getCategoryColor(category),
+      borderRadius: 10
+    });
+
+  });
+
+  if (timelineChartInstance)
     timelineChartInstance.destroy();
-  }
 
   timelineChartInstance = new Chart(ctx, {
     type: "bar",
-    data: {
-      labels,
-      datasets: [{
-        label: "Total Expense (₹)",
-        data: values,
-        backgroundColor: [
-          "#38bdf8",
-          "#f59e0b",
-          "#10b981",
-          "#8b5cf6",
-          "#ef4444",
-          "#ec4899"
-        ],
-        borderRadius: 10
-      }]
-    },
+    data: { labels, datasets },
     options: {
       responsive: true,
       plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => `₹ ${ctx.raw}`
-          }
-        }
+        legend: { position: "bottom" }
       },
       scales: {
-        y: {
-          beginAtZero: true
-        }
+        x: { stacked: true },
+        y: { stacked: true, beginAtZero: true }
       }
     }
   });
 
 }
+
 // ========== AI ==========
 async function loadSmartAnalysis() {
   try { 
@@ -659,6 +667,7 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 
 
 

@@ -84,15 +84,17 @@
     </section>
 
     <!-- Chart & Smart Analyzer Side by Side (Fixed Layout) -->
-<div class="chart-container" id="chartContainer">
+<div class="dashboard-split">
 
-  <!-- PIE -->
-  <h3>📊 Expense by Category</h3>
-  <canvas id="categoryChart" height="260"></canvas>
+  <!-- LEFT : CHARTS -->
+  <div class="chart-container" id="chartContainer">
 
-  <!-- BAR -->
-  <h3 style="margin-top:25px;">📈 Expenses Timeline</h3>
-  <canvas id="timelineChart" height="260"></canvas>
+    <h3>📊 Expense by Category</h3>
+    <canvas id="categoryChart" height="260"></canvas>
+
+    <h3 style="margin-top:25px;">📈 Expenses Timeline</h3>
+    <canvas id="timelineChart" height="260"></canvas>
+
 
 </div>
 
@@ -151,6 +153,7 @@
   <script src="js/dashboard.js"></script>
 </body>
 </html>
+
 
 
 

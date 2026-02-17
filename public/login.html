@@ -41,7 +41,10 @@
         <button type="submit" class="login-btn">Login</button>
       </form>
       <div class="social-login">
-        <button class="social-btn">📧 Google</button>
+<button class="social-btn" id="googleLoginBtn">
+  🔐 Sign in with Google
+</button>
+
         <button class="social-btn">📘 Facebook</button>
       </div>
       <p class="register-link">Don't have an account? <a href="register.html">Register</a></p>
@@ -55,11 +58,16 @@
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
         if (email && pass) {
-          localStorage.setItem('token', 'demo-' + Date.now());
+  
           window.location.href = 'dashboard.html';
         } else alert('Please fill all fields');
       });
     })();
+    document.getElementById("googleLoginBtn")
+  .addEventListener("click", () => {
+    window.location.href = "/auth/google";
+  });
   </script>
 </body>
 </html>
+

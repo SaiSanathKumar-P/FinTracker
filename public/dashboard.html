@@ -38,32 +38,17 @@
       <article class="summary-card budget-card">
         <div class="budget-header">
           <h2>🎯 Budget</h2>
-          <div class="budget-toggle">
-            <button class="budget-toggle-btn active" data-period="monthly">Month</button>
-            <button class="budget-toggle-btn" data-period="weekly">Week</button>
-            <button class="budget-toggle-btn" data-period="daily">Day</button>
-          </div>
-        </div>
-        
+          <div class="budget-slider-container" id="monthlySlider">
+  <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0">
+  <p class="amount">₹ <span id="budgetValue">0</span> /month</p>
+</div>
+
         <!-- Monthly Budget Slider -->
         <div class="budget-slider-container" id="monthlySlider">
           <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0">
           <p class="amount">₹ <span id="budgetValue">0</span> <span class="budget-period">/month</span></p>
         </div>
         
-        <!-- Weekly Budget Display (Calculated) -->
-        <div class="budget-slider-container" id="weeklySlider" style="display: none;">
-          <div class="calculated-budget">
-            <p class="amount">₹ <span id="weeklyValue">0</span> <span class="budget-period">/week</span></p>
-          </div>
-        </div>
-        
-        <!-- Daily Budget Display (Calculated) -->
-        <div class="budget-slider-container" id="dailySlider" style="display: none;">
-          <div class="calculated-budget">
-            <p class="amount">₹ <span id="dailyValue">0</span> <span class="budget-period">/day</span></p>
-          </div>
-        </div>
         
         <button class="save-budget-btn" id="saveBudgetBtn">Save Budget</button>
       </article>
@@ -111,24 +96,40 @@
       </div>
 
       <!-- Smart Analyzer (Right) -->
-      <section class="ai-card">
-        <h2>🧠 Smart Analyzer</h2>
-        <div class="ai-grid">
-          <div class="ai-box">
-            <h3>Top Category</h3>
-            <p id="aiTopCategory">-</p>
-          </div>
-          <div class="ai-box">
-            <h3>Risk Level</h3>
-            <p id="aiRisk">-</p>
-          </div>
-          <div class="ai-box">
-            <h3>AI Suggestion</h3>
-            <p id="aiSuggestion">-</p>
-          </div>
-        </div>
-      </section>
-    </div>
+<div class="ai-grid">
+
+  <div class="ai-box">
+    <h3>Monthly Budget</h3>
+    <p id="aiMonthly">₹0</p>
+  </div>
+
+  <div class="ai-box">
+    <h3>Weekly Budget</h3>
+    <p id="aiWeekly">₹0</p>
+  </div>
+
+  <div class="ai-box">
+    <h3>Daily Budget</h3>
+    <p id="aiDaily">₹0</p>
+  </div>
+
+  <div class="ai-box">
+    <h3>Top Category</h3>
+    <p id="aiTopCategory">-</p>
+  </div>
+
+  <div class="ai-box">
+    <h3>Risk Level</h3>
+    <p id="aiRisk">-</p>
+  </div>
+
+  <div class="ai-box">
+    <h3>AI Suggestion</h3>
+    <p id="aiSuggestion">-</p>
+  </div>
+
+</div>
+
 
     <!-- Recent Activity -->
     <section class="recent-activity">
@@ -148,3 +149,4 @@
   <script src="js/dashboard.js"></script>
 </body>
 </html>
+

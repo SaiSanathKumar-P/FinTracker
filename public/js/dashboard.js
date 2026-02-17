@@ -13,7 +13,7 @@ let monthlyBudget = 0;
 let useMock = false;
 let mockExpenses = [];
 let mockBudget = 0;
-let chartInstance = null;// 'monthly', 'weekly', 'daily'
+let chartInstance = null;
 
 // Custom categories array (predefined + user added)
 let categories = [
@@ -208,46 +208,9 @@ function generateMockAnalysis() {
 
 
 // ========== Budget Period Toggle ==========
-function initBudgetToggle() {
-  elements.budgetToggleBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Remove active class from all buttons
-      elements.budgetToggleBtns.forEach(b => b.classList.remove('active'));
-      // Add active class to clicked button
-      btn.classList.add('active');
-      
-      // Get selected period
-      const period = btn.getAttribute('data-period');
-      currentBudgetPeriod = period;
-      
-      // Hide all sliders
-      if (elements.monthlySlider) elements.monthlySlider.style.display = 'none';
-      if (elements.weeklySlider) elements.weeklySlider.style.display = 'none';
-      if (elements.dailySlider) elements.dailySlider.style.display = 'none';
-      
-      // Show selected slider
-      if (period === 'monthly') {
-        elements.monthlySlider.style.display = 'block';
-      } else if (period === 'weekly') {
-        elements.weeklySlider.style.display = 'block';
-        updateWeeklyBudget();
-      } else if (period === 'daily') {
-        elements.dailySlider.style.display = 'block';
-        updateDailyBudget();
-      }
-    });
-  });
-}
-
-function updateWeeklyBudget() {
-  if (elements.weeklyValue && monthlyBudget > 0) {
-    const weeklyBudget = monthlyBudget / 4.33; // Average weeks in a month
-    elements.weeklyValue.innerText = weeklyBudget.toFixed(2);
-  } else if (elements.weeklyValue) {
-    elements.weeklyValue.innerText = '0';
-  }
-}
 function updateBudgetBreakdown() {
+
+  if (!elements.aiMonthly) return;
 
   const monthly = monthlyBudget || 0;
   const weekly = monthly / 4.33;
@@ -258,14 +221,7 @@ function updateBudgetBreakdown() {
   elements.aiDaily.innerText   = `₹${daily.toFixed(2)}`;
 }
 
-function updateDailyBudget() {
-  if (elements.dailyValue && monthlyBudget > 0) {
-    const dailyBudget = monthlyBudget / 30; // Average days in a month
-    elements.dailyValue.innerText = dailyBudget.toFixed(2);
-  } else if (elements.dailyValue) {
-    elements.dailyValue.innerText = '0';
-  }
-}
+
 
 // ========== Dropdown Management ==========
 function rebuildDropdown() {
@@ -431,7 +387,6 @@ async function addExpense() {
     elements.amountInput.value = ''; 
     elements.categoryHidden.value = ''; 
     elements.selectedDisplay.innerText = 'Select Category';
-    resetExpenseFormUI();
     
     await loadExpenses(); 
     await loadSmartAnalysis(); 
@@ -643,6 +598,7 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 
 
 

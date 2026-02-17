@@ -34,18 +34,15 @@
         <p class="amount">₹ <span id="totalAmount">0</span></p>
       </article>
       
-      <!-- Budget Card with Toggle -->
+      <!-- Budget Card -->
       <article class="summary-card budget-card">
         <div class="budget-header">
-          <h2>🎯 Budget</h2>
-          <div class="budget-slider-container" id="monthlySlider">
-  <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0">
-  <p class="amount">₹ <span id="budgetValue">0</span> /month</p>
-</div>
-
-        <!-- Monthly Budget Slider -->
-        
-        
+          <h2>🎯 Monthly Budget</h2>
+        </div>
+        <div class="budget-slider-container">
+          <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0">
+          <p class="amount">₹ <span id="budgetValue">0</span> <span class="budget-period">/month</span></p>
+        </div>
         <button class="save-budget-btn" id="saveBudgetBtn">Save Budget</button>
       </article>
       
@@ -83,57 +80,48 @@
       </div>
     </section>
 
-    <!-- Chart & Smart Analyzer Side by Side (Fixed Layout) -->
-<div class="dashboard-split">
+    <!-- Charts & Smart Analyzer Side by Side -->
+    <div class="dashboard-split">
+      <!-- LEFT: CHARTS CONTAINER -->
+      <div class="chart-container" id="chartContainer">
+        <h3>📊 Expense by Category</h3>
+        <canvas id="categoryChart" height="200"></canvas>
 
-  <!-- LEFT : CHARTS -->
-  <div class="chart-container" id="chartContainer">
+        <h3 style="margin-top: 25px;">📈 Daily Expenses (vs Monthly Budget)</h3>
+        <canvas id="timelineChart" height="200"></canvas>
+      </div>
 
-    <h3>📊 Expense by Category</h3>
-    <canvas id="categoryChart" height="260"></canvas>
-
-    <h3 style="margin-top:25px;">📈 Expenses Timeline</h3>
-    <canvas id="timelineChart" height="260"></canvas>
-
-
-</div>
-
-
-      <!-- Smart Analyzer (Right) -->
-<div class="ai-grid">
-
-  <div class="ai-box">
-    <h3>Monthly Budget</h3>
-    <p id="aiMonthly">₹0</p>
-  </div>
-
-  <div class="ai-box">
-    <h3>Weekly Budget</h3>
-    <p id="aiWeekly">₹0</p>
-  </div>
-
-  <div class="ai-box">
-    <h3>Daily Budget</h3>
-    <p id="aiDaily">₹0</p>
-  </div>
-
-  <div class="ai-box">
-    <h3>Top Category</h3>
-    <p id="aiTopCategory">-</p>
-  </div>
-
-  <div class="ai-box">
-    <h3>Risk Level</h3>
-    <p id="aiRisk">-</p>
-  </div>
-
-  <div class="ai-box">
-    <h3>AI Suggestion</h3>
-    <p id="aiSuggestion">-</p>
-  </div>
-
-</div>
-
+      <!-- RIGHT: SMART ANALYZER -->
+      <div class="ai-card">
+        <h2>🧠 Smart Analyzer</h2>
+        <div class="ai-grid">
+          <div class="ai-box">
+            <h3>Monthly Budget</h3>
+            <p id="aiMonthly">₹0</p>
+          </div>
+          <div class="ai-box">
+            <h3>Weekly Budget</h3>
+            <p id="aiWeekly">₹0</p>
+          </div>
+          <div class="ai-box">
+            <h3>Daily Budget</h3>
+            <p id="aiDaily">₹0</p>
+          </div>
+          <div class="ai-box">
+            <h3>Top Category</h3>
+            <p id="aiTopCategory">-</p>
+          </div>
+          <div class="ai-box">
+            <h3>Risk Level</h3>
+            <p id="aiRisk">-</p>
+          </div>
+          <div class="ai-box">
+            <h3>AI Suggestion</h3>
+            <p id="aiSuggestion">-</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Recent Activity -->
     <section class="recent-activity">
@@ -153,7 +141,3 @@
   <script src="js/dashboard.js"></script>
 </body>
 </html>
-
-
-
-

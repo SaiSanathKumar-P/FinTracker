@@ -1481,12 +1481,18 @@ label {
   font-weight: 600;
 }
 
+/* Add to your existing style.css to ensure chart text is visible */
 .chart-container canvas {
   max-height: 300px;
   width: 100% !important;
   height: auto !important;
   margin: auto;
 }
+/* Ensure chart labels are white */
+.chart-container .chartjs-legend li span {
+  color: white !important;
+}
+/* Timeline chart styling */
 #timelineChart {
   margin-top: 10px;
 }
@@ -1533,17 +1539,17 @@ label {
   background: rgba(56,189,248,0.15);
 }
 
+/* AI Box text colors */
 .ai-box h3 {
   color: var(--primary-500);
-  margin-bottom: 0.8rem;
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .ai-box p {
+  color: white;
   font-size: 1.2rem;
   font-weight: 600;
-  color: white;
 }
 
 /* Recent Activity Enhancement */
@@ -2294,6 +2300,7 @@ footer a:hover {
   position: relative;
   z-index: 1;
 }
+
 
 
 

@@ -1487,6 +1487,9 @@ label {
   height: auto !important;
   margin: auto;
 }
+#timelineChart {
+  margin-top: 10px;
+}
 
 /* Enhanced AI Card */
 .ai-card {
@@ -2291,6 +2294,7 @@ footer a:hover {
   position: relative;
   z-index: 1;
 }
+
 
 
 

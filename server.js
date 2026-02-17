@@ -1,6 +1,8 @@
 // ================================
-// FinTrack Server.js (FINAL)
+// FinTrack Server.js (PRODUCTION)
 // ================================
+
+require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -8,8 +10,6 @@ const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* ===============================
-   SESSION SETUP
+   SESSION (Required for Google OAuth)
 ================================ */
 
 app.use(
@@ -34,11 +34,10 @@ app.use(
 );
 
 /* ===============================
-   PASSPORT INITIALIZE
+   PASSPORT INIT
 ================================ */
 
 app.use(passport.initialize());
-app.use(passport.session());
 
 /* ===============================
    GOOGLE STRATEGY
@@ -77,45 +76,24 @@ app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expenseRoutes);
 
 /* ===============================
-   GOOGLE LOGIN ROUTES
+   FALLBACK → SPA ROUTING
 ================================ */
 
-app.get("/api/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-app.get("/api/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login.html" }),
-  (req, res) => {
-
-    const token = jwt.sign(
-      { email: req.user.emails[0].value },
-      process.env.JWT_SECRET || "fintrack_jwt_secret",
-      { expiresIn: "7d" }
-    );
-
-    res.redirect(`/dashboard.html?token=${token}`);
-  }
-);
-
-/* ===============================
-   TEST ROUTE
-================================ */
-
-app.get("/api/test", (req, res) => {
-  res.json({ message: "API Working Fine" });
+app.get("*", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 /* ===============================
-   CONNECT MONGO & START SERVER
+   DATABASE + SERVER
 ================================ */
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected");
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () =>
-      console.log("Server running on port", PORT)
+      console.log(`Server running on port ${PORT}`)
     );
   })
   .catch(err => console.log("Mongo Error:", err));

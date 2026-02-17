@@ -13,7 +13,8 @@ let monthlyBudget = 0;
 let useMock = false;
 let mockExpenses = [];
 let mockBudget = 0;
-let chartInstance = null;
+let chartInstance = null;      // pie
+let timelineChartInstance = null;  // bar
 
 // Custom categories array (predefined + user added)
 let categories = [
@@ -432,6 +433,7 @@ async function loadExpenses() {
     
     updateRecentActivity(expenses);
     updateChart();
+    updateTimelineChart(expenses);
   } catch (error) { 
     console.error(error); 
   }
@@ -483,7 +485,67 @@ function updateChart() {
       }
     });
   }
+function updateTimelineChart(expenses) {
 
+  const canvas = document.getElementById("timelineChart");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
+  // Group expenses by date
+  const dateMap = {};
+
+  expenses.forEach(e => {
+    const date = new Date(e.date || Date.now())
+      .toLocaleDateString();
+
+    dateMap[date] = (dateMap[date] || 0) + Number(e.amount);
+  });
+
+  const labels = Object.keys(dateMap);
+  const values = Object.values(dateMap);
+
+  if (timelineChartInstance) {
+    timelineChartInstance.destroy();
+  }
+
+  timelineChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "Total Expense (₹)",
+        data: values,
+        backgroundColor: [
+          "#38bdf8",
+          "#f59e0b",
+          "#10b981",
+          "#8b5cf6",
+          "#ef4444",
+          "#ec4899"
+        ],
+        borderRadius: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `₹ ${ctx.raw}`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+}
   if (expenses.length === 0) {
     if (elements.chartContainer)
       elements.chartContainer.style.display = 'none';
@@ -598,6 +660,7 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 
 
 

@@ -1,97 +1,107 @@
 // ================================
-// FinTrack Auth Routes
+// FinTrack Server
 // ================================
 
+require("dotenv").config();
 const express = require("express");
-const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const session = require("express-session");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
 
-const router = express.Router();
+const app = express();
 
 /* ================================
-   REGISTER
+   MIDDLEWARE
 ================================ */
 
-router.post("/register", async (req, res) => {
-  try {
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-    const { name, email, college, year, password } = req.body;
+app.use(session({
+  secret: "fintrack_session_secret",
+  resave: false,
+  saveUninitialized: false
+}));
 
-    if (!name || !email || !college || !year || !password) {
-      return res.status(400).json({ message: "All fields required" });
+app.use(passport.initialize());
+app.use(passport.session());
+
+/* ================================
+   PASSPORT GOOGLE STRATEGY
+================================ */
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/auth/google/callback"
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      return done(null, profile);
     }
+  )
+);
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "Email already registered" });
-    }
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((obj, done) => done(null, obj));
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+/* ================================
+   GOOGLE AUTH ROUTES
+================================ */
 
-    const user = await User.create({
-      name,
-      email,
-      college,
-      year,
-      password: hashedPassword
-    });
+app.get("/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get("/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login.html" }),
+  (req, res) => {
 
     const token = jwt.sign(
-      { id: user._id },
+      { email: req.user.emails[0].value },
       process.env.JWT_SECRET || "fintrack_jwt_secret",
       { expiresIn: "7d" }
     );
 
-    res.status(201).json({
-      message: "Registration successful",
-      token
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.redirect(`/dashboard.html?token=${token}`);
   }
+);
+
+/* ================================
+   API ROUTES
+================================ */
+
+const authRoutes = require("./routes/auth");
+const expenseRoutes = require("./routes/expenses");
+
+app.use("/api/auth", authRoutes);
+app.use("/api/expenses", expenseRoutes);
+
+/* ================================
+   SERVE FRONTEND
+================================ */
+
+app.use(express.static("public"));
+
+app.get("*", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 /* ================================
-   LOGIN
+   DATABASE + START SERVER
 ================================ */
 
-router.post("/login", async (req, res) => {
-  try {
-
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ message: "All fields required" });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "Invalid email or password" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid email or password" });
-    }
-
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET || "fintrack_jwt_secret",
-      { expiresIn: "7d" }
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB Connected");
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () =>
+      console.log("Server running on port", PORT)
     );
-
-    res.json({
-      message: "Login successful",
-      token
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-module.exports = router;
+  })
+  .catch(err => console.log("Mongo Error:", err));

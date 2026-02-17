@@ -485,6 +485,50 @@ function updateChart() {
       }
     });
   }
+  if (expenses.length === 0) {
+    if (elements.chartContainer)
+      elements.chartContainer.style.display = 'none';
+    return;
+  }
+
+  if (elements.chartContainer)
+    elements.chartContainer.style.display = 'block';
+
+  const categoriesMap = {};
+
+  expenses.forEach(e => {
+    categoriesMap[e.category] =
+      (categoriesMap[e.category] || 0) + e.amount;
+  });
+
+  if (chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(categoriesMap),
+      datasets: [{
+        data: Object.values(categoriesMap),
+        backgroundColor: [
+          '#38bdf8',
+          '#f59e0b',
+          '#10b981',
+          '#8b5cf6',
+          '#ef4444',
+          '#ec4899',
+          '#14b8a6'
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+}
 function updateTimelineChart(expenses) {
 
   const canvas = document.getElementById("timelineChart");
@@ -546,51 +590,6 @@ function updateTimelineChart(expenses) {
   });
 
 }
-  if (expenses.length === 0) {
-    if (elements.chartContainer)
-      elements.chartContainer.style.display = 'none';
-    return;
-  }
-
-  if (elements.chartContainer)
-    elements.chartContainer.style.display = 'block';
-
-  const categoriesMap = {};
-
-  expenses.forEach(e => {
-    categoriesMap[e.category] =
-      (categoriesMap[e.category] || 0) + e.amount;
-  });
-
-  if (chartInstance) chartInstance.destroy();
-
-  chartInstance = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: Object.keys(categoriesMap),
-      datasets: [{
-        data: Object.values(categoriesMap),
-        backgroundColor: [
-          '#38bdf8',
-          '#f59e0b',
-          '#10b981',
-          '#8b5cf6',
-          '#ef4444',
-          '#ec4899',
-          '#14b8a6'
-        ]
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom' }
-      }
-    }
-  });
-}
-
 // ========== AI ==========
 async function loadSmartAnalysis() {
   try { 
@@ -660,6 +659,7 @@ async function initDashboard() {
 }
 
 initDashboard();
+
 
 
 

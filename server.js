@@ -68,7 +68,7 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "/api/auth/github/callback"
+      callbackURL: "https://fintracker-l6hp.onrender.com/api/auth/github/callback"
     },
     (accessToken, refreshToken, profile, done) => {
       return done(null, profile);

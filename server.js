@@ -55,7 +55,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback"
+      callbackURL: "https://fintracker-l6hp.onrender.com/api/auth/google/callback"
     },
     (accessToken, refreshToken, profile, done) => {
       return done(null, profile);

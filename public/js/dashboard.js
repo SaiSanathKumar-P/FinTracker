@@ -5,10 +5,6 @@
 const API_BASE = window.location.origin + '/api/expenses';
 const TOKEN_KEY = 'token';
 const MOCK_MODE_KEY = 'finTrack_useMock';
-
-window.history.pushState(null, null, window.location.href);
-window.onpopstate = () => window.history.go(1);
-
 let monthlyBudget = 0;
 let useMock = false;
 let mockExpenses = [];
@@ -91,10 +87,24 @@ const elements = {
   aiWeekly: document.getElementById('aiWeekly'),
   aiDaily: document.getElementById('aiDaily'),
 };
+const urlParams = new URLSearchParams(window.location.search);
+const urlToken = urlParams.get("token");
+
+if (urlToken) {
+  localStorage.setItem(TOKEN_KEY, urlToken);
+  window.history.replaceState({}, document.title, "dashboard.html");
+}
 
 // ========== Utilities ==========
 function getToken() { return localStorage.getItem(TOKEN_KEY); }
-function requireAuth() { if (!getToken() && !useMock) window.location.href = 'login.html'; }
+function requireAuth() {
+  const token = getToken();
+
+  if (!token && !useMock) {
+    // Replace history so back button won't return here
+    window.location.replace("login.html");
+  }
+}
 function showMessage(msg) { alert(msg); }
 
 function setOfflineMode(enabled) {
@@ -650,9 +660,17 @@ async function loadSmartAnalysis() {
 }
 
 // ========== Logout ==========
-function logoutUser() { 
-  localStorage.removeItem(TOKEN_KEY); 
-  window.location.href = 'login.html'; 
+function logoutUser() {
+  localStorage.removeItem(TOKEN_KEY);
+
+  // Clear page history
+  window.location.replace("login.html");
+
+  // Extra safety
+  setTimeout(() => {
+    window.history.pushState(null, null, "login.html");
+    window.history.go(0);
+  }, 10);
 }
 
 // ========== Event Listeners ==========
@@ -710,5 +728,8 @@ if (savedColors) {
   }
 }
 
-initDashboard();
+document.addEventListener("DOMContentLoaded", () => {
+  requireAuth();
+  initDashboard();
+});
 

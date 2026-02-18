@@ -308,12 +308,16 @@ header {
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: var(--text-2xl);
   font-weight: 700;
   color: var(--primary-500);
   text-shadow: 0 0 10px var(--primary-500);
   letter-spacing: -0.5px;
 }
+
 
 .logo:hover {
   text-decoration: none;
@@ -386,10 +390,13 @@ header {
   box-shadow: var(--shadow-xl);
   overflow: hidden;
   display: none;
+  z-index: 5000;
   z-index: var(--z-dropdown);
   animation: fadeIn var(--transition-fast) ease;
 }
-
+.theme-dropdown.active .theme-menu {
+  display: block;
+}
 
 .theme-menu div {
   padding: var(--space-sm) var(--space-lg);
@@ -405,14 +412,15 @@ header {
 }
 /* Theme Button Arrow */
 .theme-arrow {
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid var(--text-primary);
-  border-bottom: 2px solid var(--text-primary);
+  width: 10px;
+  height: 10px;
+  border-right: 2.5px solid var(--text-primary);
+  border-bottom: 2.5px solid var(--text-primary);
   transform: rotate(45deg);
-  margin-left: 6px;
+  margin-left: 8px;
   transition: transform 0.3s ease;
 }
+
 
 /* Rotate arrow when menu open */
 .theme-dropdown.active .theme-arrow {
@@ -1830,6 +1838,11 @@ footer a:hover {
     gap: var(--space-xs);
     flex-wrap: wrap;
   }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
   .nav-btn {
     padding: var(--space-xs) var(--space-sm);

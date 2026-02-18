@@ -98,10 +98,9 @@ if (urlToken) {
 // ========== Utilities ==========
 function getToken() { return localStorage.getItem(TOKEN_KEY); }
 function requireAuth() {
-  const token = getToken();
-
-  if (!token && !useMock) {
-    // Replace history so back button won't return here
+  function requireAuth() {
+  const token = localStorage.getItem("token");
+  if (!token) {
     window.location.replace("login.html");
   }
 }
@@ -144,11 +143,12 @@ async function apiRequest(url, options = {}) {
   try {
     const response = await fetch(`${API_BASE}${url}`, { ...options, headers });
     if (response.status === 401) {
-      console.warn('401 received – switching to mock mode');
-      setOfflineMode(true);
-      loadMockFromStorage();
-      return handleMockRequest(url, options);
-    }
+  console.warn("Session expired");
+  localStorage.removeItem("token");
+  window.location.replace("login.html");
+  return;
+}
+
     const data = response.status !== 204 ? await response.json() : null;
     if (!response.ok) throw new Error(data?.message || `HTTP ${response.status}`);
     return data;

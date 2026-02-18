@@ -2380,17 +2380,30 @@ footer a:hover {
 .github-btn img {
   filter: brightness(0) invert(1); /* Ensures the logo is white */
 }
-.logo-img {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-  transition: transform 0.5s ease;
-  transform-style: preserve-3d;
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+/* Logo Container Circle */
+.logo-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+  overflow: hidden;
 }
 
+/* Logo Image */
+.logo-img {
+  width: 75%;
+  height: 75%;
+  object-fit: contain;
+  transition: transform 0.7s ease;
+}
+
+/* Rotate on hover */
 .logo:hover .logo-img {
-  transform: rotateY(180deg) rotateX(15deg);
+  transform: rotate(360deg);
 }
 
 

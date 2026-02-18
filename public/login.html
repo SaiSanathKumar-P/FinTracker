@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>FinTrack – Login</title>
@@ -45,7 +46,10 @@
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Icon" width="18">
    Sign in with Google
   </button>
-        <button class="social-btn">📘 Facebook</button>
+        <button class="social-btn apple-btn" id="appleid-signin" data-color="black" data-border="true" data-type="sign-in">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple Icon" width="16" style="filter: invert(1);">
+    Sign in with Apple
+  </button>
       </div>
       <p class="register-link">Don't have an account? <a href="register.html">Register</a></p>
     </main>

@@ -8,8 +8,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const jwt = require("jsonwebtoken");
+const path = require("path");
 
 const app = express();
 
@@ -22,14 +25,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* ===============================
-   SESSION (Required for Google OAuth)
+   SESSION STORE (MongoDB)
 ================================ */
 
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "fintrack_secret",
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI
+    })
   })
 );
 
@@ -38,6 +44,7 @@ app.use(
 ================================ */
 
 app.use(passport.initialize());
+app.use(passport.session());
 
 /* ===============================
    GOOGLE STRATEGY
@@ -60,13 +67,36 @@ passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
 
 /* ===============================
+   GOOGLE AUTH ROUTES
+================================ */
+
+app.get(
+  "/api/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get(
+  "/api/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login.html" }),
+  (req, res) => {
+    const token = jwt.sign(
+      { email: req.user.emails[0].value },
+      process.env.JWT_SECRET || "fintrack_jwt_secret",
+      { expiresIn: "7d" }
+    );
+
+    res.redirect(`/dashboard.html?token=${token}`);
+  }
+);
+
+/* ===============================
    STATIC FRONTEND
 ================================ */
 
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
 
 /* ===============================
-   ROUTES
+   API ROUTES
 ================================ */
 
 const authRoutes = require("./routes/auth");
@@ -76,11 +106,11 @@ app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expenseRoutes);
 
 /* ===============================
-   FALLBACK → SPA ROUTING
+   FALLBACK ROUTE
 ================================ */
 
 app.get("*", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 /* ===============================

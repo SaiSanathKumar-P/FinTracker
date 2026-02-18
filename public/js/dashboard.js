@@ -661,16 +661,8 @@ async function loadSmartAnalysis() {
 
 // ========== Logout ==========
 function logoutUser() {
-  localStorage.removeItem(TOKEN_KEY);
-
-  // Clear page history
+  localStorage.clear();
   window.location.replace("login.html");
-
-  // Extra safety
-  setTimeout(() => {
-    window.history.pushState(null, null, "login.html");
-    window.history.go(0);
-  }, 10);
 }
 
 // ========== Event Listeners ==========
@@ -704,8 +696,6 @@ if (savedColors) {
     setOfflineMode(true); 
     loadMockFromStorage(); 
   }
-  
-  requireAuth();
   rebuildDropdown();
   initCategoryDropdown();
   setupEventListeners();

@@ -93,11 +93,10 @@ app.get(
   passport.authenticate("google", { failureRedirect: "/login.html" }),
   (req, res) => {
     const token = jwt.sign(
-      { email: req.user.emails[0].value },
-      process.env.JWT_SECRET || "fintrack_super_secret",
-      { expiresIn: "7d" }
-    );
-
+  { id: req.user.id || req.user.emails[0].value },
+  process.env.JWT_SECRET,
+  { expiresIn: "7d" }
+);
     res.redirect(`/dashboard.html?token=${token}`);
   }
 );
@@ -111,10 +110,11 @@ app.get(
   passport.authenticate("github", { failureRedirect: "/login.html" }),
   (req,res)=>{
     const token = jwt.sign(
-      { email: req.user.emails?.[0]?.value || req.user.username },
-      process.env.JWT_SECRET,
-      { expiresIn:"7d" }
-    );
+  { id: req.user.id || req.user.username },
+  process.env.JWT_SECRET,
+  { expiresIn: "7d" }
+);
+
 
     res.redirect(`/dashboard.html?token=${token}`);
   }

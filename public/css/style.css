@@ -390,8 +390,16 @@ header {
   animation: fadeIn var(--transition-fast) ease;
 }
 
-.theme-dropdown.active .theme-menu {
-  display: block;
+.dropdown-arrow {
+  font-size: 12px;
+  transition: transform 0.3s ease; /* Smooth rotation */
+  display: inline-block;
+  color: var(--primary-500); /* Matches your brand color */
+}
+
+/* Rotate the arrow when the dropdown is active */
+.theme-dropdown.active .dropdown-arrow {
+  transform: rotate(180deg);
 }
 
 .theme-menu div {

@@ -35,7 +35,7 @@
           <label for="email">Email</label>
         </div>
         <div class="floating-label-group">
-          <input type="password" id="password" placeholder=" " required>
+         <input type="password" id="password" placeholder=" " required autocomplete="current-password">
           <label for="password">Password</label>
         </div>
         <button type="submit" class="login-btn">Login</button>
@@ -63,10 +63,6 @@
         } else alert('Please fill all fields');
       });
     })();
-    document.getElementById("googleLoginBtn")
-  .addEventListener("click", () => {
-    window.location.href = "/auth/google";
-  });
     const params = new URLSearchParams(window.location.search);
 const token = params.get("token");
 

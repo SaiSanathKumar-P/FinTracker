@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "fintrack_secret",
+    secret: process.env.SESSION_SECRET || "fintrack_session_2026",
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
@@ -55,7 +55,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback"
+      callbackURL: "https://fintracker-l6hp.onrender.com/api/auth/google/callback"
     },
     (accessToken, refreshToken, profile, done) => {
       return done(null, profile);
@@ -81,7 +81,7 @@ app.get(
   (req, res) => {
     const token = jwt.sign(
       { email: req.user.emails[0].value },
-      process.env.JWT_SECRET || "fintrack_jwt_secret",
+      process.env.JWT_SECRET || "fintrack_super_secret",
       { expiresIn: "7d" }
     );
 

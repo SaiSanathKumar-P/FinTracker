@@ -2300,10 +2300,61 @@ footer a:hover {
   position: relative;
   z-index: 1;
 }
+/* Custom Social Button Styling */
+.social-login {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.social-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+/* Specific Brand Colors */
+.google-btn {
+  background: white !important;
+  color: #1f1f1f !important;
+}
+
+.google-btn:hover {
+  background: #f1f1f1 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+.google-btn {
+  background: #ffffff !important;
+  color: #1f1f1f !important;
+}
 
 
+/* GitHub Button Styling */
+.github-btn {
+  background: #24292e !important; /* Official GitHub Dark */
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
 
+.github-btn:hover {
+  background: #1b1f23 !important;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
 
-
+.github-btn img {
+  filter: brightness(0) invert(1); /* Ensures the logo is white */
+}
 
 

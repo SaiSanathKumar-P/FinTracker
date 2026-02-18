@@ -13,6 +13,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const jwt = require("jsonwebtoken");
 const path = require("path");
+const GitHubStrategy = require("passport-github2").Strategy;
 
 const app = express();
 
@@ -62,6 +63,18 @@ passport.use(
     }
   )
 );
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: "/api/auth/github/callback"
+    },
+    (accessToken, refreshToken, profile, done) => {
+      return done(null, profile);
+    }
+  )
+);
 
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((obj, done) => done(null, obj));
@@ -83,6 +96,24 @@ app.get(
       { email: req.user.emails[0].value },
       process.env.JWT_SECRET || "fintrack_super_secret",
       { expiresIn: "7d" }
+    );
+
+    res.redirect(`/dashboard.html?token=${token}`);
+  }
+);
+app.get(
+  "/api/auth/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+app.get(
+  "/api/auth/github/callback",
+  passport.authenticate("github", { failureRedirect: "/login.html" }),
+  (req,res)=>{
+    const token = jwt.sign(
+      { email: req.user.emails?.[0]?.value || req.user.username },
+      process.env.JWT_SECRET,
+      { expiresIn:"7d" }
     );
 
     res.redirect(`/dashboard.html?token=${token}`);

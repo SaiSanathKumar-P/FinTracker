@@ -25,9 +25,14 @@ if (loginForm) {
       console.log("LOGIN RESPONSE:", data);
 
       if (res.ok && data.token) {
-        localStorage.setItem("token", data.token);
-        window.location.href = "dashboard.html";
-      }} else {
+  console.log("TOKEN RECEIVED:", data.token);
+
+  localStorage.setItem("token", data.token);
+
+  console.log("TOKEN STORED:", localStorage.getItem("token"));
+
+  window.location.href = "dashboard.html";
+}} else {
   alert(data.message);
 }
     } catch (err) {

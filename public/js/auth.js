@@ -62,13 +62,16 @@ if (registerForm) {
 
       console.log("REGISTER RESPONSE:", data);
 
-      if (res.ok && data.token) {
-        localStorage.setItem("token", data.token);
-        window.location.href = "dashboard.html";
-      } else {
-        alert(data.message || "Registration failed");
-      }
-
+     if (res.ok && data.token) {
+  localStorage.setItem("token", data.token);
+  window.location.href = "dashboard.html";
+} else {
+  if (data.message) {
+    alert(data.message);
+  } else {
+    alert("Registration failed");
+  }
+}
     } catch (err) {
       console.error("Register error:", err);
       alert("Server error");

@@ -6,6 +6,9 @@ const registerForm = document.getElementById("registerForm");
 // ======================
 // LOGIN
 // ======================
+// ======================
+// LOGIN
+// ======================
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -25,23 +28,18 @@ if (loginForm) {
       console.log("LOGIN RESPONSE:", data);
 
       if (res.ok && data.token) {
-  console.log("TOKEN RECEIVED:", data.token);
+        localStorage.setItem("token", data.token);
+        window.location.href = "dashboard.html";
+      } else {
+        alert(data.message || "Login failed");
+      }
 
-  localStorage.setItem("token", data.token);
-
-  console.log("TOKEN STORED:", localStorage.getItem("token"));
-
-  window.location.href = "dashboard.html";
-}} else {
-  alert(data.message);
-}
     } catch (err) {
       console.error("Login error:", err);
       alert("Server error");
     }
   });
 }
-
 // ======================
 // REGISTER
 // ======================

@@ -156,11 +156,16 @@ async function apiRequest(url, options = {}) {
     if (!response.ok) throw new Error(data?.message || `HTTP ${response.status}`);
     return data;
   } catch (error) {
-    console.warn('API failed – switching to mock mode:', error);
-    setOfflineMode(true);
-    loadMockFromStorage();
-    return handleMockRequest(url, options);
+  console.error("API ERROR:", error);
+
+  // If unauthorized, redirect to login
+  if (error.message.includes("401")) {
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+    return;
   }
+
+  throw error;
 }
 
 function handleMockRequest(url, options) {
@@ -665,6 +670,9 @@ async function loadSmartAnalysis() {
 // ========== Logout ==========
 function logoutUser() {
   localStorage.removeItem("token");
+  localStorage.removeItem("finTrack_useMock");
+  localStorage.removeItem("finTrack_mockExpenses");
+  localStorage.removeItem("finTrack_mockBudget");
   sessionStorage.clear();
   window.location.href = "login.html";
 }

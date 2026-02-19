@@ -36,13 +36,20 @@ router.post("/register", async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    res.json({ token });
+    return res.json({ token });
 
   } catch (err) {
+
+    // ✅ HANDLE DUPLICATE EMAIL ERROR
+    if (err.code === 11000) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
+
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 });
+
 
 /* ============================
    LOGIN

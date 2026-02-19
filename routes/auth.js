@@ -15,21 +15,28 @@ router.post("/register", async (req, res) => {
   try {
     const { name, email, college, year, password } = req.body;
 
-    const existing = await User.findOne({ email });
+    // ✅ Normalize email
+    const normalizedEmail = email.toLowerCase();
+
+    // ✅ Check existing user
+    const existing = await User.findOne({ email: normalizedEmail });
     if (existing) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
+    // ✅ Hash password
     const hashed = await bcrypt.hash(password, 10);
 
+    // ✅ Create user
     const user = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       college,
       year,
       password: hashed
     });
 
+    // ✅ Create token
     const token = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET,
@@ -40,7 +47,7 @@ router.post("/register", async (req, res) => {
 
   } catch (err) {
 
-    // ✅ HANDLE DUPLICATE EMAIL ERROR
+    // ✅ Handle duplicate key error from MongoDB
     if (err.code === 11000) {
       return res.status(400).json({ message: "Email already exists" });
     }

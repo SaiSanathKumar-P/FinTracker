@@ -130,8 +130,15 @@ app.use(express.static(path.join(__dirname, "public")));
 
 /* ===============================
    API ROUTES
-================================ */
-connectDB();
+================================ */(async () => {
+  try {
+    await connectDB();
+    console.log("Database Ready");
+  } catch (err) {
+    console.error("Mongo connection failed", err);
+  }
+})();
+
 const authRoutes = require("./routes/auth");
 const expenseRoutes = require("./routes/expenses");
 

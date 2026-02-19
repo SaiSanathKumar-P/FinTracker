@@ -100,9 +100,11 @@ function getToken() { return localStorage.getItem(TOKEN_KEY); }
 function requireAuth() {
   const token = localStorage.getItem("token");
 
-  if (!token || token === "undefined") {
+  console.log("DASHBOARD TOKEN:", token);
+
+  if (!token || token === "undefined" || token === "null") {
     localStorage.removeItem("token");
-    window.location.replace("login.html");
+    window.location.href = "login.html";
   }
 }
 function showMessage(msg) { alert(msg); }

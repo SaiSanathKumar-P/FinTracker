@@ -27,10 +27,9 @@ if (loginForm) {
       if (res.ok && data.token) {
         localStorage.setItem("token", data.token);
         window.location.href = "dashboard.html";
-      } else {
-        alert(data.message || "Login failed");
-      }
-
+      }} else {
+  alert(data.message);
+}
     } catch (err) {
       console.error("Login error:", err);
       alert("Server error");
@@ -77,4 +76,7 @@ if (registerForm) {
       alert("Server error");
     }
   });
+}
+if (loginForm) {
+  loginForm.reset();
 }

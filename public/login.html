@@ -54,18 +54,6 @@
     </main>
   </div>
   <script>
-    (function() {
-      try { document.body.className = localStorage.getItem('theme') || 'auto-mode'; } catch(e) {}
-      document.getElementById('loginForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const pass = document.getElementById('password').value;
-        if (email && pass) {
-  
-          window.location.href = 'dashboard.html';
-        } else alert('Please fill all fields');
-      });
-    })();
     const params = new URLSearchParams(window.location.search);
 const token = params.get("token");
 

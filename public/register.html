@@ -29,19 +29,6 @@
       <p class="register-link">Already have an account? <a href="login.html">Login</a></p>
     </main>
   </div>
-  <script>
-    (function() {
-      try { document.body.className = localStorage.getItem('theme') || 'auto-mode'; } catch(e) {}
-      document.getElementById('registerForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const fields = ['fullname','email','college','year','password'];
-        if(fields.every(id => document.getElementById(id).value.trim())) {
-          localStorage.setItem('token', 'demo-' + Date.now());
-          window.location.href = 'dashboard.html';
-        } else alert('Please fill all fields');
-      });
-    })();
-  </script>
   <script src="js/auth.js"></script>
 </body>
 </html>

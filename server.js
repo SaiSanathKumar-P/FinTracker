@@ -5,7 +5,7 @@
 require("dotenv").config();
 require("./config/passport");
 
-
+const connectDB = require("./config/db");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -131,7 +131,7 @@ app.use(express.static(path.join(__dirname, "public")));
 /* ===============================
    API ROUTES
 ================================ */
-
+connectDB();
 const authRoutes = require("./routes/auth");
 const expenseRoutes = require("./routes/expenses");
 
@@ -162,9 +162,7 @@ async function connectDB() {
   console.log("MongoDB Connected");
 }
 
-
 connectDB();
-
 // ===============================
 // EXPORT APP FOR VERCEL
 // ===============================

@@ -99,7 +99,9 @@ if (urlToken) {
 function getToken() { return localStorage.getItem(TOKEN_KEY); }
 function requireAuth() {
   const token = localStorage.getItem("token");
-  if (!token) {
+
+  if (!token || token === "undefined") {
+    localStorage.removeItem("token");
     window.location.replace("login.html");
   }
 }

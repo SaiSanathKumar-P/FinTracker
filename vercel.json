@@ -8,6 +8,7 @@
     }
   ],
   "routes": [
-    { "src": "/api/auth/(.*)", "dest": "server.js" },
+    { "handle": "filesystem" }, // This tells Vercel to check for images first
+    { "src": "/(.*)", "dest": "server.js" }
   ]
 }

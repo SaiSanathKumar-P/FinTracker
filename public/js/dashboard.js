@@ -100,11 +100,9 @@ function getToken() { return localStorage.getItem(TOKEN_KEY); }
 function requireAuth() {
   const token = localStorage.getItem("token");
 
-  console.log("DASHBOARD TOKEN:", token);
-
   if (!token || token === "undefined" || token === "null") {
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
+    localStorage.clear();
+    window.location.replace("login.html");
   }
 }
 function showMessage(msg) { alert(msg); }
@@ -670,11 +668,13 @@ async function loadSmartAnalysis() {
 // ========== Logout ==========
 function logoutUser() {
   localStorage.removeItem("token");
-  localStorage.removeItem("finTrack_useMock");
-  localStorage.removeItem("finTrack_mockExpenses");
-  localStorage.removeItem("finTrack_mockBudget");
+
+  // Force clear everything
+  localStorage.clear();
   sessionStorage.clear();
-  window.location.href = "login.html";
+
+  // Force reload without cache
+  window.location.replace("login.html");
 }
 
 // ========== Event Listeners ==========

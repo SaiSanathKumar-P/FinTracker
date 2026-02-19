@@ -2,7 +2,7 @@
  * FinTrack Dashboard – Professional with Budget Toggle & Glow Effects
  */
 
-const API_BASE = window.location.origin + '/api/expenses';
+const API_BASE = '/api/expenses';
 const TOKEN_KEY = 'token';
 const MOCK_MODE_KEY = 'finTrack_useMock';
 let monthlyBudget = 0;

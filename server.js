@@ -56,7 +56,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://fintracker-l6hp.onrender.com/api/auth/google/callback"
+      callbackURL: "https://fintracker-mm2d.onrender.com/api/auth/google/callback"
     },
     (accessToken, refreshToken, profile, done) => {
       return done(null, profile);
@@ -68,7 +68,7 @@ passport.use(
     {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      callbackURL: "https://fintracker-l6hp.onrender.com/api/auth/github/callback"
+      callbackURL: "https://fintracker-mm2d.onrender.com/api/auth/github/callback"
     },
     (accessToken, refreshToken, profile, done) => {
       return done(null, profile);

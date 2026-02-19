@@ -135,35 +135,41 @@ function saveMockToStorage() {
 // ========== API with fallback ==========
 async function apiRequest(url, options = {}) {
   if (useMock) return handleMockRequest(url, options);
+
   const token = getToken();
+
   const headers = {
     'Content-Type': 'application/json',
     ...(token && { 'Authorization': `Bearer ${token}` }),
     ...options.headers
   };
+
   try {
-    const response = await fetch(`${API_BASE}${url}`, { ...options, headers });
+    const response = await fetch(`${API_BASE}${url}`, {
+      ...options,
+      headers
+    });
+
     if (response.status === 401) {
-  console.warn("Session expired");
-  localStorage.removeItem("token");
-  window.location.replace("login.html");
-  return;
-}
+      localStorage.removeItem("token");
+      window.location.replace("login.html");
+      return;
+    }
 
-    const data = response.status !== 204 ? await response.json() : null;
-    if (!response.ok) throw new Error(data?.message || `HTTP ${response.status}`);
+    const data = response.status !== 204
+      ? await response.json()
+      : null;
+
+    if (!response.ok) {
+      throw new Error(data?.message || `HTTP ${response.status}`);
+    }
+
     return data;
+
   } catch (error) {
-  console.error("API ERROR:", error);
-
-  // If unauthorized, redirect to login
-  if (error.message.includes("401")) {
-    localStorage.removeItem("token");
-    window.location.href = "login.html";
-    return;
+    console.error("API ERROR:", error);
+    throw error;
   }
-
-  throw error;
 }
 
 function handleMockRequest(url, options) {

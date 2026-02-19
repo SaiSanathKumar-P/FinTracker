@@ -1,3 +1,4 @@
+const connectDB = require("../config/db");
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.post("/register", async (req, res) => {
   try {
+     await connectDB();
     const { name, email, college, year, password } = req.body;
 
     // ✅ Normalize email
@@ -64,6 +66,7 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
+     await connectDB();
     let { email, password } = req.body;
 
     // ✅ normalize email

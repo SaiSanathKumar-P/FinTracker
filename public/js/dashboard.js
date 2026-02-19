@@ -662,8 +662,9 @@ async function loadSmartAnalysis() {
 
 // ========== Logout ==========
 function logoutUser() {
-  localStorage.clear();
-  window.location.replace("login.html");
+  localStorage.removeItem("token");
+  sessionStorage.clear();
+  window.location.href = "login.html";
 }
 
 // ========== Event Listeners ==========

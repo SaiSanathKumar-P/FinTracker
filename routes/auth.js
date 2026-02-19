@@ -76,26 +76,4 @@ router.post("/login", async (req, res) => {
   }
 });
 
-/* ============================
-   GOOGLE LOGIN
-============================ */
-
-router.get("/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-router.get("/google/callback",
-  passport.authenticate("google", { session: false, failureRedirect: "/login.html" }),
-  (req, res) => {
-
-    const token = jwt.sign(
-      { email: req.user.emails[0].value },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    res.redirect(`/dashboard.html?token=${token}`);
-  }
-);
-
 module.exports = router;

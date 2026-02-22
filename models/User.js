@@ -5,7 +5,14 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   college: String,
   year: String,
-  password: String
+  password: String,
+
+  // ✅ ADD THIS
+  monthlyBudget: {
+    type: Number,
+    default: 0
+  }
+
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);

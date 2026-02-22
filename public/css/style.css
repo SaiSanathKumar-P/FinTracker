@@ -2368,7 +2368,7 @@ footer a:hover {
 .google-btn:hover {
   background: #f3f3f3;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+
 }
 /* GitHub Button Styling */
 .github-btn:hover {

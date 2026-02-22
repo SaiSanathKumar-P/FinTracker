@@ -2327,28 +2327,26 @@ footer a:hover {
 /* Custom Social Button Styling */
 .social-login {
     display: flex;
-    gap: 12px;
+    gap: 15px;
     width: 100%;
-    margin-top: 20px;
+    max-width: 400px;
+    margin: 20px auto; /* Centers the buttons */
 }
 .social-btn {
-    flex: 1;
-    height: 48px; /* Standard height for touch/click */
+    flex: 1; /* Forces both buttons to be the exact same width */
+    height: 50px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 14px;
     font-weight: 600;
-    transition: all 0.2s ease;
-    border: 1px solid rgba(255,255,255,0.1);
+    transition: transform 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .social-btn img {
-    width: 20px !important;
-    height: 20px !important;
-    margin-right: 10px; /* Space between icon and text */
+    margin-right: 12px;
 }
-
 /* Specific Brand Colors */
 .google-btn:hover {
   background: #f1f1f1 !important;
@@ -2357,17 +2355,17 @@ footer a:hover {
 }
 
 .google-btn {
-  background: #ffffff !important;
-  color: #1f1f1f !important;
+    background: #FFFFFF !important;
+    color: #1F1F1F !important;
+    border: 1px solid #e0e0e0 !important;
 }
 
 
 /* GitHub Button Styling */
 .github-btn {
     background: #24292e !important;
-    color: #ffffff !important;
+    color: #FFFFFF !important;
 }
-
 .github-btn:hover {
   background: #1b1f23 !important;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);

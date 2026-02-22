@@ -2377,8 +2377,13 @@ footer a:hover {
   transform: translateY(-2px);
 }
 
+/* Update this in style.css */
 .github-btn img {
-  filter: brightness(0) invert(1); /* Ensures the logo is white */
+    width: 20px; /* Standard professional size */
+    height: 20px;
+    object-fit: contain;
+    /* Remove filter if logo is already white, or keep it if logo is black */
+    filter: brightness(0) invert(1); 
 }
 /* Logo Container Circle */
 .logo-circle {

@@ -702,7 +702,21 @@ function setupEventListeners() {
     })
   );
 }
+async function loadBudget() {
+  try {
+    const data = await apiRequest('/budget');
 
+    monthlyBudget = Number(data.budget || 0);
+
+    if (elements.budgetInput) {
+      elements.budgetInput.value = monthlyBudget;
+      updateBudgetValue(monthlyBudget);
+    }
+
+  } catch (err) {
+    console.error("Load budget failed");
+  }
+}
 // ========== Init ==========
 async function initDashboard() {
   const savedColors = localStorage.getItem("finTrack_categoryColors");
@@ -729,6 +743,7 @@ if (savedColors) {
   }
   
   try { 
+    await loadBudget();
     await loadExpenses(); 
     await loadSmartAnalysis(); 
   } catch (error) { 

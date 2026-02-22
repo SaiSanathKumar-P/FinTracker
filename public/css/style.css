@@ -2325,27 +2325,47 @@ footer a:hover {
   z-index: 1;
 }
 /* Custom Social Button Styling */
+/* Professional Social Login Alignment */
 .social-login {
     display: flex;
-    gap: 15px;
+    gap: 12px; /* Space between buttons */
     width: 100%;
     max-width: 400px;
-    margin: 20px auto; /* Centers the buttons */
+    margin: 20px auto;
 }
+
 .social-btn {
-    flex: 1; /* Forces both buttons to be the exact same width */
-    height: 50px;
-    border-radius: 12px;
+    flex: 1; /* Forces equal width */
+    height: 46px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 12px;
     font-size: 14px;
     font-weight: 600;
-    transition: transform 0.2s;
+    cursor: pointer;
+    transition: all 0.2s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0 10px;
+    white-space: nowrap; /* Prevents text from wrapping */
 }
+
 .social-btn img {
-    margin-right: 12px;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    object-fit: contain;
+    filter: none !important; /* Fixes the 'white box' issue */
+}
+
+.google-btn {
+    background: #ffffff !important;
+    color: #1f1f1f !important;
+}
+
+.github-btn {
+    background: #24292e !important;
+    color: #ffffff !important;
 }
 /* Specific Brand Colors */
 .google-btn:hover {
@@ -2353,33 +2373,13 @@ footer a:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
 }
-
-.google-btn {
-    background: #FFFFFF !important;
-    color: #1F1F1F !important;
-    border: 1px solid #e0e0e0 !important;
-}
-
-
 /* GitHub Button Styling */
-.github-btn {
-    background: #24292e !important;
-    color: #FFFFFF !important;
-}
 .github-btn:hover {
   background: #1b1f23 !important;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
 }
 
-/* Update this in style.css */
-.github-btn img {
-    width: 20px; /* Standard professional size */
-    height: 20px;
-    object-fit: contain;
-    /* Remove filter if logo is already white, or keep it if logo is black */
-    filter: brightness(0) invert(1); 
-}
 /* Logo Container Circle */
 .logo-circle {
   width: 60px;

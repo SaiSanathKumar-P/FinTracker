@@ -2326,32 +2326,30 @@ footer a:hover {
 }
 /* Custom Social Button Styling */
 .social-login {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    margin-top: 20px;
 }
-
 .social-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
+    flex: 1;
+    height: 48px; /* Standard height for touch/click */
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.social-btn img {
+    width: 20px !important;
+    height: 20px !important;
+    margin-right: 10px; /* Space between icon and text */
 }
 
 /* Specific Brand Colors */
-.google-btn {
-  background: white !important;
-  color: #1f1f1f !important;
-}
-
 .google-btn:hover {
   background: #f1f1f1 !important;
   transform: translateY(-2px);
@@ -2366,9 +2364,8 @@ footer a:hover {
 
 /* GitHub Button Styling */
 .github-btn {
-  background: #24292e !important; /* Official GitHub Dark */
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: #24292e !important;
+    color: #ffffff !important;
 }
 
 .github-btn:hover {

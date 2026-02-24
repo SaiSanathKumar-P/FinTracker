@@ -1,23 +1,29 @@
-const CACHE_NAME = "student-expense-cache-v1";
+const CACHE_NAME = "fintrack-cache-v1";
+
 const urlsToCache = [
   "/",
   "/index.html",
   "/login.html",
+  "/register.html",
   "/dashboard.html",
   "/css/style.css",
-  "/js/script.js"
+  "/js/auth.js",
+  "/js/dashboard.js",
+  "/manifest.json"
 ];
 
-self.addEventListener("install", event => {
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(urlsToCache);
+    })
   );
 });
 
-self.addEventListener("fetch", event => {
+self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
+    caches.match(event.request).then(res => {
+      return res || fetch(event.request);
+    })
   );
 });

@@ -4,7 +4,9 @@
     {
       "src": "server.js",
       "use": "@vercel/node",
-      "config": { "includeFiles": ["views/**", "public/**"] }
+      "config": {
+        "includeFiles": ["public/**"]
+      }
     }
   ],
   "routes": [
@@ -14,7 +16,10 @@
     {
       "source": "/service-worker.js",
       "headers": [
-        { "key": "Content-Type", "value": "application/javascript" }
+        {
+          "key": "Content-Type",
+          "value": "application/javascript"
+        }
       ]
     }
   ]

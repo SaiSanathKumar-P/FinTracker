@@ -7,10 +7,11 @@
   <meta name="keywords" content="student finance, budget tracker, expense manager, college money, FinTrack">
   <meta name="author" content="FinTrack Team">
   <meta property="og:title" content="FinTrack - Smart Student Finance Manager">
-<meta property="og:description" content="Take control of your college finances. Track expenses and get AI-powered insights with FinTrack.">
-<meta property="og:type" content="website">
-<link rel="canonical" href="https://fintracker-mm2d.onrender.com/">
-<link rel="icon" type="image/png" href="images/favicon.png">
+  <meta property="og:description" content="Take control of your college finances. Track expenses and get AI-powered insights with FinTrack.">
+  <meta property="og:image" content="images/brand-icon.png"> <meta property="og:url" content="https://fintracker-l6hp.onrender.com/">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://fintracker-l6hp.onrender.com/">
+  <link rel="icon" type="image/png" href="images/favicon.png">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="google-site-verification" content="VM5NmnL9KlYBSLLmmzJ2AtE-2eZa_eMZF2OdBviguuA" />
@@ -25,184 +26,181 @@
   </style>
 </head>
 <body class="auto-mode">
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <header role="banner">
-  <div class="logo">
-    <div class="logo-circle">
-      <img src="images/logo.png" alt="FinTrack Logo" class="logo-img">
+<header role="banner">
+  <div class="logo" aria-label="FinTrack home">FinTrack</div>
+  <div class="header-actions" role="navigation" aria-label="Main navigation">
+    <!-- Theme Switcher (accessible dropdown) -->
+    <div class="theme-dropdown" aria-label="Theme selector">
+      <button id="themeBtn" class="theme-btn" aria-haspopup="true" aria-expanded="false" aria-controls="themeMenu">
+        <span class="theme-icon">🌓</span> <span id="themeLabel">Both</span>
+      </button>
+      <div id="themeMenu" class="theme-menu" role="menu" aria-labelledby="themeBtn">
+        <div role="menuitem" data-theme="light" tabindex="0">☀️ Light</div>
+        <div role="menuitem" data-theme="dark" tabindex="0">🌙 Dark</div>
+        <div role="menuitem" data-theme="auto" tabindex="0">🌓 Both</div>
+      </div>
     </div>
-    <span>FinTrack</span>
+    <a href="login.html" class="nav-btn">Login</a>
+    <a href="register.html" class="nav-btn primary">Register</a>
   </div>
-    <div class="header-actions" role="navigation" aria-label="Main navigation">
-      <!-- Theme Switcher (accessible dropdown) -->
-      <div class="theme-dropdown" aria-label="Theme selector">
-        <button id="themeBtn" class="theme-btn" aria-haspopup="true" aria-expanded="false" aria-controls="themeMenu">
-  <span class="theme-icon">🌓</span>
-  <span id="themeLabel">Both</span>
-  <span class="theme-arrow"></span>
-</button>
-        <div id="themeMenu" class="theme-menu" role="menu" aria-labelledby="themeBtn">
-          <div role="menuitem" data-theme="light" tabindex="0">☀️ Light</div>
-          <div role="menuitem" data-theme="dark" tabindex="0">🌙 Dark</div>
-          <div role="menuitem" data-theme="auto" tabindex="0">🌓 Both</div>
-        </div>
-      </div>
-      <a href="login.html" class="nav-btn">Login</a>
-      <a href="register.html" class="nav-btn primary">Register</a>
+</header>
+
+<main id="main-content">
+  <!-- HERO SECTION -->
+  <section class="hero-section" aria-labelledby="hero-heading">
+    <div class="hero-left">
+      <h1 id="hero-heading">Manage Your Student Finances Smarter</h1>
+      <p>Track expenses, control budgets and gain smart financial insights designed specifically for college students.</p>
+      <a href="register.html" class="cta-btn" aria-label="Get started with FinTrack">Get Started</a>
     </div>
-  </header>
+    <div class="hero-right">
+      <img src="images/indexgroup.png" alt="Students happily managing their finances on mobile app" loading="eager" width="500" height="400">
+    </div>
+  </section>
 
-  <main id="main-content">
-    <!-- HERO SECTION -->
-    <section class="hero-section" aria-labelledby="hero-heading">
-      <div class="hero-left">
-        <h1 id="hero-heading">Manage Your Student Finances Smarter</h1>
-        <p>Track expenses, control budgets and gain smart financial insights designed specifically for college students.</p>
-        <a href="register.html" class="cta-btn" aria-label="Get started with FinTrack">Get Started</a>
-      </div>
-      <div class="hero-right">
-        <img src="images/indexgroup.png" alt="Students happily managing their finances on mobile app" loading="eager" width="500" height="400">
-      </div>
-    </section>
+  <!-- FEATURES SECTION -->
+  <section class="features-section" aria-labelledby="features-heading">
+    <h2 id="features-heading" class="features-title">Powerful Features</h2>
+    <div class="features-grid">
+      <article class="feature-card">
+        <img src="images/smartanalytics.png" alt="Analytics chart illustration" loading="lazy" width="260" height="160">
+        <h3>Smart Analytics</h3>
+        <p>Visual charts to understand your spending behavior.</p>
+      </article>
+      <article class="feature-card">
+        <img src="images/budgetcontrol.png" alt="Budget control dashboard" loading="lazy" width="260" height="160">
+        <h3>Budget Control</h3>
+        <p>Set monthly budgets and monitor remaining balance.</p>
+      </article>
+      <article class="feature-card">
+        <img src="images/Securelogin.png" alt="Secure login illustration" loading="lazy" width="260" height="160">
+        <h3>Secure Login</h3>
+        <p>JWT authentication with encrypted password protection.</p>
+      </article>
+    </div>
+  </section>
 
-    <!-- FEATURES SECTION -->
-    <section class="features-section" aria-labelledby="features-heading">
-      <h2 id="features-heading" class="features-title">Powerful Features</h2>
-      <div class="features-grid">
-        <article class="feature-card">
-          <img src="images/smartanalytics.png" alt="Analytics chart illustration" loading="lazy" width="260" height="160">
-          <h3>Smart Analytics</h3>
-          <p>Visual charts to understand your spending behavior.</p>
-        </article>
-        <article class="feature-card">
-          <img src="images/budgetcontrol.png" alt="Budget control dashboard" loading="lazy" width="260" height="160">
-          <h3>Budget Control</h3>
-          <p>Set monthly budgets and monitor remaining balance.</p>
-        </article>
-        <article class="feature-card">
-          <img src="images/Securelogin.png" alt="Secure login illustration" loading="lazy" width="260" height="160">
-          <h3>Secure Login</h3>
-          <p>JWT authentication with encrypted password protection.</p>
-        </article>
-      </div>
-    </section>
+  <!-- SPLIT SECTION (IMAGE + TEXT) -->
+  <section class="split-section" aria-labelledby="split-heading">
+    <div class="split-image">
+      <img src="images/collegestudents.png" alt="College students collaborating" loading="lazy" width="500" height="400">
+    </div>
+    <div class="split-text">
+      <h2 id="split-heading">Built for Modern Students</h2>
+      <p>Whether it's hostel rent, food, travel or academic expenses — FinTrack helps you manage everything in one secure dashboard.</p>
+      <a href="register.html" class="cta-btn">Start Managing Now</a>
+    </div>
+  </section>
 
-    <!-- SPLIT SECTION (IMAGE + TEXT) -->
-    <section class="split-section" aria-labelledby="split-heading">
-      <div class="split-image">
-        <img src="images/collegestudents.png" alt="College students collaborating" loading="lazy" width="500" height="400">
-      </div>
-      <div class="split-text">
-        <h2 id="split-heading">Built for Modern Students</h2>
-        <p>Whether it's hostel rent, food, travel or academic expenses — FinTrack helps you manage everything in one secure dashboard.</p>
-        <a href="register.html" class="cta-btn">Start Managing Now</a>
-      </div>
-    </section>
+  <!-- HOW IT WORKS SECTION -->
+  <section class="how-section" aria-labelledby="how-heading">
+    <h2 id="how-heading">How It Works</h2>
+    <div class="how-grid">
+      <article class="how-card">
+        <img src="images/createacc.png" alt="Create account step" loading="lazy" width="110" height="110">
+        <h3>Create Account</h3>
+        <p>Sign up securely using your email and password.</p>
+      </article>
+      <article class="how-card">
+        <img src="images/addexpens.png" alt="Add expenses step" loading="lazy" width="110" height="110">
+        <h3>Add Expenses</h3>
+        <p>Track daily spending like food, rent, and travel.</p>
+      </article>
+      <article class="how-card">
+        <img src="images/setbudg.png" alt="Set budget step" loading="lazy" width="110" height="110">
+        <h3>Set Budget</h3>
+        <p>Define monthly limits to control overspending.</p>
+      </article>
+      <article class="how-card">
+        <img src="images/getsmarter.png" alt="Get smart insights step" loading="lazy" width="110" height="110">
+        <h3>Get Smart Insights</h3>
+        <p>View charts and AI suggestions to improve savings.</p>
+      </article>
+    </div>
+  </section>
+</main>
 
-    <!-- HOW IT WORKS SECTION -->
-    <section class="how-section" aria-labelledby="how-heading">
-      <h2 id="how-heading">How It Works</h2>
-      <div class="how-grid">
-        <article class="how-card">
-          <img src="images/createacc.png" alt="Create account step" loading="lazy" width="110" height="110">
-          <h3>Create Account</h3>
-          <p>Sign up securely using your email and password.</p>
-        </article>
-        <article class="how-card">
-          <img src="images/addexpens.png" alt="Add expenses step" loading="lazy" width="110" height="110">
-          <h3>Add Expenses</h3>
-          <p>Track daily spending like food, rent, and travel.</p>
-        </article>
-        <article class="how-card">
-          <img src="images/setbudg.png" alt="Set budget step" loading="lazy" width="110" height="110">
-          <h3>Set Budget</h3>
-          <p>Define monthly limits to control overspending.</p>
-        </article>
-        <article class="how-card">
-          <img src="images/getsmarter.png" alt="Get smart insights step" loading="lazy" width="110" height="110">
-          <h3>Get Smart Insights</h3>
-          <p>View charts and AI suggestions to improve savings.</p>
-        </article>
-      </div>
-    </section>
-  </main>
+<footer role="contentinfo">
+  <p>© 2026 FinTrack | Designed for Students | <a href="#">Privacy Policy</a> | <a href="#">Terms</a></p>
+</footer>
 
-  <footer role="contentinfo">
-    <p>© 2026 FinTrack | Designed for Students | <a href="#">Privacy Policy</a> | <a href="#">Terms</a></p>
-  </footer>
+<script>
+  (function() {
+    // Theme management (unified across all pages)
+    const themeBtn = document.getElementById('themeBtn');
+    const themeMenu = document.getElementById('themeMenu');
+    const dropdown = document.querySelector('.theme-dropdown');
+    const themeLabel = document.getElementById('themeLabel');
+    const themeIcon = document.querySelector('.theme-icon');
 
-  <script>
-    (function() {
-      // Theme management (unified across all pages)
-      const themeBtn = document.getElementById('themeBtn');
-      const themeMenu = document.getElementById('themeMenu');
-      const dropdown = document.querySelector('.theme-dropdown');
-      const themeLabel = document.getElementById('themeLabel');
-      const themeIcon = document.querySelector('.theme-icon');
+    // Load saved theme
+    function loadTheme() {
+      try {
+        const saved = localStorage.getItem('theme') || 'auto-mode';
+        document.body.classList.add(saved);
+        const themeName = saved.replace('-mode', '');
+        if (themeLabel) themeLabel.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
+        if (themeIcon) {
+          const icons = { light: '☀️', dark: '🌙', auto: '🌓' };
+          themeIcon.textContent = icons[themeName] || '🌓';
+        }
+      } catch (e) { console.warn('Theme loading failed'); }
+    }
+    loadTheme();
 
-      // Load saved theme
-      function loadTheme() {
-        try {
-          const saved = localStorage.getItem('theme') || 'auto-mode';
-          document.body.classList.add(saved);
-          const themeName = saved.replace('-mode', '');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const expanded = themeBtn.getAttribute('aria-expanded') === 'true' ? false : true;
+        themeBtn.setAttribute('aria-expanded', expanded);
+        dropdown.classList.toggle('active');
+      });
+    }
+
+    if (themeMenu) {
+      themeMenu.querySelectorAll('[data-theme]').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const theme = item.getAttribute('data-theme') + '-mode';
+          const themeName = item.getAttribute('data-theme');
+          document.body.className = ''; // remove all
+          document.body.classList.add(theme);
           if (themeLabel) themeLabel.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
           if (themeIcon) {
             const icons = { light: '☀️', dark: '🌙', auto: '🌓' };
             themeIcon.textContent = icons[themeName] || '🌓';
           }
-        } catch (e) { console.warn('Theme loading failed'); }
-      }
-      loadTheme();
-
-      if (themeBtn) {
-        themeBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const expanded = themeBtn.getAttribute('aria-expanded') === 'true' ? false : true;
-          themeBtn.setAttribute('aria-expanded', expanded);
-          dropdown.classList.toggle('active');
-        });
-      }
-
-      if (themeMenu) {
-        themeMenu.querySelectorAll('[data-theme]').forEach(item => {
-          item.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const theme = item.getAttribute('data-theme') + '-mode';
-            const themeName = item.getAttribute('data-theme');
-            document.body.className = ''; // remove all
-            document.body.classList.add(theme);
-            if (themeLabel) themeLabel.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
-            if (themeIcon) {
-              const icons = { light: '☀️', dark: '🌙', auto: '🌓' };
-              themeIcon.textContent = icons[themeName] || '🌓';
-            }
-            try { localStorage.setItem('theme', theme); } catch (e) {}
-            dropdown.classList.remove('active');
-            themeBtn.setAttribute('aria-expanded', 'false');
-          });
-        });
-      }
-
-      // Close dropdown when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('.theme-dropdown') && dropdown) {
+          try { localStorage.setItem('theme', theme); } catch (e) {}
           dropdown.classList.remove('active');
-          if (themeBtn) themeBtn.setAttribute('aria-expanded', 'false');
-        }
+          themeBtn.setAttribute('aria-expanded', 'false');
+        });
       });
+    }
 
-      // Keyboard support
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && dropdown && dropdown.classList.contains('active')) {
-          dropdown.classList.remove('active');
-          if (themeBtn) themeBtn.setAttribute('aria-expanded', 'false');
-        }
-      });
-    })();
-  </script>
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.theme-dropdown') && dropdown) {
+        dropdown.classList.remove('active');
+        if (themeBtn) themeBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dropdown && dropdown.classList.contains('active')) {
+        dropdown.classList.remove('active');
+        if (themeBtn) themeBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js")
+      .then(() => console.log("Service Worker Registered"));
+  }
+</script>
 </body>
 </html>
-
-
-

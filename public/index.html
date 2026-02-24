@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="manifest" href="/public/manifest.json">
+  <meta name="theme-color" content="#2563eb">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <meta name="description" content="FinTrack – Smart student finance management. Track expenses, set budgets, and get AI-powered insights.">
@@ -199,7 +201,8 @@
 <script>
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/service-worker.js")
-      .then(() => console.log("Service Worker Registered"));
+      .then(() => console.log("Service Worker Registered"))
+      .catch(err => console.log("SW error", err));
   }
 </script>
 </body>

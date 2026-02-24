@@ -3,7 +3,9 @@
 // ================================
 
 require("dotenv").config();
+require("./config/passport");
 
+const connectDB = require("./config/db");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -13,6 +15,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const jwt = require("jsonwebtoken");
 const path = require("path");
+const GitHubStrategy = require("passport-github2").Strategy;
 
 const app = express();
 
@@ -55,7 +58,19 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://fintracker-l6hp.onrender.com/api/auth/google/callback"
+      callbackURL: "https://fintracker-student.vercel.app/api/auth/google/callback"
+    },
+    (accessToken, refreshToken, profile, done) => {
+      return done(null, profile);
+    }
+  )
+);
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: "https://fintracker-student.vercel.app/api/auth/github/callback"
     },
     (accessToken, refreshToken, profile, done) => {
       return done(null, profile);
@@ -80,10 +95,28 @@ app.get(
   passport.authenticate("google", { failureRedirect: "/login.html" }),
   (req, res) => {
     const token = jwt.sign(
-      { email: req.user.emails[0].value },
-      process.env.JWT_SECRET || "fintrack_super_secret",
-      { expiresIn: "7d" }
-    );
+  { id: req.user.id || req.user.emails[0].value },
+  process.env.JWT_SECRET,
+  { expiresIn: "7d" }
+);
+    res.redirect(`/dashboard.html?token=${token}`);
+  }
+);
+app.get(
+  "/api/auth/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+app.get(
+  "/api/auth/github/callback",
+  passport.authenticate("github", { failureRedirect: "/login.html" }),
+  (req,res)=>{
+    const token = jwt.sign(
+  { id: req.user.id || req.user.username },
+  process.env.JWT_SECRET,
+  { expiresIn: "7d" }
+);
+
 
     res.redirect(`/dashboard.html?token=${token}`);
   }
@@ -94,10 +127,26 @@ app.get(
 ================================ */
 
 app.use(express.static(path.join(__dirname, "public")));
+// Explicitly serve manifest & service worker
+// Serve PWA files correctly
+app.get("/manifest.json", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "manifest.json"));
+});
+
+app.get("/service-worker.js", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "service-worker.js"));
+});
 
 /* ===============================
    API ROUTES
-================================ */
+================================ */(async () => {
+  try {
+    await connectDB();
+    console.log("Database Ready");
+  } catch (err) {
+    console.error("Mongo connection failed", err);
+  }
+})();
 
 const authRoutes = require("./routes/auth");
 const expenseRoutes = require("./routes/expenses");
@@ -113,17 +162,12 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-/* ===============================
-   DATABASE + SERVER
-================================ */
+// ===============================
+// DATABASE CONNECTION (Vercel)
+// ===============================
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("MongoDB Connected");
-    const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () =>
-      console.log(`Server running on port ${PORT}`)
-    );
-  })
-  .catch(err => console.log("Mongo Error:", err));
+// ===============================
+// EXPORT APP FOR VERCEL
+// ===============================
+
+module.exports = app;

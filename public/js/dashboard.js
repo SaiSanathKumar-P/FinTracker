@@ -2,13 +2,9 @@
  * FinTrack Dashboard – Professional with Budget Toggle & Glow Effects
  */
 
-const API_BASE = window.location.origin + '/api/expenses';
+const API_BASE = '/api/expenses';
 const TOKEN_KEY = 'token';
 const MOCK_MODE_KEY = 'finTrack_useMock';
-
-window.history.pushState(null, null, window.location.href);
-window.onpopstate = () => window.history.go(1);
-
 let monthlyBudget = 0;
 let useMock = false;
 let mockExpenses = [];
@@ -91,10 +87,24 @@ const elements = {
   aiWeekly: document.getElementById('aiWeekly'),
   aiDaily: document.getElementById('aiDaily'),
 };
+const urlParams = new URLSearchParams(window.location.search);
+const urlToken = urlParams.get("token");
+
+if (urlToken) {
+  localStorage.setItem(TOKEN_KEY, urlToken);
+  window.history.replaceState({}, document.title, "dashboard.html");
+}
 
 // ========== Utilities ==========
 function getToken() { return localStorage.getItem(TOKEN_KEY); }
-function requireAuth() { if (!getToken() && !useMock) window.location.href = 'login.html'; }
+function requireAuth() {
+  const token = localStorage.getItem("token");
+
+  if (!token || token === "undefined" || token === "null") {
+    localStorage.clear();
+    window.location.replace("login.html");
+  }
+}
 function showMessage(msg) { alert(msg); }
 
 function setOfflineMode(enabled) {
@@ -125,28 +135,40 @@ function saveMockToStorage() {
 // ========== API with fallback ==========
 async function apiRequest(url, options = {}) {
   if (useMock) return handleMockRequest(url, options);
+
   const token = getToken();
+
   const headers = {
     'Content-Type': 'application/json',
     ...(token && { 'Authorization': `Bearer ${token}` }),
     ...options.headers
   };
+
   try {
-    const response = await fetch(`${API_BASE}${url}`, { ...options, headers });
+    const response = await fetch(`${API_BASE}${url}`, {
+      ...options,
+      headers
+    });
+
     if (response.status === 401) {
-      console.warn('401 received – switching to mock mode');
-      setOfflineMode(true);
-      loadMockFromStorage();
-      return handleMockRequest(url, options);
+      localStorage.removeItem("token");
+      window.location.replace("login.html");
+      return;
     }
-    const data = response.status !== 204 ? await response.json() : null;
-    if (!response.ok) throw new Error(data?.message || `HTTP ${response.status}`);
+
+    const data = response.status !== 204
+      ? await response.json()
+      : null;
+
+    if (!response.ok) {
+      throw new Error(data?.message || `HTTP ${response.status}`);
+    }
+
     return data;
+
   } catch (error) {
-    console.warn('API failed – switching to mock mode:', error);
-    setOfflineMode(true);
-    loadMockFromStorage();
-    return handleMockRequest(url, options);
+    console.error("API ERROR:", error);
+    throw error;
   }
 }
 
@@ -650,9 +672,15 @@ async function loadSmartAnalysis() {
 }
 
 // ========== Logout ==========
-function logoutUser() { 
-  localStorage.removeItem(TOKEN_KEY); 
-  window.location.href = 'login.html'; 
+function logoutUser() {
+  localStorage.removeItem("token");
+
+  // Force clear everything
+  localStorage.clear();
+  sessionStorage.clear();
+
+  // Force reload without cache
+  window.location.replace("login.html");
 }
 
 // ========== Event Listeners ==========
@@ -674,7 +702,21 @@ function setupEventListeners() {
     })
   );
 }
+async function loadBudget() {
+  try {
+    const data = await apiRequest('/budget');
 
+    monthlyBudget = Number(data.budget || 0);
+
+    if (elements.budgetInput) {
+      elements.budgetInput.value = monthlyBudget;
+      updateBudgetValue(monthlyBudget);
+    }
+
+  } catch (err) {
+    console.error("Load budget failed");
+  }
+}
 // ========== Init ==========
 async function initDashboard() {
   const savedColors = localStorage.getItem("finTrack_categoryColors");
@@ -686,8 +728,6 @@ if (savedColors) {
     setOfflineMode(true); 
     loadMockFromStorage(); 
   }
-  
-  requireAuth();
   rebuildDropdown();
   initCategoryDropdown();
   setupEventListeners();
@@ -703,12 +743,19 @@ if (savedColors) {
   }
   
   try { 
+    await loadBudget();
     await loadExpenses(); 
     await loadSmartAnalysis(); 
   } catch (error) { 
     console.error(error); 
   }
 }
-
-initDashboard();
+window.history.pushState(null, null, window.location.href);
+window.onpopstate = function () {
+  window.history.go(1);
+};
+document.addEventListener("DOMContentLoaded", () => {
+  requireAuth();
+  initDashboard();
+});
 

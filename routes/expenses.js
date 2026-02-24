@@ -1,5 +1,6 @@
 const express = require("express");
 const Expense = require("../models/Expense");
+const User = require("../models/User");
 const auth = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -118,3 +119,30 @@ if (total > 10000) riskLevel = "High Risk";
 });
 
 module.exports = router;
+// ===== SAVE BUDGET =====
+router.post("/budget", auth, async (req, res) => {
+  try {
+    const { budget } = req.body;
+
+    await User.findByIdAndUpdate(
+      req.user.id,
+      { monthlyBudget: budget }
+    );
+
+    res.json({ message: "Budget saved" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+// ===== GET BUDGET =====
+router.get("/budget", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    res.json({ budget: user.monthlyBudget || 0 });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});

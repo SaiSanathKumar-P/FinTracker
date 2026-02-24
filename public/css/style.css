@@ -308,12 +308,16 @@ header {
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: var(--text-2xl);
   font-weight: 700;
   color: var(--primary-500);
   text-shadow: 0 0 10px var(--primary-500);
   letter-spacing: -0.5px;
 }
+
 
 .logo:hover {
   text-decoration: none;
@@ -386,10 +390,10 @@ header {
   box-shadow: var(--shadow-xl);
   overflow: hidden;
   display: none;
+  z-index: 5000;
   z-index: var(--z-dropdown);
   animation: fadeIn var(--transition-fast) ease;
 }
-
 .theme-dropdown.active .theme-menu {
   display: block;
 }
@@ -406,7 +410,22 @@ header {
   color: white;
   padding-left: var(--space-xl);
 }
+/* Theme Button Arrow */
+.theme-arrow {
+  width: 10px;
+  height: 10px;
+  border-right: 2.5px solid var(--text-primary);
+  border-bottom: 2.5px solid var(--text-primary);
+  transform: rotate(45deg);
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
 
+
+/* Rotate arrow when menu open */
+.theme-dropdown.active .theme-arrow {
+  transform: rotate(-135deg);
+}
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -1819,6 +1838,11 @@ footer a:hover {
     gap: var(--space-xs);
     flex-wrap: wrap;
   }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
   .nav-btn {
     padding: var(--space-xs) var(--space-sm);
@@ -2301,60 +2325,83 @@ footer a:hover {
   z-index: 1;
 }
 /* Custom Social Button Styling */
+/* Professional Social Login Alignment */
 .social-login {
   display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: 14px;
+  width: 100%;
+  max-width: 400px;
+  margin: 25px auto;
 }
 
 .social-btn {
   flex: 1;
+  height: 48px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
+  transition: all 0.25s ease;
+  border: none;
 }
 
-/* Specific Brand Colors */
-.google-btn {
-  background: white !important;
-  color: #1f1f1f !important;
-}
-
-.google-btn:hover {
-  background: #f1f1f1 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+.social-btn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .google-btn {
-  background: #ffffff !important;
-  color: #1f1f1f !important;
+  background: white;
+  color: #1f1f1f;
 }
 
-
-/* GitHub Button Styling */
 .github-btn {
-  background: #24292e !important; /* Official GitHub Dark */
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: #24292e;
+  color: white;
 }
+/* Specific Brand Colors */
+.google-btn:hover {
+  background: #f3f3f3;
+  transform: translateY(-2px);
 
+}
+/* GitHub Button Styling */
 .github-btn:hover {
   background: #1b1f23 !important;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
 }
 
-.github-btn img {
-  filter: brightness(0) invert(1); /* Ensures the logo is white */
+/* Logo Container Circle */
+.logo-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.6); /* Slightly stronger glow */
+  overflow: hidden;
+  margin-right: 10px; /* Adds space between logo and text */
+}
+
+/* Logo Image - Increased from 75% to 90% for better visibility */
+.logo-img {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+  transition: transform 0.7s ease;
+}
+
+/* Rotate on hover */
+.logo:hover .logo-img {
+  transform: rotate(360deg);
 }
 
 

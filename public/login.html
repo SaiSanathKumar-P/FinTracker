@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
   <meta charset="UTF-8">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563eb">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>FinTrack – Login</title>
   <link rel="stylesheet" href="css/style.css">
@@ -31,6 +32,7 @@
       <h2>Welcome Back 👋</h2>
       <p class="subtitle">Login to continue</p>
       <form id="loginForm">
+  <p id="msg" style="color:#ff6b6b; text-align:center; margin-bottom:10px;"></p>
         <div class="floating-label-group">
           <input type="email" id="email" placeholder=" " required>
           <label for="email">Email</label>
@@ -42,39 +44,28 @@
         <button type="submit" class="login-btn">Login</button>
       </form>
       <div class="social-login">
-  <button class="social-btn google-btn" onclick="window.location.href='/api/auth/google'">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Icon" width="18">
-   Sign in with Google
+  <button type="button" class="social-btn google-btn" onclick="window.location.href='/api/auth/google'">
+    <img src="images/google.png" alt="Google">
+    <span>Sign in with Google</span>
   </button>
-       <button class="social-btn github-btn" onclick="window.location.href='/api/auth/github'">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg" alt="GitHub Icon" width="20">
-    Sign in with GitHub
+  <button type="button" class="social-btn github-btn" onclick="window.location.href='/api/auth/github'">
+    <img src="images/github.svg" alt="GitHub">
+    <span>Sign in with GitHub</span>
   </button>
-      </div>
+</div>
       <p class="register-link">Don't have an account? <a href="register.html">Register</a></p>
     </main>
   </div>
   <script>
-    (function() {
-      try { document.body.className = localStorage.getItem('theme') || 'auto-mode'; } catch(e) {}
-      document.getElementById('loginForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const pass = document.getElementById('password').value;
-        if (email && pass) {
-  
-          window.location.href = 'dashboard.html';
-        } else alert('Please fill all fields');
-      });
-    })();
     const params = new URLSearchParams(window.location.search);
 const token = params.get("token");
 
-if (token) {
+if (token && token !== "undefined") {
   localStorage.setItem("token", token);
   window.location.href = "dashboard.html";
 }
   </script>
+  <script src="js/auth.js"></script>
 </body>
 </html>
 

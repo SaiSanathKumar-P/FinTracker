@@ -128,6 +128,7 @@ app.get(
 
 app.use(express.static(path.join(__dirname, "public")));
 // Explicitly serve manifest & service worker
+// Serve PWA files correctly
 app.get("/manifest.json", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "manifest.json"));
 });

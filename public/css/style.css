@@ -2393,8 +2393,8 @@ footer a:hover {
 
 /* Logo Image - Increased from 75% to 90% for better visibility */
 .logo-img {
-  width: 90%;
-  height: 90%;
+  width: 40px;  /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
   object-fit: contain;
   transition: transform 0.7s ease;
 }

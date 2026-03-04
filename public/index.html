@@ -29,17 +29,20 @@
 </head>
 <body class="auto-mode">
 <header role="banner">
-  <div class="logo" aria-label="FinTrack home">FinTrack</div>
+  <div class="logo" aria-label="FinTrack home">
+    <span>FinTrack</span>
+  </div>
   <div class="header-actions" role="navigation" aria-label="Main navigation">
-    <!-- Theme Switcher (accessible dropdown) -->
+    <!-- Theme Switcher -->
     <div class="theme-dropdown" aria-label="Theme selector">
-      <button id="themeBtn" class="theme-btn" aria-haspopup="true" aria-expanded="false" aria-controls="themeMenu">
-        <span class="theme-icon">🌓</span> <span id="themeLabel">Both</span>
+      <button id="themeBtn" class="theme-btn" aria-haspopup="true" aria-expanded="false">
+        <span class="theme-icon">🌓</span>
+        <span id="themeLabel">Both</span>
       </button>
-      <div id="themeMenu" class="theme-menu" role="menu" aria-labelledby="themeBtn">
-        <div role="menuitem" data-theme="light" tabindex="0">☀️ Light</div>
-        <div role="menuitem" data-theme="dark" tabindex="0">🌙 Dark</div>
-        <div role="menuitem" data-theme="auto" tabindex="0">🌓 Both</div>
+      <div id="themeMenu" class="theme-menu" role="menu">
+        <div role="menuitem" data-theme="light">☀️ Light</div>
+        <div role="menuitem" data-theme="dark">🌙 Dark</div>
+        <div role="menuitem" data-theme="auto">🌓 Both</div>
       </div>
     </div>
     <a href="login.html" class="nav-btn">Login</a>

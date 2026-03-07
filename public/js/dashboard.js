@@ -278,8 +278,15 @@ function updateBudgetValue(val) {
   elements.budgetValue.innerText = val;
   
   const percent = (val / elements.budgetInput.max) * 100;
-  elements.budgetInput.style.backgroundSize = percent + '% 100%';
-  
+
+elements.budgetInput.style.background =
+`linear-gradient(
+  to right,
+  #38bdf8 0%,
+  #38bdf8 ${percent}%,
+  rgba(255,255,255,0.25) ${percent}%,
+  rgba(255,255,255,0.25) 100%
+)`;
   // Add glow effect based on percentage
   const glowIntensity = 0.3 + (percent / 100) * 0.7;
   elements.budgetInput.style.boxShadow = `0 0 ${15 + percent * 0.5}px rgba(56,189,248,${glowIntensity})`;

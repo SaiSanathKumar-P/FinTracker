@@ -746,10 +746,12 @@ async function loadBudget() {
 }
 // ========== Init ==========
 async function initDashboard() {
+  document.body.classList.add("auto-mode");
+
   const savedColors = localStorage.getItem("finTrack_categoryColors");
-if (savedColors) {
-  categoryColors = JSON.parse(savedColors);
-}
+  if (savedColors) {
+    categoryColors = JSON.parse(savedColors);
+  }
   const wasMock = localStorage.getItem(MOCK_MODE_KEY) === 'true';
   if (wasMock) { 
     setOfflineMode(true); 

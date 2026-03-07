@@ -138,20 +138,24 @@
     </div>
   </section>
 </div>
-<div id="categoryModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:9999;">
-  
-  <div style="background:#1e293b; padding:20px; border-radius:12px; width:90%; max-width:300px; text-align:center;">
-    
-    <h3 style="margin-bottom:10px;">New Category</h3>
-    
-    <input type="text" id="newCategoryInput" placeholder="Enter category name" style="width:100%; padding:10px; margin-bottom:10px;">
-    
-    <button onclick="addCategoryConfirm()" style="padding:8px 15px; background:#0ea5e9; border:none; border-radius:8px;">Add</button>
-    
-    <button onclick="closeCategoryModal()" style="padding:8px 15px; background:#ef4444; border:none; border-radius:8px;">Cancel</button>
-  
-  </div>
+  <!-- Add Category Modal -->
+<div id="categoryModal" class="category-modal">
+  <div class="category-modal-content">
 
+    <h3>Add New Category</h3>
+
+    <input 
+      type="text" 
+      id="newCategoryInput" 
+      placeholder="Enter category name"
+    >
+
+    <div class="modal-buttons">
+      <button id="confirmAddCategory" class="add-btn-modal">Add</button>
+      <button id="cancelAddCategory" class="cancel-btn-modal">Cancel</button>
+    </div>
+
+  </div>
 </div>
 <script src="js/dashboard.js"></script>
 </body>

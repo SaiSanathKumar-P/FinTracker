@@ -364,22 +364,14 @@ function initCategoryDropdown() {
 
 // Add new category
 function addCategory() {
-  const newCat = prompt('Enter new category name:');
-  if (!newCat) return;
 
-  const clean = newCat.trim();
-  if (clean === '') return;
+  const modal = document.getElementById("categoryModal");
+  const input = document.getElementById("newCategoryInput");
 
-  if (categories.some(c => c.value.toLowerCase() === clean.toLowerCase())) {
-    alert('Category already exists');
-    return;
-  }
-
-  categories.push({ value: clean, label: clean });
-  saveMockToStorage();
-  rebuildDropdown();
+  modal.style.display = "flex";
+  input.value = "";
+  input.focus();
 }
-
 // Remove selected category
 function removeCategory() {
   const selected = elements.categoryHidden.value;

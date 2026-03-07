@@ -677,22 +677,57 @@ function logoutUser() {
 
 // ========== Event Listeners ==========
 function setupEventListeners() {
+
   elements.addExpenseBtn?.addEventListener('click', addExpense);
   elements.saveBudgetBtn?.addEventListener('click', setBudget);
   elements.logoutBtn?.addEventListener('click', logoutUser);
   elements.addCategoryBtn?.addEventListener('click', addCategory);
   elements.removeCategoryBtn?.addEventListener('click', removeCategory);
-  
+
   if (elements.budgetInput) {
-    elements.budgetInput.addEventListener('input', (e) => updateBudgetValue(e.target.value));
-    // Budget only saves on button click, not on slider move
+    elements.budgetInput.addEventListener('input', (e) =>
+      updateBudgetValue(e.target.value)
+    );
   }
-  
-  [elements.titleInput, elements.amountInput].forEach(inp => 
-    inp?.addEventListener('keypress', (e) => { 
-      if (e.key === 'Enter') addExpense(); 
+
+  [elements.titleInput, elements.amountInput].forEach(inp =>
+    inp?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addExpense();
     })
   );
+
+  // ✅ ADD THIS PART HERE
+  const categoryModal = document.getElementById("categoryModal");
+  const confirmAddCategory = document.getElementById("confirmAddCategory");
+  const cancelAddCategory = document.getElementById("cancelAddCategory");
+  const newCategoryInput = document.getElementById("newCategoryInput");
+
+  confirmAddCategory?.addEventListener("click", () => {
+
+    const clean = newCategoryInput.value.trim();
+    if (!clean) return;
+
+    if (categories.some(c => c.value.toLowerCase() === clean.toLowerCase())) {
+      alert("Category already exists");
+      return;
+    }
+
+    categories.push({
+      value: clean,
+      label: clean
+    });
+
+    saveMockToStorage();
+    rebuildDropdown();
+
+    categoryModal.style.display = "none";
+
+  });
+
+  cancelAddCategory?.addEventListener("click", () => {
+    categoryModal.style.display = "none";
+  });
+
 }
 async function loadBudget() {
   try {

@@ -888,7 +888,8 @@ input::placeholder {
 
 .summary-card {
   position: relative;
-  background: transparent;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
   padding: var(--space-lg);
   border-radius: var(--radius-xl);
   border: 1px solid var(--card-border);
@@ -896,17 +897,6 @@ input::placeholder {
   text-align: center;
   width: 100%;
 }
-
-.summary-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--card-bg);
-  backdrop-filter: blur(6px);
-  border-radius: inherit;
-  z-index: -1;
-}
-
 .summary-card:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-2xl), 0 0 30px var(--primary-500);

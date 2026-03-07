@@ -950,13 +950,20 @@ input::placeholder {
 
 #budgetInput::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: white;
-  border: 2px solid var(--primary-600);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  border: 3px solid var(--primary-500);
   cursor: pointer;
+
+  box-shadow: 0 0 12px var(--primary-500);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#budgetInput::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 25px var(--primary-500);
 }
 
 .save-budget-btn {

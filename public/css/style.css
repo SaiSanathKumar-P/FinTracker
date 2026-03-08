@@ -940,51 +940,33 @@ input::placeholder {
 }
 
 #budgetInput {
-  -webkit-appearance: none; /* Required to style the track */
-  appearance: none;
-  width: 100%;
-  height: 8px;
-  border-radius: 50px;
-  outline: none;
-  margin: var(--space-md) 0;
-  cursor: pointer;
-  
-  /* Modern Glassy Track Background */
-  background: rgba(255, 255, 255, 0.1); 
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  
-  transition: box-shadow 0.3s ease;
-}
-
-#budgetInput::-webkit-slider-runnable-track {
-  height: 8px;
-  border-radius: 50px;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    outline: none;
+    margin: 25px 0;
+    cursor: pointer;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
 
 #budgetInput::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 22px;
-  height: 22px;
-  background: #ffffff;
-  border: 3px solid var(--primary-500);
-  border-radius: 50%;
-  margin-top: -8px; /* Centers thumb on the 8px track */
-  
-  box-shadow: 0 0 12px var(--primary-500);
-  transition: transform 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    background: #ffffff;
+    border: 4px solid var(--primary-500);
+    border-radius: 50%;
+    box-shadow: 0 0 15px var(--primary-500); /* Neon glow */
+    cursor: grab;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
-#budgetInput::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-  box-shadow: 0 0 25px var(--primary-500);
-}
-
-/* For Firefox Support */
-#budgetInput::-moz-range-progress {
-  background: var(--primary-500);
-  height: 8px;
-  border-radius: 50px;
+#budgetInput::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.2);
+    box-shadow: 0 0 30px var(--primary-500);
 }
 .save-budget-btn {
   width: 100%;

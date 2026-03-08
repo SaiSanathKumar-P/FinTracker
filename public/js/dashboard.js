@@ -836,22 +836,35 @@ document.body.classList.add(savedTheme + "-mode");
     updateBudgetBreakdown();
   }
   
-  try { 
-await loadBudget();
+try {
 
-setTimeout(() => {
-  if(elements.budgetInput){
-    updateBudgetValue(elements.budgetInput.value || 0);
-  }
-}, 50);
+  await loadBudget();
 
-await loadExpenses();
-await loadSmartAnalysis();
+  setTimeout(() => {
+    if (elements.budgetInput) {
+      updateBudgetValue(elements.budgetInput.value || 0);
+    }
+  }, 50);
+
+  await loadExpenses();
+  await loadSmartAnalysis();
+
+} catch (error) {
+  console.error(error);
+}
+
+}
+
+// ===========================
+// PAGE LOAD
+// ===========================
+
 window.history.pushState(null, null, window.location.href);
+
 window.onpopstate = function () {
   window.history.go(1);
 };
-// ===== PAGE LOAD =====
+
 document.addEventListener("DOMContentLoaded", async () => {
 
   requireAuth();
@@ -860,8 +873,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const slider = document.getElementById("budgetInput");
 
-  if(slider){
-    requestAnimationFrame(()=>{
+  if (slider) {
+    requestAnimationFrame(() => {
       updateBudgetValue(slider.value || 0);
     });
   }

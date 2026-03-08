@@ -44,16 +44,37 @@
     </article>
 
     <!-- Budget Card -->
-    <article class="summary-card budget-card">
-      <div class="budget-header">
-        <h2>🎯 Monthly Budget</h2>
-      </div>
-      <div class="budget-slider-container">
-        <input type="range" id="budgetInput" min="0" max="20000" step="500" value="0">
-        <p class="amount">₹ <span id="budgetValue">0</span> <span class="budget-period">/month</span></p>
-      </div>
-      <button class="save-budget-btn" id="saveBudgetBtn">Save Budget</button>
-    </article>
+<article class="summary-card budget-card">
+
+  <div class="budget-header">
+    <h2>🎯 Monthly Budget</h2>
+  </div>
+
+  <div class="slider-container">
+
+    <input type="range"
+           id="budgetInput"
+           min="0"
+           max="20000"
+           step="500"
+           value="0">
+
+    <div id="budgetProgress"></div>
+
+  </div>
+
+  <div class="budget-badge" id="budgetPercentBadge">0%</div>
+
+  <p class="amount">
+    ₹ <span id="budgetValue">0</span>
+    <span class="budget-period">/month</span>
+  </p>
+
+  <button class="save-budget-btn" id="saveBudgetBtn">
+    Save Budget
+  </button>
+
+</article>
 
     <article class="summary-card">
       <h2>Remaining</h2>

@@ -321,8 +321,7 @@ async function setBudget() {
     showMessage('Budget saved successfully!');
     
     // === NEW: Add these lines ===
-    updateFinancialHealthScores();
-    updateNoSpendTracker();
+    loadExpenses();
     // ===========================
     
   } catch {}
@@ -490,8 +489,8 @@ async function loadExpenses() {
     updateBudgetBreakdown();
     
     // === NEW: Add these two lines ===
-    updateFinancialHealthScores();
-    updateNoSpendTracker();
+    updateFinancialHealthScores(expenses);
+    updateNoSpendTracker(expenses);
     // ================================
     
   } catch (error) { 
@@ -902,10 +901,34 @@ function calculateTotalHealthScore(savingsScore, budgetScore, consistencyScore) 
 /**
  * Update all financial health scores in the UI
  */
-function updateFinancialHealthScores() {
-  const expenses = mockExpenses.reduce((sum, e) => sum + e.amount, 0);
+function updateFinancialHealthScores(expenses = []) {
+
+  const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
+
   const budget = mockBudget || monthlyBudget || 0;
-  const income = budget; // Using budget as income for student context
+  const income = budget;
+
+  const savingsScore = calculateSavingsScore(income, totalExpenses);
+  const budgetScore = calculateBudgetDisciplineScore(budget, totalExpenses);
+  const consistencyScore = calculateConsistencyScore(budget, totalExpenses, 30);
+
+  const totalScore = calculateTotalHealthScore(
+    savingsScore,
+    budgetScore,
+    consistencyScore
+  );
+
+  const savingsEl = document.getElementById('savingsScore');
+  const budgetEl = document.getElementById('budgetDisciplineScore');
+  const consistencyEl = document.getElementById('consistencyScore');
+  const totalEl = document.getElementById('totalHealthScore');
+
+  if (savingsEl) savingsEl.innerText = savingsScore;
+  if (budgetEl) budgetEl.innerText = budgetScore;
+  if (consistencyEl) consistencyEl.innerText = consistencyScore;
+  if (totalEl) totalEl.innerText = totalScore;
+
+}
   
   // Calculate individual scores
   const savingsScore = calculateSavingsScore(income, expenses);
@@ -943,8 +966,8 @@ function updateFinancialHealthScores() {
 /**
  * Calculate no-spend days and related metrics
  */
-function updateNoSpendTracker() {
-  if (!mockExpenses || mockExpenses.length === 0) {
+function updateNoSpendTracker(expenses = []) {
+  if (!expenses || expenses.length === 0) {
     document.getElementById('noSpendDays').innerText = '0';
     document.getElementById('safeDailySpend').innerText = '₹0';
     document.getElementById('dailyAverage').innerText = '₹0';
@@ -958,7 +981,7 @@ function updateNoSpendTracker() {
   const currentMonth = today.getMonth();
   const currentYear = today.getFullYear();
   
-  mockExpenses.forEach(exp => {
+  expenses.forEach(exp => {
     const date = new Date(exp.date);
     // Only count this month's expenses
     if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
@@ -979,7 +1002,7 @@ function updateNoSpendTracker() {
   const noSpendDays = currentDay - daysWithExpenses;
   
   // Calculate daily average
-  const totalExpenses = mockExpenses
+  const totalExpenses = expenses
     .filter(exp => {
       const date = new Date(exp.date);
       return date.getMonth() === currentMonth && date.getFullYear() === currentYear;

@@ -1782,3 +1782,186 @@ color:white;
 cursor:pointer;
 }
 /* ========== END OF STYLESHEET ========== */
+/* ========== FIXED LAYOUT ISSUES ========== */
+
+/* Fix dashboard-split closing */
+.dashboard-split {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+/* Ensure all sections have proper spacing */
+.recent-activity,
+.no-spend-tracker,
+.history-section {
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+/* Fix AI Grid layout for better organization */
+.ai-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+}
+
+/* Make total health score span full width on mobile */
+.total-health-box {
+  grid-column: span 2;
+}
+
+/* Improve card consistency */
+.ai-box {
+  padding: 0.8rem;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ai-box h3 {
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ai-box p {
+  font-size: 1rem;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Fix score display */
+.health-score-box p {
+  font-size: 1.5rem !important;
+  display: inline-block;
+}
+
+.total-health-box p {
+  font-size: 1.8rem !important;
+}
+
+/* No Spend Tracker improvements */
+.no-spend-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+}
+
+.no-spend-card {
+  padding: 0.8rem;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.no-spend-card h4 {
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+
+.no-spend-number {
+  font-size: 1.4rem;
+  margin-bottom: 0.2rem;
+}
+
+/* Recent Activity improvements */
+.recent-item {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+}
+
+.recent-item span:first-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-item span:last-child {
+  font-weight: 600;
+  color: var(--primary-500);
+}
+
+.recent-item small {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+/* Expense List improvements */
+#expenseList li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+}
+
+#expenseList li span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.delete-btn {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+/* Tablet and Desktop improvements */
+@media (min-width: 640px) {
+  .ai-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .total-health-box {
+    grid-column: span 3;
+  }
+  
+  .no-spend-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .dashboard-split {
+    flex-direction: row;
+  }
+  
+  .chart-container,
+  .ai-card {
+    flex: 1;
+  }
+  
+  .ai-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .total-health-box {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ai-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .total-health-box {
+    grid-column: span 3;
+  }
+  
+  .summary-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

@@ -934,39 +934,63 @@ input::placeholder {
   margin-bottom: 0;
 }
 
-.budget-slider-container {
-  width: 100%;
-  margin: 0.5rem 0;
+/* Container for layering the neon track */
+.slider-container {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
 }
 
 #budgetInput {
     -webkit-appearance: none;
     width: 100%;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50px;
+    background: rgba(15, 23, 42, 0.5); /* Carved track color */
+    height: 12px;
+    border-radius: 10px;
     outline: none;
-    margin: 25px 0;
     cursor: pointer;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 2; /* Sits above the progress div */
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* The Glowing Thumb */
 #budgetInput::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     background: #ffffff;
-    border: 4px solid var(--primary-500);
+    border: 4px solid #38bdf8;
     border-radius: 50%;
-    box-shadow: 0 0 15px var(--primary-500); /* Neon glow */
+    box-shadow: 0 0 15px #38bdf8, 0 0 30px rgba(56, 189, 248, 0.5);
     cursor: grab;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 #budgetInput::-webkit-slider-thumb:active {
     cursor: grabbing;
-    transform: scale(1.2);
-    box-shadow: 0 0 30px var(--primary-500);
+    transform: scale(1.3);
+}
+
+/* Floating Percentage Badge */
+.budget-badge {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 800;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
+}
+
+/* Neon Text Glow */
+.amount-glow {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
 }
 .save-budget-btn {
   width: 100%;

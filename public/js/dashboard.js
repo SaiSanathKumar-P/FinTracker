@@ -929,38 +929,6 @@ function updateFinancialHealthScores(expenses = []) {
   if (totalEl) totalEl.innerText = totalScore;
 
 }
-  
-  // Calculate individual scores
-  const savingsScore = calculateSavingsScore(income, expenses);
-  const budgetScore = calculateBudgetDisciplineScore(budget, expenses);
-  const consistencyScore = calculateConsistencyScore(budget, expenses, 30);
-  const totalScore = calculateTotalHealthScore(savingsScore, budgetScore, consistencyScore);
-  
-  // Update UI elements
-  const savingsEl = document.getElementById('savingsScore');
-  const budgetEl = document.getElementById('budgetDisciplineScore');
-  const consistencyEl = document.getElementById('consistencyScore');
-  const totalEl = document.getElementById('totalHealthScore');
-  
-  if (savingsEl) savingsEl.innerText = savingsScore;
-  if (budgetEl) budgetEl.innerText = budgetScore;
-  if (consistencyEl) consistencyEl.innerText = consistencyScore;
-  if (totalEl) totalEl.innerText = totalScore;
-  
-  // Add color coding based on score
-  if (totalEl) {
-    if (totalScore >= 80) {
-      totalEl.style.color = '#10b981'; // Green
-    } else if (totalScore >= 60) {
-      totalEl.style.color = '#f59e0b'; // Orange
-    } else {
-      totalEl.style.color = '#ef4444'; // Red
-    }
-  }
-  
-  return totalScore;
-}
-
 // ========== NO SPEND DAYS TRACKER ==========
 
 /**

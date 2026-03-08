@@ -279,6 +279,7 @@ function updateBudgetBreakdown() {
 }
 
 function updateBudgetValue(val) {
+
   monthlyBudget = Number(val);
 
   elements.budgetValue.innerText = val;
@@ -286,20 +287,23 @@ function updateBudgetValue(val) {
 
   const percent = (val / elements.budgetInput.max) * 100;
 
-elements.budgetInput.style.background =
-`linear-gradient(
-  to right,
-  #38bdf8 0%,
-  #38bdf8 ${percent}%,
-  rgba(255,255,255,0.25) ${percent}%,
-  rgba(255,255,255,0.25) 100%
-)`;
-  // Add glow effect based on percentage
-  const glowIntensity = 0.3 + (percent / 100) * 0.7;
- const card = elements.budgetInput.closest(".budget-card");
-if(card){
-card.style.boxShadow = `0 0 ${10 + percent}px rgba(56,189,248,0.35)`;
-}
+  // FIXED SLIDER VISUAL
+  elements.budgetInput.style.background =
+  `linear-gradient(
+    to right,
+    #38bdf8 0%,
+    #38bdf8 ${percent}%,
+    rgba(255,255,255,0.25) ${percent}%,
+    rgba(255,255,255,0.25) 100%
+  )`;
+
+  const card = elements.budgetInput.closest(".budget-card");
+
+  if(card){
+    card.style.boxShadow =
+      `0 0 ${10 + percent}px rgba(56,189,248,0.35)`;
+  }
+
   updateBudgetBreakdown();
 }
 

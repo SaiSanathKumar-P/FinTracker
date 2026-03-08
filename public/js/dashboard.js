@@ -275,8 +275,10 @@ function updateBudgetBreakdown() {
 
 function updateBudgetValue(val) {
   monthlyBudget = Number(val);
+
   elements.budgetValue.innerText = val;
-  
+  elements.budgetInput.value = val;
+
   const percent = (val / elements.budgetInput.max) * 100;
 
 elements.budgetInput.style.background =

@@ -58,36 +58,39 @@ function getCategoryColor(category) {
 
   return categoryColors[category];
 }
+// At the very top of your dashboard.js, after the constants, add:
+let elements; // Declare elements globally
 
-function getElements(){
-return {
-  totalAmount: document.getElementById('totalAmount'),
-  remainingAmount: document.getElementById('remainingAmount'),
-  budgetUsage: document.getElementById('budgetUsage'),
-  budgetInput: document.getElementById('budgetInput'),
-  budgetValue: document.getElementById('budgetValue'),
-  saveBudgetBtn: document.getElementById('saveBudgetBtn'),
-  expenseList: document.getElementById('expenseList'),
-  addExpenseBtn: document.getElementById('addExpenseBtn'),
-  titleInput: document.getElementById('title'),
-  amountInput: document.getElementById('amount'),
-  categoryHidden: document.getElementById('category-select'),
-  selectedDisplay: document.getElementById('selected-display'),
-  categoryTrigger: document.getElementById('categoryTrigger'),
-  categoryWrapper: document.getElementById('categoryWrapper'),
-  dropdownMenu: document.getElementById('dropdownMenu'),
-  addCategoryBtn: document.getElementById('addCategoryBtn'),
-  removeCategoryBtn: document.getElementById('removeCategoryBtn'),
-  aiTopCategory: document.getElementById('aiTopCategory'),
-  aiRisk: document.getElementById('aiRisk'),
-  aiSuggestion: document.getElementById('aiSuggestion'),
-  logoutBtn: document.getElementById('logoutBtn'),
-  recentList: document.getElementById('recentList'),
-  chartContainer: document.getElementById('chartContainer'),
-  aiMonthly: document.getElementById('aiMonthly'),
-  aiWeekly: document.getElementById('aiWeekly'),
-  aiDaily: document.getElementById('aiDaily'),
-};
+// Then in your getElements function, make sure it returns the object
+function getElements() {
+  return {
+    totalAmount: document.getElementById('totalAmount'),
+    remainingAmount: document.getElementById('remainingAmount'),
+    budgetUsage: document.getElementById('budgetUsage'),
+    budgetInput: document.getElementById('budgetInput'),
+    budgetValue: document.getElementById('budgetValue'),
+    saveBudgetBtn: document.getElementById('saveBudgetBtn'),
+    expenseList: document.getElementById('expenseList'),
+    addExpenseBtn: document.getElementById('addExpenseBtn'),
+    titleInput: document.getElementById('title'),
+    amountInput: document.getElementById('amount'),
+    categoryHidden: document.getElementById('category-select'),
+    selectedDisplay: document.getElementById('selected-display'),
+    categoryTrigger: document.getElementById('categoryTrigger'),
+    categoryWrapper: document.getElementById('categoryWrapper'),
+    dropdownMenu: document.getElementById('dropdownMenu'),
+    addCategoryBtn: document.getElementById('addCategoryBtn'),
+    removeCategoryBtn: document.getElementById('removeCategoryBtn'),
+    aiTopCategory: document.getElementById('aiTopCategory'),
+    aiRisk: document.getElementById('aiRisk'),
+    aiSuggestion: document.getElementById('aiSuggestion'),
+    logoutBtn: document.getElementById('logoutBtn'),
+    recentList: document.getElementById('recentList'),
+    chartContainer: document.getElementById('chartContainer'),
+    aiMonthly: document.getElementById('aiMonthly'),
+    aiWeekly: document.getElementById('aiWeekly'),
+    aiDaily: document.getElementById('aiDaily'),
+  };
 }
 const urlParams = new URLSearchParams(window.location.search);
 const urlToken = urlParams.get("token");

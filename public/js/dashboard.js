@@ -279,28 +279,30 @@ function updateBudgetBreakdown() {
 }
 
 function updateBudgetValue(val) {
-  const numericVal = Number(val);
-  monthlyBudget = numericVal;
+    const num = Number(val);
+    const max = elements.budgetInput.max || 20000;
+    const percent = (num / max) * 100;
 
-  // Update text labels
-  if (elements.budgetValue) elements.budgetValue.innerText = numericVal;
-  if (elements.budgetInput) elements.budgetInput.value = numericVal;
+    // Update Text
+    elements.budgetValue.innerText = num.toLocaleString();
+    
+    // Update Floating Badge
+    const badge = document.getElementById('budgetPercentBadge');
+    if (badge) badge.innerText = `${Math.round(percent)}%`;
 
-  // Calculate percentage for the CSS gradient
-  const min = elements.budgetInput.min || 0;
-  const max = elements.budgetInput.max || 10000;
-  const percent = ((numericVal - min) / (max - min)) * 100;
+    // Dynamic Gradient Track
+    elements.budgetInput.style.background = `linear-gradient(to right, 
+        #38bdf8 0%, 
+        #38bdf8 ${percent}%, 
+        rgba(15, 23, 42, 0.6) ${percent}%, 
+        rgba(15, 23, 42, 0.6) 100%)`;
 
-  // Update slider visual to match your style.css gradient
-  elements.budgetInput.style.background = `linear-gradient(to right, #38bdf8 0%, #38bdf8 ${percent}%, rgba(255, 255, 255, 0.1) ${percent}%, rgba(255, 255, 255, 0.1) 100%)`;
-
-  // Dynamic Glow Effect on the parent card
-  const card = elements.budgetInput.closest(".budget-card");
-  if (card) {
-    // Glow gets stronger as the budget increases
-    card.style.boxShadow = `0 10px 40px rgba(56, 189, 248, ${0.1 + (percent / 200)})`;
-    card.style.borderColor = percent > 80 ? 'var(--danger)' : 'var(--primary-500)';
-  }
+    // Interactive Card Glow - increases as you increase budget
+    const card = elements.budgetInput.closest(".budget-card");
+    if (card) {
+        card.style.boxShadow = `0 10px 50px rgba(56, 189, 248, ${0.1 + (percent/250)})`;
+        card.style.borderColor = percent > 90 ? '#ef4444' : 'rgba(56, 189, 248, 0.4)';
+    }
 
   updateBudgetBreakdown();
 }

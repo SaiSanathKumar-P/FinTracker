@@ -836,13 +836,15 @@ document.body.classList.add("auto-mode");
   
   try { 
 await loadBudget();
-updateBudgetValue(elements.budgetInput.value); // FIX slider fill on load
+
+setTimeout(() => {
+  if(elements.budgetInput){
+    updateBudgetValue(elements.budgetInput.value || 0);
+  }
+}, 50);
+
 await loadExpenses();
 await loadSmartAnalysis();
-  } catch (error) { 
-    console.error(error); 
-  }
-}
 window.history.pushState(null, null, window.location.href);
 window.onpopstate = function () {
   window.history.go(1);

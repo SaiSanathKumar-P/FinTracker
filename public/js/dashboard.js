@@ -850,7 +850,17 @@ window.onpopstate = function () {
   window.history.go(1);
 };
 document.addEventListener("DOMContentLoaded", () => {
+
   requireAuth();
   initDashboard();
-});
 
+  // Force slider repaint
+  const slider = document.getElementById("budgetInput");
+
+  if(slider){
+    requestAnimationFrame(()=>{
+      updateBudgetValue(slider.value || 0);
+    });
+  }
+
+});

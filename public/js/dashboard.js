@@ -312,6 +312,12 @@ async function setBudget() {
     
     updateBudgetBreakdown();
     showMessage('Budget saved successfully!');
+    
+    // === NEW: Add these lines ===
+    updateFinancialHealthScores();
+    updateNoSpendTracker();
+    // ===========================
+    
   } catch {}
   
   if (useMock) mockBudget = monthlyBudget;
@@ -475,6 +481,12 @@ async function loadExpenses() {
     updatePieChart(expenses);
     updateTimelineChart(expenses);
     updateBudgetBreakdown();
+    
+    // === NEW: Add these two lines ===
+    updateFinancialHealthScores();
+    updateNoSpendTracker();
+    // ================================
+    
   } catch (error) { 
     console.error(error); 
   }
@@ -486,6 +498,11 @@ async function deleteExpense(id) {
     await apiRequest(`/${id}`, { method: 'DELETE' }); 
     await loadExpenses(); 
     await loadSmartAnalysis(); 
+    
+    // === NEW: Add this line ===
+    updateNoSpendTracker();
+    // =========================
+    
   } catch (error) { 
     console.error(error); 
   }
@@ -806,6 +823,195 @@ document.body.classList.remove(
 document.body.classList.add(savedTheme+"-mode");
 }
 
+}
+// ========== FINANCIAL HEALTH SCORE FUNCTIONS ==========
+
+/**
+ * Calculate Savings Score (max 40 points)
+ * Formula: (Savings / Income) × 100 = Savings Ratio
+ * Savings Score = (Savings Ratio / 100) × 40
+ */
+function calculateSavingsScore(income, expenses) {
+  if (income <= 0) return 0;
+  
+  const savings = income - expenses;
+  if (savings <= 0) return 0;
+  
+  const savingsRatio = (savings / income) * 100;
+  const score = (savingsRatio / 100) * 40;
+  
+  return Math.min(40, Math.round(score * 10) / 10); // Round to 1 decimal
+}
+
+/**
+ * Calculate Budget Discipline Score (max 30 points)
+ * If Expenses ≤ Budget: Score = 30
+ * If Expenses > Budget: Score = 30 - ((Expenses - Budget) / Budget × 30)
+ */
+function calculateBudgetDisciplineScore(budget, expenses) {
+  if (budget <= 0) return 0;
+  
+  if (expenses <= budget) {
+    return 30;
+  } else {
+    const overspend = expenses - budget;
+    const penalty = (overspend / budget) * 30;
+    const score = 30 - penalty;
+    return Math.max(0, Math.round(score * 10) / 10); // Don't go below 0
+  }
+}
+
+/**
+ * Calculate Consistency Score (max 30 points)
+ * Compares average daily spending with recommended daily limit
+ */
+function calculateConsistencyScore(budget, expenses, daysInMonth = 30) {
+  if (budget <= 0 || expenses <= 0) return 0;
+  
+  const recommendedDaily = budget / daysInMonth;
+  const averageDaily = expenses / daysInMonth;
+  
+  // If average daily is less than or equal to recommended, good score
+  if (averageDaily <= recommendedDaily) {
+    // Scale: 30 points for perfect, minimum 15 for being under budget
+    const ratio = averageDaily / recommendedDaily;
+    return Math.round(15 + (ratio * 15) * 10) / 10;
+  } else {
+    // Penalize for going over daily limit
+    const overRatio = (averageDaily - recommendedDaily) / recommendedDaily;
+    const penalty = Math.min(15, overRatio * 30); // Max penalty 15 points
+    return Math.max(0, Math.round((30 - penalty) * 10) / 10);
+  }
+}
+
+/**
+ * Calculate Total Financial Health Score
+ */
+function calculateTotalHealthScore(savingsScore, budgetScore, consistencyScore) {
+  const total = savingsScore + budgetScore + consistencyScore;
+  return Math.min(100, Math.round(total * 10) / 10);
+}
+
+/**
+ * Update all financial health scores in the UI
+ */
+function updateFinancialHealthScores() {
+  const expenses = mockExpenses.reduce((sum, e) => sum + e.amount, 0);
+  const budget = mockBudget || monthlyBudget || 0;
+  const income = budget; // Using budget as income for student context
+  
+  // Calculate individual scores
+  const savingsScore = calculateSavingsScore(income, expenses);
+  const budgetScore = calculateBudgetDisciplineScore(budget, expenses);
+  const consistencyScore = calculateConsistencyScore(budget, expenses, 30);
+  const totalScore = calculateTotalHealthScore(savingsScore, budgetScore, consistencyScore);
+  
+  // Update UI elements
+  const savingsEl = document.getElementById('savingsScore');
+  const budgetEl = document.getElementById('budgetDisciplineScore');
+  const consistencyEl = document.getElementById('consistencyScore');
+  const totalEl = document.getElementById('totalHealthScore');
+  
+  if (savingsEl) savingsEl.innerText = savingsScore;
+  if (budgetEl) budgetEl.innerText = budgetScore;
+  if (consistencyEl) consistencyEl.innerText = consistencyScore;
+  if (totalEl) totalEl.innerText = totalScore;
+  
+  // Add color coding based on score
+  if (totalEl) {
+    if (totalScore >= 80) {
+      totalEl.style.color = '#10b981'; // Green
+    } else if (totalScore >= 60) {
+      totalEl.style.color = '#f59e0b'; // Orange
+    } else {
+      totalEl.style.color = '#ef4444'; // Red
+    }
+  }
+  
+  return totalScore;
+}
+
+// ========== NO SPEND DAYS TRACKER ==========
+
+/**
+ * Calculate no-spend days and related metrics
+ */
+function updateNoSpendTracker() {
+  if (!mockExpenses || mockExpenses.length === 0) {
+    document.getElementById('noSpendDays').innerText = '0';
+    document.getElementById('safeDailySpend').innerText = '₹0';
+    document.getElementById('dailyAverage').innerText = '₹0';
+    document.getElementById('streakBadge').innerText = '0 day streak';
+    return;
+  }
+  
+  // Group expenses by date
+  const expensesByDate = {};
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+  
+  mockExpenses.forEach(exp => {
+    const date = new Date(exp.date);
+    // Only count this month's expenses
+    if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
+      const dateStr = date.toDateString();
+      if (!expensesByDate[dateStr]) {
+        expensesByDate[dateStr] = 0;
+      }
+      expensesByDate[dateStr] += exp.amount;
+    }
+  });
+  
+  // Calculate days in month so far
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const currentDay = today.getDate();
+  
+  // Count no-spend days (days with no expenses)
+  const daysWithExpenses = Object.keys(expensesByDate).length;
+  const noSpendDays = currentDay - daysWithExpenses;
+  
+  // Calculate daily average
+  const totalExpenses = mockExpenses
+    .filter(exp => {
+      const date = new Date(exp.date);
+      return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+    })
+    .reduce((sum, exp) => sum + exp.amount, 0);
+  
+  const dailyAverage = daysWithExpenses > 0 ? totalExpenses / daysWithExpenses : 0;
+  
+  // Calculate safe daily spend for remaining days
+  const budget = mockBudget || monthlyBudget || 0;
+  const spentSoFar = totalExpenses;
+  const remainingDays = daysInMonth - currentDay + 1;
+  const safeDailySpend = remainingDays > 0 ? (budget - spentSoFar) / remainingDays : 0;
+  
+  // Calculate streak (consecutive no-spend days)
+  let streak = 0;
+  for (let i = 0; i < currentDay; i++) {
+    const checkDate = new Date(currentYear, currentMonth, currentDay - i);
+    const dateStr = checkDate.toDateString();
+    if (!expensesByDate[dateStr]) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+  
+  // Update UI
+  document.getElementById('noSpendDays').innerText = noSpendDays;
+  document.getElementById('safeDailySpend').innerText = `₹${Math.max(0, safeDailySpend).toFixed(2)}`;
+  document.getElementById('dailyAverage').innerText = `₹${dailyAverage.toFixed(2)}`;
+  
+  const streakBadge = document.getElementById('streakBadge');
+  if (streak > 0) {
+    streakBadge.innerText = `🔥 ${streak} day streak`;
+    streakBadge.style.background = 'linear-gradient(135deg, #f59e0b, #f97316)';
+  } else {
+    streakBadge.innerText = '0 day streak';
+    streakBadge.style.background = 'linear-gradient(135deg, #6b7280, #4b5563)';
+  }
 }
 // ========== Init ==========
 async function initDashboard() {

@@ -939,43 +939,52 @@ input::placeholder {
   margin: 0.5rem 0;
 }
 
-#budgetInput{
-width:100%;
-height:8px;
-border-radius:50px;
-outline:none;
-margin:var(--space-md) 0;
-
-background:linear-gradient(
-to right,
-var(--primary-500) 0%,
-var(--primary-500) 0%,
-rgba(255,255,255,0.25) 0%,
-rgba(255,255,255,0.25) 100%
-);
-
-background-size:0% 100%;
-background-repeat:no-repeat;
-
-transition:box-shadow 0.3s ease;
+#budgetInput {
+  -webkit-appearance: none; /* Required to style the track */
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 50px;
+  outline: none;
+  margin: var(--space-md) 0;
+  cursor: pointer;
+  
+  /* Modern Glassy Track Background */
+  background: rgba(255, 255, 255, 0.1); 
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  transition: box-shadow 0.3s ease;
 }
 
-#budgetInput::-webkit-slider-thumb{
--webkit-appearance:none;
-width:22px;
-height:22px;
-border-radius:50%;
-background:white;
-border:3px solid var(--primary-500);
-cursor:pointer;
-
-box-shadow:0 0 12px var(--primary-500);
-transition:transform 0.2s, box-shadow 0.2s;
+#budgetInput::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 50px;
 }
 
-#budgetInput::-webkit-slider-thumb:hover{
-transform:scale(1.2);
-box-shadow:0 0 25px var(--primary-500);
+#budgetInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  background: #ffffff;
+  border: 3px solid var(--primary-500);
+  border-radius: 50%;
+  margin-top: -8px; /* Centers thumb on the 8px track */
+  
+  box-shadow: 0 0 12px var(--primary-500);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#budgetInput::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 25px var(--primary-500);
+}
+
+/* For Firefox Support */
+#budgetInput::-moz-range-progress {
+  background: var(--primary-500);
+  height: 8px;
+  border-radius: 50px;
 }
 .save-budget-btn {
   width: 100%;

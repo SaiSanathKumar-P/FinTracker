@@ -289,8 +289,10 @@ elements.budgetInput.style.background =
 )`;
   // Add glow effect based on percentage
   const glowIntensity = 0.3 + (percent / 100) * 0.7;
-  elements.budgetInput.style.boxShadow = `0 0 ${15 + percent * 0.5}px rgba(56,189,248,${glowIntensity})`;
-  
+ const card = elements.budgetInput.closest(".budget-card");
+if(card){
+card.style.boxShadow = `0 0 ${10 + percent}px rgba(56,189,248,0.35)`;
+}
   updateBudgetBreakdown();
 }
 
@@ -751,9 +753,63 @@ async function loadBudget() {
     console.error("Load budget failed");
   }
 }
+function initThemeSystem(){
+
+const dropdown = document.getElementById("themeDropdown");
+const btn = document.getElementById("themeBtn");
+const menu = document.getElementById("themeMenu");
+
+if(!dropdown || !btn || !menu) return;
+
+// open menu
+btn.onclick = () => {
+dropdown.classList.toggle("active");
+};
+
+// select theme
+menu.querySelectorAll("[data-theme]").forEach(item=>{
+
+item.onclick = () => {
+
+const theme = item.dataset.theme;
+
+document.body.classList.remove(
+"light-mode",
+"dark-mode",
+"auto-mode"
+);
+
+document.body.classList.add(theme+"-mode");
+
+localStorage.setItem("fintrack_theme",theme);
+
+dropdown.classList.remove("active");
+
+};
+
+});
+
+// load saved theme
+const savedTheme = localStorage.getItem("fintrack_theme");
+
+if(savedTheme){
+document.body.classList.remove(
+"light-mode",
+"dark-mode",
+"auto-mode"
+);
+
+document.body.classList.add(savedTheme+"-mode");
+}
+
+}
 // ========== Init ==========
 async function initDashboard() {
-  document.body.classList.add("auto-mode");
+  
+  initThemeSystem(); // ADD THIS
+ if(!localStorage.getItem("fintrack_theme")){
+document.body.classList.add("auto-mode");
+}
 
   const savedColors = localStorage.getItem("finTrack_categoryColors");
   if (savedColors) {
@@ -779,9 +835,10 @@ async function initDashboard() {
   }
   
   try { 
-    await loadBudget();
-    await loadExpenses(); 
-    await loadSmartAnalysis(); 
+await loadBudget();
+updateBudgetValue(elements.budgetInput.value); // FIX slider fill on load
+await loadExpenses();
+await loadSmartAnalysis();
   } catch (error) { 
     console.error(error); 
   }

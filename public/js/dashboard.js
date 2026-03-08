@@ -279,29 +279,27 @@ function updateBudgetBreakdown() {
 }
 
 function updateBudgetValue(val) {
+  const numericVal = Number(val);
+  monthlyBudget = numericVal;
 
-  monthlyBudget = Number(val);
+  // Update text labels
+  if (elements.budgetValue) elements.budgetValue.innerText = numericVal;
+  if (elements.budgetInput) elements.budgetInput.value = numericVal;
 
-  elements.budgetValue.innerText = val;
-  elements.budgetInput.value = val;
+  // Calculate percentage for the CSS gradient
+  const min = elements.budgetInput.min || 0;
+  const max = elements.budgetInput.max || 10000;
+  const percent = ((numericVal - min) / (max - min)) * 100;
 
-  const percent = (val / elements.budgetInput.max) * 100;
+  // Update slider visual to match your style.css gradient
+  elements.budgetInput.style.background = `linear-gradient(to right, #38bdf8 0%, #38bdf8 ${percent}%, rgba(255, 255, 255, 0.1) ${percent}%, rgba(255, 255, 255, 0.1) 100%)`;
 
-  // FIXED SLIDER VISUAL
-  elements.budgetInput.style.background =
-  `linear-gradient(
-    to right,
-    #38bdf8 0%,
-    #38bdf8 ${percent}%,
-    rgba(255,255,255,0.25) ${percent}%,
-    rgba(255,255,255,0.25) 100%
-  )`;
-
+  // Dynamic Glow Effect on the parent card
   const card = elements.budgetInput.closest(".budget-card");
-
-  if(card){
-    card.style.boxShadow =
-      `0 0 ${10 + percent}px rgba(56,189,248,0.35)`;
+  if (card) {
+    // Glow gets stronger as the budget increases
+    card.style.boxShadow = `0 10px 40px rgba(56, 189, 248, ${0.1 + (percent / 200)})`;
+    card.style.borderColor = percent > 80 ? 'var(--danger)' : 'var(--primary-500)';
   }
 
   updateBudgetBreakdown();

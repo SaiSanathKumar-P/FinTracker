@@ -282,6 +282,8 @@ function updateBudgetValue(val) {
     const num = Number(val);
     const max = elements.budgetInput.max || 20000;
     const percent = (num / max) * 100;
+  const progress = document.getElementById("budgetProgress");
+if (progress) progress.style.width = percent + "%";
 
     // Update Text
     elements.budgetValue.innerText = num.toLocaleString();

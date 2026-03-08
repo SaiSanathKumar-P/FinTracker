@@ -59,7 +59,8 @@ function getCategoryColor(category) {
   return categoryColors[category];
 }
 
-const elements = {
+function getElements(){
+return {
   totalAmount: document.getElementById('totalAmount'),
   remainingAmount: document.getElementById('remainingAmount'),
   budgetUsage: document.getElementById('budgetUsage'),
@@ -87,6 +88,7 @@ const elements = {
   aiWeekly: document.getElementById('aiWeekly'),
   aiDaily: document.getElementById('aiDaily'),
 };
+}
 const urlParams = new URLSearchParams(window.location.search);
 const urlToken = urlParams.get("token");
 
@@ -807,12 +809,10 @@ document.body.classList.add(savedTheme+"-mode");
 }
 // ========== Init ==========
 async function initDashboard() {
-  
+  elements = getElements();
   initThemeSystem(); // ADD THIS
- if(!localStorage.getItem("fintrack_theme")){
-document.body.classList.add("auto-mode");
-}
-
+const savedTheme = localStorage.getItem("fintrack_theme") || "auto";
+document.body.classList.add(savedTheme + "-mode");
   const savedColors = localStorage.getItem("finTrack_categoryColors");
   if (savedColors) {
     categoryColors = JSON.parse(savedColors);
@@ -851,12 +851,13 @@ window.history.pushState(null, null, window.location.href);
 window.onpopstate = function () {
   window.history.go(1);
 };
-document.addEventListener("DOMContentLoaded", () => {
+// ===== PAGE LOAD =====
+document.addEventListener("DOMContentLoaded", async () => {
 
   requireAuth();
-  initDashboard();
 
-  // Force slider repaint
+  await initDashboard();
+
   const slider = document.getElementById("budgetInput");
 
   if(slider){

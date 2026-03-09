@@ -105,7 +105,7 @@
 
   <div class="profile-container">
     <div class="profile-header">
-      <div class="profile-avatar" id="userInitials">JD</div>
+      <div class="profile-avatar" id="userInitials">👤</div>
       <div>
         <h2 id="userFullName">Loading...</h2>
         <p id="userEmail" style="color: var(--text-muted);">Loading...</p>
@@ -155,46 +155,76 @@
 <script src="js/ui-effects.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const userData = JSON.parse(localStorage.getItem('finTrack_user') || '{}');
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'login.html';
+      return;
+    }
     
+    // Load user data
+    const userData = JSON.parse(localStorage.getItem('finTrack_user') || '{}');
+    console.log('Loading user data:', userData);
+    
+    // Helper function to safely set text content
+    function setElementText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text || '-';
+    }
+    
+    // Set user information
     if (userData.name) {
-      document.getElementById('userFullName').textContent = userData.name;
-      document.getElementById('infoName').textContent = userData.name;
-      const initials = userData.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+      setElementText('userFullName', userData.name);
+      setElementText('infoName', userData.name);
+      
+      // Calculate initials
+      const nameParts = userData.name.split(' ').filter(part => part.length > 0);
+      let initials = '👤';
+      if (nameParts.length >= 2) {
+        initials = (nameParts[0][0] + nameParts[1][0]).toUpperCase();
+      } else if (nameParts.length === 1) {
+        initials = nameParts[0].substring(0, 2).toUpperCase();
+      }
       document.getElementById('userInitials').textContent = initials;
     }
-    if (userData.email) {
-      document.getElementById('userEmail').textContent = userData.email;
-      document.getElementById('infoEmail').textContent = userData.email;
-    }
-    if (userData.college) {
-      document.getElementById('userCollege').textContent = userData.college + ' • Year ' + (userData.year || '1');
-      document.getElementById('infoCollege').textContent = userData.college;
-    }
-    if (userData.year) document.getElementById('infoYear').textContent = userData.year + 'th Year';
     
-    document.getElementById('infoJoined').textContent = new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    if (userData.email) {
+      setElementText('userEmail', userData.email);
+      setElementText('infoEmail', userData.email);
+    }
+    
+    if (userData.college) {
+      setElementText('userCollege', userData.college + ' • Year ' + (userData.year || '1'));
+      setElementText('infoCollege', userData.college);
+    }
+    
+    if (userData.year) {
+      setElementText('infoYear', userData.year + (userData.year.endsWith('th') ? '' : 'th Year'));
+    }
+    
+    // Set joined date
+    const joinDate = new Date();
+    setElementText('infoJoined', joinDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }));
     
     // Load financial data
     const total = localStorage.getItem('finTrack_totalAmount') || '0';
-    document.getElementById('totalBalance').textContent = '₹' + total;
-    document.getElementById('totalDeposits').textContent = '₹' + total;
-    document.getElementById('totalWithdraws').textContent = '₹' + total;
+    setElementText('totalBalance', '₹' + total);
+    setElementText('totalDeposits', '₹' + total);
+    setElementText('totalWithdraws', '₹' + total);
 
     document.body.classList.add('page-loaded');
   });
 
-  // Logout
   // Logout - Only remove token, keep user data
-function logout() { 
-  localStorage.removeItem("token"); 
-  window.location.href = 'login.html'; 
-}
+  function logout() { 
+    localStorage.removeItem('token'); 
+    window.location.href = 'login.html'; 
+  }
 
-document.getElementById('logoutBtn')?.addEventListener('click', logout);
-document.getElementById('profileLogoutBtn')?.addEventListener('click', logout);
+  document.getElementById('logoutBtn')?.addEventListener('click', logout);
+  document.getElementById('profileLogoutBtn')?.addEventListener('click', logout);
 
-  // Theme system (same as dashboard)
+  // Theme system
   function initTheme() {
     const themeBtn = document.getElementById("themeBtn");
     const themeMenu = document.getElementById("themeMenu");

@@ -774,63 +774,57 @@ async function loadBudget() {
     console.error("Load budget failed");
   }
 }
-function initThemeSystem(){
+function initThemeSystem() {
+    const themeBtn = document.getElementById("themeBtn");
+    const themeMenu = document.getElementById("themeMenu");
+    const dropdown = document.getElementById("themeDropdown");
+    const themeLabel = document.getElementById("themeLabel");
+    const themeIcon = document.querySelector(".theme-icon"); // Added for icons
 
-const themeBtn = document.getElementById("themeBtn");
-const themeMenu = document.getElementById("themeMenu");
-const dropdown = document.getElementById("themeDropdown");
-const themeLabel = document.getElementById("themeLabel");
+    if (!themeBtn || !themeMenu) return;
 
-if(!themeBtn || !themeMenu) return;
+    function applyTheme(theme) {
+        // Remove all previous classes
+        document.body.classList.remove("light-mode", "dark-mode", "auto-mode");
+        // Add the new selected mode
+        document.body.classList.add(theme + "-mode");
 
-function applyTheme(theme){
+        // Update the Label and Icon to match index.html logic
+        if (themeLabel) {
+            themeLabel.innerText = theme.charAt(0).toUpperCase() + theme.slice(1);
+        }
+        
+        if (themeIcon) {
+            const icons = { light: '☀️', dark: '🌙', auto: '🌓' };
+            themeIcon.textContent = icons[theme] || '🌓';
+        }
 
-document.body.classList.remove("light-mode","dark-mode","auto-mode");
-document.body.classList.add(theme+"-mode");
+        localStorage.setItem("fintrack_theme", theme);
+    }
 
-if(themeLabel){
+    // Load saved theme or default to auto
+    const savedTheme = localStorage.getItem("fintrack_theme") || "auto";
+    applyTheme(savedTheme);
 
-if(theme==="light") themeLabel.innerText="Light";
-else if(theme==="dark") themeLabel.innerText="Dark";
-else themeLabel.innerText="Auto";
+    themeBtn.onclick = (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle("active");
+    };
 
-}
+    themeMenu.querySelectorAll("[data-theme]").forEach(item => {
+        item.onclick = (e) => {
+            e.stopPropagation();
+            const theme = item.dataset.theme;
+            applyTheme(theme);
+            dropdown.classList.remove("active");
+        };
+    });
 
-localStorage.setItem("fintrack_theme",theme);
-
-}
-
-// load saved theme
-const savedTheme = localStorage.getItem("fintrack_theme") || "auto";
-applyTheme(savedTheme);
-
-// open dropdown
-themeBtn.onclick=(e)=>{
-e.stopPropagation();
-dropdown.classList.toggle("active");
-};
-
-// select theme
-themeMenu.querySelectorAll("[data-theme]").forEach(item=>{
-
-item.onclick=(e)=>{
-e.stopPropagation();
-
-const theme=item.dataset.theme;
-applyTheme(theme);
-
-dropdown.classList.remove("active");
-};
-
-});
-
-// close dropdown
-document.addEventListener("click",(e)=>{
-if(!e.target.closest(".theme-dropdown")){
-dropdown.classList.remove("active");
-}
-});
-
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".theme-dropdown")) {
+            dropdown.classList.remove("active");
+        }
+    });
 }
 function calculateSavingsScore(income, expenses) {
   if (income <= 0) return 0;

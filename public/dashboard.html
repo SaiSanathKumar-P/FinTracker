@@ -3,28 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="theme-color" content="#2563eb">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>FinTrack – Dashboard</title>
   <script>
-(function(){
-  try{
-    const saved = localStorage.getItem("theme") || "auto-mode";
-    document.documentElement.classList.add(saved);
-    document.body?.classList?.add(saved);
-  }catch(e){}
-})();
-</script>
+    (function(){
+      try {
+        const saved = localStorage.getItem("theme") || "auto-mode";
+        document.documentElement.classList.add(saved);
+        document.body?.classList?.add(saved);
+      } catch(e) {}
+    })();
+  </script>
   <link rel="stylesheet" href="css/style.css?v=4.2">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    body { opacity: 1; transition: opacity 0.3s ease; }
-    #chartContainer { display: block; }
+    body { opacity: 0; transition: opacity 0.3s ease; }
+    body.page-loaded { opacity: 1; }
     body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
     .form-row input,
     .form-row .custom-select-trigger,
     .form-row .add-btn {
       height: 52px;
       box-sizing: border-box;
+    }
+    /* Ripple effect */
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+      z-index: 10;
+    }
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
     }
   </style>
 </head>
@@ -34,10 +50,10 @@
     <h1 class="logo">FinTrack</h1>
     <div class="topbar-right">
       <div class="theme-dropdown" id="themeDropdown">
-       <button class="theme-btn" id="themeBtn">
-<span class="theme-icon">🌓</span>
-<span id="themeLabel">Both</span>
-</button>
+        <button class="theme-btn" id="themeBtn">
+          <span class="theme-icon">🌓</span>
+          <span id="themeLabel">Both</span>
+        </button>
         <div id="themeMenu" class="theme-menu" role="menu">
           <div role="menuitem" data-theme="light">☀️ Light</div>
           <div role="menuitem" data-theme="dark">🌙 Dark</div>
@@ -56,41 +72,28 @@
     </article>
 
     <!-- Budget Card -->
-<article class="summary-card budget-card">
-
-  <div class="budget-header">
-    <h2>🎯 Monthly Budget</h2>
-  </div>
-
-  <div class="budget-slider-row">
-
-    <div class="slider-container">
-
-      <div id="budgetProgress"></div>
-
-      <input type="range"
-             id="budgetInput"
-             min="0"
-             max="20000"
-             step="500"
-             value="0">
-
-    </div>
-
-    <div class="budget-badge" id="budgetPercentBadge">0%</div>
-
-  </div>
-
-  <p class="amount">
-    ₹ <span id="budgetValue">0</span>
-    <span class="budget-period">/month</span>
-  </p>
-
-  <button class="save-budget-btn" id="saveBudgetBtn">
-    Save Budget
-  </button>
-
-</article>
+    <article class="summary-card budget-card">
+      <div class="budget-header">
+        <h2>🎯 Monthly Budget</h2>
+      </div>
+      <div class="budget-slider-row">
+        <div class="slider-container">
+          <div id="budgetProgress" class="budget-progress"></div>
+          <input type="range"
+                 id="budgetInput"
+                 min="0"
+                 max="20000"
+                 step="500"
+                 value="0">
+        </div>
+        <div class="budget-badge" id="budgetPercentBadge">0%</div>
+      </div>
+      <p class="amount">
+        ₹ <span id="budgetValue">0</span>
+        <span class="budget-period">/month</span>
+      </p>
+      <button class="save-budget-btn" id="saveBudgetBtn">Save Budget</button>
+    </article>
 
     <article class="summary-card">
       <h2>Remaining</h2>
@@ -140,7 +143,7 @@
     <div class="ai-card">
       <h2>🧠 Smart Analyzer</h2>
       <div class="ai-grid">
-        <!-- Original 3 boxes -->
+        <!-- Monthly/Weekly/Daily Budget -->
         <div class="ai-box">
           <h3>Monthly Budget</h3>
           <p id="aiMonthly">₹0</p>
@@ -154,7 +157,7 @@
           <p id="aiDaily">₹0</p>
         </div>
         
-        <!-- New Financial Health Score Section -->
+        <!-- Financial Health Scores -->
         <div class="ai-box health-score-box">
           <h3>💰 Savings Score</h3>
           <p id="savingsScore">0</p>
@@ -178,7 +181,7 @@
           <small class="score-max">/100</small>
         </div>
         
-        <!-- Original 3 boxes -->
+        <!-- Top Category, Risk, Suggestion -->
         <div class="ai-box">
           <h3>Top Category</h3>
           <p id="aiTopCategory">-</p>
@@ -193,15 +196,9 @@
         </div>
       </div>
     </div>
-  </div> <!-- Close dashboard-split -->
+  </div>
 
-  <!-- Recent Activity -->
-  <section class="recent-activity">
-    <h2>🕒 Recent Activity</h2>
-    <div id="recentList" class="recent-list"></div>
-  </section>
-
-  <!-- No Spend Days Tracker -->
+  <!-- No Spend Days Tracker - Moved UP (before Recent Activity) -->
   <section class="no-spend-tracker">
     <div class="no-spend-header">
       <h2>🔥 No Spend Tracker</h2>
@@ -226,6 +223,12 @@
     </div>
   </section>
 
+  <!-- Recent Activity -->
+  <section class="recent-activity">
+    <h2>🕒 Recent Activity</h2>
+    <div id="recentList" class="recent-list"></div>
+  </section>
+
   <!-- Expense List -->
   <section class="history-section">
     <h2 id="history-heading">📋 Expense List</h2>
@@ -233,7 +236,7 @@
       <ul id="expenseList"></ul>
     </div>
   </section>
-</div> <!-- Close dashboard-wrapper -->
+</div>
 
 <!-- Add Category Modal -->
 <div id="categoryModal" class="category-modal">

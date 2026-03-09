@@ -1869,6 +1869,62 @@ border-radius:20px;
 color:white;
 cursor:pointer;
 }
+/* =================================
+APPLE STYLE PAGE TRANSITION
+================================= */
+
+body{
+opacity:0;
+filter:blur(8px);
+transform:translateY(8px);
+transition:all .45s ease;
+}
+
+body.page-loaded{
+opacity:1;
+filter:blur(0);
+transform:translateY(0);
+}
+
+body.page-exit{
+opacity:0;
+filter:blur(10px);
+transform:translateY(-8px);
+}
+/* =================================
+APPLE STYLE PAGE TRANSITION
+================================= */
+
+body{
+opacity:0;
+filter:blur(8px);
+transform:translateY(8px);
+transition:all .45s ease;
+}
+
+body.page-loaded{
+opacity:1;
+filter:blur(0);
+transform:translateY(0);
+}
+
+body.page-exit{
+opacity:0;
+filter:blur(10px);
+transform:translateY(-8px);
+}
+/* =================================
+APPLE GLASS TILT EFFECT
+================================= */
+
+.tilt-card{
+transform-style:preserve-3d;
+transition:transform .25s ease, box-shadow .25s ease;
+}
+
+.tilt-card:hover{
+box-shadow:0 20px 60px rgba(0,0,0,.4), 0 0 40px var(--primary-500);
+}
 /* ========== END OF STYLESHEET ========== */
 /* ========== FIXED LAYOUT ISSUES ========== */
 

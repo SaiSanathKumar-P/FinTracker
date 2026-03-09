@@ -28,6 +28,9 @@
       <img src="images/3d-render-secure-login-password-illustration.png" alt="Login" class="brand-icon floating" width="300">
     </aside>
     <main class="auth-right">
+      <button class="back-btn" onclick="goBack()">
+  ← Back to Home
+</button>
       <h2>Welcome Back 👋</h2>
       <p class="subtitle">Login to continue</p>
       <form id="loginForm">
@@ -62,6 +65,14 @@ const token = params.get("token");
 if (token && token !== "undefined") {
   localStorage.setItem("token", token);
   window.location.href = "dashboard.html";
+}
+  </script>
+  <script>
+  function goBack() {
+  document.body.classList.add("page-exit");
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 300);
 }
   </script>
   <script src="js/auth.js"></script>

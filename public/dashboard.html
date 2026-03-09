@@ -50,20 +50,24 @@
     <h2>🎯 Monthly Budget</h2>
   </div>
 
-  <div class="slider-container">
+  <div class="budget-slider-row">
 
-    <input type="range"
-           id="budgetInput"
-           min="0"
-           max="20000"
-           step="500"
-           value="0">
+    <div class="slider-container">
 
-    <div id="budgetProgress"></div>
+      <div id="budgetProgress"></div>
+
+      <input type="range"
+             id="budgetInput"
+             min="0"
+             max="20000"
+             step="500"
+             value="0">
+
+    </div>
+
+    <div class="budget-badge" id="budgetPercentBadge">0%</div>
 
   </div>
-
-  <div class="budget-badge" id="budgetPercentBadge">0%</div>
 
   <p class="amount">
     ₹ <span id="budgetValue">0</span>

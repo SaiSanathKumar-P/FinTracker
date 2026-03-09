@@ -780,73 +780,58 @@ const themeBtn = document.getElementById('themeBtn');
 const themeMenu = document.getElementById('themeMenu');
 const dropdown = document.getElementById('themeDropdown');
 
-if(!themeBtn || !themeMenu) return;
+if(!themeBtn || !themeMenu || !dropdown) return;
 
 // Load saved theme
-const saved = localStorage.getItem('theme') || 'auto-mode';
+const savedTheme = localStorage.getItem("fintrack_theme") || "auto";
 
-document.body.classList.remove(
-'light-mode',
-'dark-mode',
-'auto-mode'
-);
-
-document.body.classList.add(saved);
-
-// Toggle dropdown
-themeBtn.onclick = (e)=>{
-e.stopPropagation();
-dropdown.classList.toggle('active');
-};
-
-// Theme select
-themeMenu.querySelectorAll('[data-theme]').forEach(item => {
-
-item.onclick = (e)=>{
-
-e.stopPropagation();
-
-const theme = item.getAttribute('data-theme') + '-mode';
-
-document.body.classList.remove(
-'light-mode',
-'dark-mode',
-'auto-mode'
-);
-
-document.body.classList.add(theme);
-
-localStorage.setItem('theme', theme);
-
-dropdown.classList.remove('active');
-
-};
-
-});
-
-// Close outside click
-document.addEventListener('click',(e)=>{
-
-if(!e.target.closest('.theme-dropdown')){
-dropdown.classList.remove('active');
-}
-
-});
-
-}
-
-// load saved theme
-const savedTheme = localStorage.getItem("fintrack_theme");
-
-if(savedTheme){
 document.body.classList.remove(
 "light-mode",
 "dark-mode",
 "auto-mode"
 );
 
-document.body.classList.add(savedTheme+"-mode");
+document.body.classList.add(savedTheme + "-mode");
+
+// Toggle dropdown
+themeBtn.onclick = (e)=>{
+e.stopPropagation();
+dropdown.classList.toggle("active");
+};
+
+// Theme select
+themeMenu.querySelectorAll("[data-theme]").forEach(item=>{
+
+item.onclick = (e)=>{
+
+e.stopPropagation();
+
+const theme = item.dataset.theme;
+
+document.body.classList.remove(
+"light-mode",
+"dark-mode",
+"auto-mode"
+);
+
+document.body.classList.add(theme + "-mode");
+
+localStorage.setItem("fintrack_theme", theme);
+
+dropdown.classList.remove("active");
+
+};
+
+});
+
+// Close outside click
+document.addEventListener("click",(e)=>{
+
+if(!e.target.closest(".theme-dropdown")){
+dropdown.classList.remove("active");
 }
+
+});
 
 }
 // ========== FINANCIAL HEALTH SCORE FUNCTIONS ==========

@@ -6,9 +6,6 @@ const registerForm = document.getElementById("registerForm");
 // ======================
 // LOGIN
 // ======================
-// ======================
-// LOGIN
-// ======================
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -40,8 +37,9 @@ if (loginForm) {
     }
   });
 }
+
 // ======================
-// REGISTER
+// REGISTER - FIXED to save user data
 // ======================
 if (registerForm) {
   registerForm.addEventListener("submit", async (e) => {
@@ -64,22 +62,31 @@ if (registerForm) {
 
       console.log("REGISTER RESPONSE:", data);
 
-     if (res.ok && data.token) {
-  localStorage.setItem("token", data.token);
-  window.location.href = "dashboard.html";
-} else {
-  if (data.message) {
-    alert(data.message);
-  } else {
-    alert("Registration failed");
-  }
-}
+      if (res.ok && data.token) {
+        // ✅ SAVE USER DATA FOR PROFILE PAGE
+        localStorage.setItem('finTrack_user', JSON.stringify({
+          name: name,
+          email: email,
+          college: college,
+          year: year
+        }));
+        
+        localStorage.setItem("token", data.token);
+        window.location.href = "dashboard.html";
+      } else {
+        if (data.message) {
+          alert(data.message);
+        } else {
+          alert("Registration failed");
+        }
+      }
     } catch (err) {
       console.error("Register error:", err);
       alert("Server error");
     }
   });
 }
+
 if (loginForm) {
   loginForm.reset();
 }

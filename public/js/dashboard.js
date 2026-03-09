@@ -803,8 +803,8 @@ function initThemeSystem() {
     }
 
     // Load saved theme or default to auto
-    const savedTheme = localStorage.getItem("theme") || "auto-mode";
-    applyTheme(savedTheme.replace("-mode",""));
+    const savedTheme = localStorage.getItem("theme") || "auto";
+applyTheme(savedTheme.replace("-mode",""));
 
     themeBtn.onclick = (e) => {
         e.stopPropagation();

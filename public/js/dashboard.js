@@ -799,12 +799,12 @@ function initThemeSystem() {
             themeIcon.textContent = icons[theme] || '🌓';
         }
 
-        localStorage.setItem("theme", theme + "-mode");
+        localStorage.setItem("theme", theme);
     }
 
     // Load saved theme or default to auto
     const savedTheme = localStorage.getItem("theme") || "auto-mode";
-    applyTheme(savedTheme);
+    applyTheme(savedTheme.replace("-mode",""));
 
     themeBtn.onclick = (e) => {
         e.stopPropagation();

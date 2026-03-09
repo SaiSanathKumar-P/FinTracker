@@ -1736,10 +1736,6 @@ footer a:hover {
     flex: 1;
   }
   
-  .hero-right img {
-    max-width: 380px;
-  }
-  
   .features-grid {
     flex-direction: row;
     flex-wrap: wrap;
@@ -1799,10 +1795,6 @@ footer a:hover {
 }
 
 @media (min-width: 1024px) {
-  .hero-right img {
-    max-width: 450px;
-  }
-  
   .split-image img {
     max-width: 450px;
   }
@@ -1829,10 +1821,6 @@ footer a:hover {
 }
 
 @media (min-width: 1280px) {
-  .hero-right img {
-    max-width: 500px;
-  }
-  
   .split-image img {
     max-width: 500px;
   }

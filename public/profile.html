@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="theme-color" content="#2563eb">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FinTrack – Profile</title>
   <script>
     (function(){
@@ -16,13 +16,19 @@
   </script>
   <link rel="stylesheet" href="css/style.css?v=4.2">
   <style>
-    body { opacity: 0; transition: opacity 0.3s ease; }
+    body { opacity: 0; transition: opacity 0.25s ease; }
     body.page-loaded { opacity: 1; }
+    .profile-container { max-width: 800px; margin: 0 auto; padding: 20px; }
     .profile-header {
       display: flex;
       align-items: center;
       gap: 20px;
       margin-bottom: 30px;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
     }
     .profile-avatar {
       width: 80px;
@@ -56,23 +62,25 @@
       font-weight: 700;
       color: var(--primary-500);
     }
-    .stat-label {
-      font-size: 14px;
-      color: var(--text-muted);
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .info-section {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px solid var(--border-color);
     }
     .info-row {
       display: flex;
       padding: 15px 0;
       border-bottom: 1px solid var(--border-color);
     }
-    .info-label {
-      width: 120px;
-      color: var(--text-muted);
-    }
-    .info-value {
-      flex: 1;
-      font-weight: 500;
-    }
+    .info-label { width: 120px; color: var(--text-muted); }
   </style>
 </head>
 <body class="auto-mode">
@@ -95,18 +103,16 @@
     </div>
   </header>
 
-  <div class="profile-container" style="max-width: 800px; margin: 0 auto;">
-    <!-- Profile Header -->
+  <div class="profile-container">
     <div class="profile-header">
       <div class="profile-avatar" id="userInitials">JD</div>
       <div>
-        <h2 id="userFullName">John Doe</h2>
-        <p id="userEmail" style="color: var(--text-muted);">john@college.edu</p>
-        <p id="userCollege">Sample University • Year 3</p>
+        <h2 id="userFullName">Loading...</h2>
+        <p id="userEmail" style="color: var(--text-muted);">Loading...</p>
+        <p id="userCollege">Loading...</p>
       </div>
     </div>
 
-    <!-- Stats Cards -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-value" id="totalBalance">₹0</div>
@@ -122,105 +128,69 @@
       </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div style="margin: 30px 0;">
-      <h3>Quick Actions</h3>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
-        <button class="nav-btn" onclick="window.location.href='dashboard.html'">📊 Dashboard</button>
-        <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Personal Info</button>
-        <button class="nav-btn">💳 Cards</button>
-        <button class="nav-btn">📈 Summary</button>
-        <button class="nav-btn">🔒 Security</button>
-        <button class="nav-btn" id="profileLogoutBtn">🚪 Logout</button>
-      </div>
+    <div class="quick-actions">
+      <button class="nav-btn" onclick="window.location.href='dashboard.html'">📊 Dashboard</button>
+      <button class="nav-btn" onclick="window.location.href='profile.html'">👤 Profile</button>
+      <button class="nav-btn">💳 Cards</button>
+      <button class="nav-btn">📈 Summary</button>
+      <button class="nav-btn">🔒 Security</button>
+      <button class="nav-btn" id="profileLogoutBtn">🚪 Logout</button>
     </div>
 
-    <!-- Personal Information -->
-    <div style="background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px; border: 1px solid var(--border-color);">
+    <div class="info-section">
       <h3>Personal Information</h3>
-      <div class="info-row">
-        <span class="info-label">Full Name</span>
-        <span class="info-value" id="infoName">John Doe</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Email</span>
-        <span class="info-value" id="infoEmail">john@college.edu</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">College</span>
-        <span class="info-value" id="infoCollege">Sample University</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Year</span>
-        <span class="info-value" id="infoYear">3rd Year</span>
-      </div>
-      <div class="info-row">
-        <span class="info-label">Member Since</span>
-        <span class="info-value" id="infoJoined">Jan 2026</span>
-      </div>
+      <div class="info-row"><span class="info-label">Full Name</span><span class="info-value" id="infoName">-</span></div>
+      <div class="info-row"><span class="info-label">Email</span><span class="info-value" id="infoEmail">-</span></div>
+      <div class="info-row"><span class="info-label">College</span><span class="info-value" id="infoCollege">-</span></div>
+      <div class="info-row"><span class="info-label">Year</span><span class="info-value" id="infoYear">-</span></div>
+      <div class="info-row"><span class="info-label">Member Since</span><span class="info-value" id="infoJoined">-</span></div>
     </div>
 
-    <!-- Footer Note -->
-    <div style="text-align: center; margin-top: 30px; padding: 20px; color: var(--text-muted); font-size: 12px;">
-      <p>FinTrack Pro app • Privacy & Terms • Version 8.4.5 (3528)</p>
+    <div style="text-align: center; margin-top: 30px; color: var(--text-muted); font-size: 12px;">
+      <p>FinTrack Pro • Privacy & Terms • Version 8.4.5</p>
     </div>
   </div>
 </div>
 
 <script src="js/ui-effects.js"></script>
 <script>
-  // Load user data from localStorage
   document.addEventListener('DOMContentLoaded', function() {
-    // Get user data from registration
     const userData = JSON.parse(localStorage.getItem('finTrack_user') || '{}');
     
     if (userData.name) {
       document.getElementById('userFullName').textContent = userData.name;
       document.getElementById('infoName').textContent = userData.name;
-      
-      // Get initials
       const initials = userData.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
       document.getElementById('userInitials').textContent = initials;
     }
-    
     if (userData.email) {
       document.getElementById('userEmail').textContent = userData.email;
       document.getElementById('infoEmail').textContent = userData.email;
     }
-    
     if (userData.college) {
       document.getElementById('userCollege').textContent = userData.college + ' • Year ' + (userData.year || '1');
       document.getElementById('infoCollege').textContent = userData.college;
     }
+    if (userData.year) document.getElementById('infoYear').textContent = userData.year + 'th Year';
     
-    if (userData.year) {
-      document.getElementById('infoYear').textContent = userData.year + 'th Year';
-    }
+    document.getElementById('infoJoined').textContent = new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
     
-    // Set joined date
-    const joinDate = new Date();
-    document.getElementById('infoJoined').textContent = joinDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    
-    // Load financial data from dashboard
-    const totalAmount = localStorage.getItem('finTrack_totalAmount') || '0';
-    document.getElementById('totalBalance').textContent = '₹' + totalAmount;
-    document.getElementById('totalDeposits').textContent = '₹' + totalAmount;
-    document.getElementById('totalWithdraws').textContent = '₹' + totalAmount;
+    // Load financial data
+    const total = localStorage.getItem('finTrack_totalAmount') || '0';
+    document.getElementById('totalBalance').textContent = '₹' + total;
+    document.getElementById('totalDeposits').textContent = '₹' + total;
+    document.getElementById('totalWithdraws').textContent = '₹' + total;
+
+    document.body.classList.add('page-loaded');
   });
 
-  // Logout function
-  document.getElementById('logoutBtn')?.addEventListener('click', function() {
-    localStorage.removeItem('token');
-    window.location.href = 'login.html';
-  });
-  
-  document.getElementById('profileLogoutBtn')?.addEventListener('click', function() {
-    localStorage.removeItem('token');
-    window.location.href = 'login.html';
-  });
+  // Logout
+  function logout() { localStorage.clear(); window.location.href = 'login.html'; }
+  document.getElementById('logoutBtn')?.addEventListener('click', logout);
+  document.getElementById('profileLogoutBtn')?.addEventListener('click', logout);
 
-  // Theme system
-  function initThemeSystem() {
+  // Theme system (same as dashboard)
+  function initTheme() {
     const themeBtn = document.getElementById("themeBtn");
     const themeMenu = document.getElementById("themeMenu");
     const dropdown = document.getElementById("themeDropdown");
@@ -241,28 +211,13 @@
     const savedTheme = localStorage.getItem("theme") || "auto";
     applyTheme(savedTheme);
 
-    themeBtn.onclick = (e) => {
-      e.stopPropagation();
-      dropdown.classList.toggle("active");
-    };
-
+    themeBtn.onclick = (e) => { e.stopPropagation(); dropdown.classList.toggle("active"); };
     themeMenu.querySelectorAll("[data-theme]").forEach(item => {
-      item.onclick = (e) => {
-        e.stopPropagation();
-        applyTheme(item.dataset.theme);
-        dropdown.classList.remove("active");
-      };
+      item.onclick = (e) => { e.stopPropagation(); applyTheme(item.dataset.theme); dropdown.classList.remove("active"); };
     });
-
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".theme-dropdown")) {
-        dropdown.classList.remove("active");
-      }
-    });
+    document.addEventListener("click", (e) => { if (!e.target.closest(".theme-dropdown")) dropdown.classList.remove("active"); });
   }
-  
-  initThemeSystem();
-  document.body.classList.add('page-loaded');
+  initTheme();
 </script>
 </body>
 </html>

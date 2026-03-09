@@ -186,25 +186,23 @@ if (progress) progress.style.width = percent + "%";
 
 async function setBudget() {
   if (!elements.budgetInput) return;
+
   monthlyBudget = Number(elements.budgetInput.value);
-  
-  try { 
+
+  try {
     await apiRequest('/budget', {
       method: 'POST',
       body: JSON.stringify({ budget: monthlyBudget })
     });
-    
+
     updateBudgetBreakdown();
     showMessage('Budget saved successfully!');
-    
-    // === NEW: Add these lines ===
-    loadExpenses();
-    // ===========================
-    
-  } catch {}
-  
-  if (useMock) = monthlyBudget;
-  loadExpenses();
+
+    await loadExpenses();
+
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // ========== Dropdown Management ==========
@@ -291,7 +289,6 @@ function removeCategory() {
   }
 
   categories = categories.filter(c => c.value !== selected);
-  saveMockToStorage();
 
   elements.selectedDisplay.innerText = 'Select Category';
   elements.categoryHidden.value = '';
@@ -544,7 +541,7 @@ function updateTimelineChart(expenses) {
         y: { 
           stacked: true, 
           beginAtZero: true,
-          max: monthlyBudget || mockBudget || 1000,
+          max: Math.max(monthlyBudget, ...expenses.map(e => Number(e.amount))) || 1000,
           ticks: { 
             color: '#cbd5e1',
             callback: function(value) {
@@ -629,8 +626,6 @@ function setupEventListeners() {
       value: clean,
       label: clean
     });
-
-    saveMockToStorage();
     rebuildDropdown();
 
     categoryModal.style.display = "none";
@@ -829,7 +824,7 @@ function updateNoSpendTracker(expenses = []) {
       if (!expensesByDate[dateStr]) {
         expensesByDate[dateStr] = 0;
       }
-      expensesByDate[dateStr] += exp.amount;
+      expensesByDate[dateStr] += Number(exp.amount);
     }
   });
   
@@ -839,7 +834,7 @@ function updateNoSpendTracker(expenses = []) {
   
   // Count no-spend days (days with no expenses)
   const daysWithExpenses = Object.keys(expensesByDate).length;
-  const noSpendDays = currentDay - daysWithExpenses;
+  const noSpendDays = Math.max(0, currentDay - daysWithExpenses);
   
   // Calculate daily average
   const totalExpenses = expenses
@@ -847,7 +842,7 @@ function updateNoSpendTracker(expenses = []) {
       const date = new Date(exp.date);
       return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
     })
-    .reduce((sum, exp) => sum + exp.amount, 0);
+    .reduce((sum, exp) => sum + Number(exp.amount), 0);
   
   const dailyAverage = daysWithExpenses > 0 ? totalExpenses / daysWithExpenses : 0;
   
@@ -855,7 +850,9 @@ function updateNoSpendTracker(expenses = []) {
   const budget = monthlyBudget || 0;
   const spentSoFar = totalExpenses;
   const remainingDays = daysInMonth - currentDay + 1;
-  const safeDailySpend = remainingDays > 0 ? (budget - spentSoFar) / remainingDays : 0;
+  const safeDailySpend = remainingDays > 0 
+  ? Math.max(0, (budget - spentSoFar) / remainingDays) 
+  : 0;
   
   // Calculate streak (consecutive no-spend days)
   let streak = 0;
@@ -891,25 +888,12 @@ async function initDashboard() {
   if (savedColors) {
     categoryColors = JSON.parse(savedColors);
   }
-  const wasMock = localStorage.getItem(MOCK_MODE_KEY) === 'true';
-  if (wasMock) { 
-    setOfflineMode(true); 
-    loadMockFromStorage(); 
-  }
   rebuildDropdown();
   initCategoryDropdown();
   setupEventListeners();
   
   // Set initial budget value from storage if exists
-  if (mockBudget > 0) {
-    if (elements.budgetInput) {
-      elements.budgetInput.value = mockBudget;
-      updateBudgetValue(mockBudget);
-    }
-  } else {
-    updateBudgetBreakdown();
-  }
-  
+  updateBudgetBreakdown();
 try {
 
   await loadBudget();

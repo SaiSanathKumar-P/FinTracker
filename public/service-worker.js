@@ -1,4 +1,4 @@
-const CACHE_NAME = "fintrack-cache-v18";
+const CACHE_NAME = "fintrack-cache-v19";
 
 const urlsToCache = [
   "/",
@@ -6,6 +6,7 @@ const urlsToCache = [
   "/login.html",
   "/register.html",
   "/dashboard.html",
+  "/profile.html",
   "/css/style.css",
   "/js/auth.js",
   "/js/ui-effects.js",

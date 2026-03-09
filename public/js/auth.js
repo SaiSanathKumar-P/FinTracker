@@ -25,20 +25,33 @@ if (loginForm) {
       console.log("LOGIN RESPONSE:", data);
 
       if (res.ok && data.token) {
-  localStorage.setItem("token", data.token);
-  
-  // ✅ If your login API returns user data, save it too
-  if (data.user) {
-    localStorage.setItem('finTrack_user', JSON.stringify({
-      name: data.user.name,
-      email: data.user.email,
-      college: data.user.college,
-      year: data.user.year
-    }));
-  }
-  
-  window.location.href = "dashboard.html";
-} else {
+        localStorage.setItem("token", data.token);
+        
+        // ✅ FIXED: If API returns user data, save it
+        if (data.user) {
+          localStorage.setItem('finTrack_user', JSON.stringify({
+            name: data.user.name || '',
+            email: data.user.email || '',
+            college: data.user.college || '',
+            year: data.user.year || ''
+          }));
+        } else {
+          // ✅ If API doesn't return user data, try to keep existing or create placeholder
+          const existingUser = localStorage.getItem('finTrack_user');
+          if (!existingUser) {
+            // Create a temporary user from email
+            const tempName = email.split('@')[0];
+            localStorage.setItem('finTrack_user', JSON.stringify({
+              name: tempName,
+              email: email,
+              college: 'Not specified',
+              year: '1'
+            }));
+          }
+        }
+        
+        window.location.href = "dashboard.html";
+      } else {
         alert(data.message || "Login failed");
       }
 

@@ -776,56 +776,64 @@ async function loadBudget() {
 }
 function initThemeSystem(){
 
-const dropdown = document.getElementById("themeDropdown");
-const btn = document.getElementById("themeBtn");
-const menu = document.getElementById("themeMenu");
+const themeBtn = document.getElementById('themeBtn');
+const themeMenu = document.getElementById('themeMenu');
+const dropdown = document.getElementById('themeDropdown');
 
-if(!dropdown || !btn || !menu) return;
+if(!themeBtn || !themeMenu) return;
 
-// open menu
-btn.onclick = () => {
-dropdown.classList.toggle("active");
-};
-
-// select theme
-menu.querySelectorAll("[data-theme]").forEach(item=>{
-
-item.onclick = () => {
-
-const theme = item.dataset.theme;
+// Load saved theme
+const saved = localStorage.getItem('theme') || 'auto-mode';
 
 document.body.classList.remove(
-"light-mode",
-"dark-mode",
-"auto-mode"
+'light-mode',
+'dark-mode',
+'auto-mode'
 );
 
-document.body.classList.add(theme+"-mode");
-  const logo = document.querySelector(".logo");
+document.body.classList.add(saved);
 
-if(logo){
+// Toggle dropdown
+themeBtn.onclick = (e)=>{
+e.stopPropagation();
+dropdown.classList.toggle('active');
+};
 
-if(theme==="dark"){
-logo.textContent="FinTrack 🌙";
-}
+// Theme select
+themeMenu.querySelectorAll('[data-theme]').forEach(item => {
 
-else if(theme==="light"){
-logo.textContent="FinTrack ☀️";
-}
+item.onclick = (e)=>{
 
-else{
-logo.textContent="FinTrack 🌓";
-}
+e.stopPropagation();
 
-}
+const theme = item.getAttribute('data-theme') + '-mode';
 
-localStorage.setItem("fintrack_theme",theme);
+document.body.classList.remove(
+'light-mode',
+'dark-mode',
+'auto-mode'
+);
 
-dropdown.classList.remove("active");
+document.body.classList.add(theme);
+
+localStorage.setItem('theme', theme);
+
+dropdown.classList.remove('active');
 
 };
 
 });
+
+// Close outside click
+document.addEventListener('click',(e)=>{
+
+if(!e.target.closest('.theme-dropdown')){
+dropdown.classList.remove('active');
+}
+
+});
+
+}
 
 // load saved theme
 const savedTheme = localStorage.getItem("fintrack_theme");

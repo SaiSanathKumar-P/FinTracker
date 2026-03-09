@@ -18,12 +18,9 @@
   <meta name="google-site-verification" content="VM5NmnL9KlYBSLLmmzJ2AtE-2eZa_eMZF2OdBviguuA" />
   <title>FinTrack – Smart Student Finance</title>
   <link rel="stylesheet" href="css/style.css">
-  <!-- Preload hero image for better LCP -->
-  <link rel="preload" as="image" href="images/indexgroup.png">
   <style>
-    /* Minimal inline style to prevent FOUC */
     body { opacity: 0; transition: opacity 0.2s; }
-    body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
+    body.auto-mode, body.light-mode, body.dark-mode, body.page-loaded { opacity: 1; }
   </style>
 </head>
 <body class="auto-mode">
@@ -32,7 +29,6 @@
     <span>FinTrack</span>
   </div>
   <div class="header-actions" role="navigation" aria-label="Main navigation">
-    <!-- Theme Switcher -->
     <div class="theme-dropdown" aria-label="Theme selector">
       <button id="themeBtn" class="theme-btn" aria-haspopup="true" aria-expanded="false">
         <span class="theme-icon">🌓</span>
@@ -50,7 +46,6 @@
 </header>
 
 <main id="main-content">
-  <!-- HERO SECTION -->
   <section class="hero-section" aria-labelledby="hero-heading">
     <div class="hero-left">
       <h1 id="hero-heading">Manage Your Student Finances Smarter</h1>
@@ -62,7 +57,6 @@
     </div>
   </section>
 
-  <!-- FEATURES SECTION -->
   <section class="features-section" aria-labelledby="features-heading">
     <h2 id="features-heading" class="features-title">Powerful Features</h2>
     <div class="features-grid">
@@ -84,7 +78,6 @@
     </div>
   </section>
 
-  <!-- SPLIT SECTION (IMAGE + TEXT) -->
   <section class="split-section" aria-labelledby="split-heading">
     <div class="split-image">
       <img src="images/collegestudents.png" alt="College students collaborating" loading="lazy" width="500" height="400">
@@ -96,7 +89,6 @@
     </div>
   </section>
 
-  <!-- HOW IT WORKS SECTION -->
   <section class="how-section" aria-labelledby="how-heading">
     <h2 id="how-heading">How It Works</h2>
     <div class="how-grid">
@@ -128,16 +120,15 @@
   <p>© 2026 FinTrack | Designed for Students | <a href="#">Privacy Policy</a> | <a href="#">Terms</a></p>
 </footer>
 
+<script src="js/ui-effects.js"></script>
 <script>
   (function() {
-    // Theme management (unified across all pages)
     const themeBtn = document.getElementById('themeBtn');
     const themeMenu = document.getElementById('themeMenu');
     const dropdown = document.querySelector('.theme-dropdown');
     const themeLabel = document.getElementById('themeLabel');
     const themeIcon = document.querySelector('.theme-icon');
 
-    // Load saved theme
     function loadTheme() {
       try {
         const saved = localStorage.getItem('theme') || 'auto-mode';
@@ -167,7 +158,7 @@
           e.stopPropagation();
           const theme = item.getAttribute('data-theme') + '-mode';
           const themeName = item.getAttribute('data-theme');
-          document.body.className = ''; // remove all
+          document.body.className = '';
           document.body.classList.add(theme);
           if (themeLabel) themeLabel.textContent = themeName.charAt(0).toUpperCase() + themeName.slice(1);
           if (themeIcon) {
@@ -181,7 +172,6 @@
       });
     }
 
-    // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.theme-dropdown') && dropdown) {
         dropdown.classList.remove('active');
@@ -189,7 +179,6 @@
       }
     });
 
-    // Keyboard support
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && dropdown && dropdown.classList.contains('active')) {
         dropdown.classList.remove('active');
@@ -198,7 +187,5 @@
     });
   })();
 </script>
-  
-<script src="js/ui-effects.js"></script>
 </body>
 </html>

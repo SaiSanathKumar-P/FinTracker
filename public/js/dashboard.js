@@ -4,11 +4,7 @@
 
 const API_BASE = '/api/expenses';
 const TOKEN_KEY = 'token';
-const MOCK_MODE_KEY = 'finTrack_useMock';
 let monthlyBudget = 0;
-let useMock = false;
-let mockExpenses = [];
-let mockBudget = 0;
 let chartInstance = null;      // pie chart
 let timelineChartInstance = null;  // bar chart
 
@@ -112,34 +108,9 @@ function requireAuth() {
 }
 function showMessage(msg) { alert(msg); }
 
-function setOfflineMode(enabled) {
-  useMock = enabled;
-  localStorage.setItem(MOCK_MODE_KEY, enabled ? 'true' : 'false');
-}
-
-function loadMockFromStorage() {
-  try {
-    const stored = localStorage.getItem('finTrack_mockExpenses');
-    mockExpenses = stored ? JSON.parse(stored) : [];
-    const storedBudget = localStorage.getItem('finTrack_mockBudget');
-    mockBudget = storedBudget ? parseFloat(storedBudget) : 0;
-    const storedCats = localStorage.getItem('finTrack_categories');
-    if (storedCats) categories = JSON.parse(storedCats);
-  } catch { 
-    mockExpenses = []; 
-    mockBudget = 0; 
-  }
-}
-
-function saveMockToStorage() {
-  localStorage.setItem('finTrack_mockExpenses', JSON.stringify(mockExpenses));
-  localStorage.setItem('finTrack_mockBudget', mockBudget.toString());
-  localStorage.setItem('finTrack_categories', JSON.stringify(categories));
-}
 
 // ========== API with fallback ==========
 async function apiRequest(url, options = {}) {
-  if (useMock) return handleMockRequest(url, options);
 
   const token = getToken();
 
@@ -177,99 +148,11 @@ async function apiRequest(url, options = {}) {
   }
 }
 
-function handleMockRequest(url, options) {
-  const method = options.method || 'GET';
-  const body = options.body ? JSON.parse(options.body) : null;
-  if (method === 'GET' && url === '') return Promise.resolve(mockExpenses);
-  if (method === 'POST' && url === '/add') {
-    const newExpense = { 
-      _id: 'mock_' + Date.now(), 
-      title: body.title, 
-      category: body.category, 
-      amount: body.amount, 
-      date: new Date().toISOString() 
-    };
-    mockExpenses.push(newExpense); 
-    saveMockToStorage(); 
-    return Promise.resolve(newExpense);
-  }
-  if (method === 'DELETE' && url.startsWith('/')) {
-    const id = url.substring(1); 
-    mockExpenses = mockExpenses.filter(e => e._id !== id); 
-    saveMockToStorage(); 
-    return Promise.resolve(null);
-  }
-  if (method === 'POST' && url === '/budget') { 
-    mockBudget = body.budget; 
-    saveMockToStorage(); 
-    return Promise.resolve({}); 
-  }
-  if (method === 'GET' && url === '/analyze') return generateMockAnalysis();
-  return Promise.reject(new Error('Mock: unknown endpoint'));
-}
-
-function generateMockAnalysis() {
-  if (mockExpenses.length === 0) {
-    return Promise.resolve({
-      topCategory: "-",
-      riskLevel: "-",
-      suggestion: "Add expenses to get insights"
-    });
-  }
-
-  const catTotals = {};
-  mockExpenses.forEach(e => {
-    catTotals[e.category || "Other"] =
-      (catTotals[e.category || "Other"] || 0) + e.amount;
-  });
-
-  const top = Object.entries(catTotals)
-    .sort((a, b) => b[1] - a[1])[0];
-
-  const topCategory = top
-    ? `${top[0]} (₹${top[1].toFixed(2)})`
-    : "-";
-
-  const total = mockExpenses.reduce((s, e) => s + e.amount, 0);
-
-  let risk = "-";
-  let sugg = "-";
-
-  if (mockBudget > 0) {
-    const usage = (total / mockBudget) * 100;
-
-    if (usage < 50) {
-      risk = "Low Risk";
-      sugg = "Great! You are managing your student budget well.";
-    }
-    else if (usage < 80) {
-      risk = "Medium Risk";
-      sugg = "Try reducing small daily expenses like snacks or coffee.";
-    }
-    else if (usage < 100) {
-      risk = "High Risk";
-      sugg = "You are close to exceeding your budget.";
-    }
-    else {
-      risk = "Overspent";
-      sugg = "You exceeded your budget. Cut non-essential spending.";
-    }
-  } else {
-    sugg = "Set a budget to get risk analysis.";
-  }
-
-  return Promise.resolve({
-    topCategory,
-    riskLevel: risk,
-    suggestion: sugg
-  });
-}
-
 // ========== Budget Functions ==========
 function updateBudgetBreakdown() {
   if (!elements.aiMonthly) return;
 
-  const monthly = monthlyBudget || mockBudget || 0;
+  const monthly = monthlyBudget || 0;
   const weekly = monthly / 4.33;
   const daily = monthly / 30;
 
@@ -320,7 +203,7 @@ async function setBudget() {
     
   } catch {}
   
-  if (useMock) mockBudget = monthlyBudget;
+  if (useMock) = monthlyBudget;
   loadExpenses();
 }
 
@@ -466,7 +349,7 @@ async function loadExpenses() {
     
     if (elements.totalAmount) elements.totalAmount.innerText = total.toFixed(2);
     
-    const currentBudget = useMock ? mockBudget : monthlyBudget;
+    const currentBudget = monthlyBudget;
     if (currentBudget > 0) {
       const remaining = currentBudget - total;
       if (elements.remainingAmount) elements.remainingAmount.innerText = remaining.toFixed(2);
@@ -894,7 +777,7 @@ function updateFinancialHealthScores(expenses = []) {
 
   const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount), 0);
 
-  const budget = mockBudget || monthlyBudget || 0;
+  const budget = monthlyBudget || 0;
   const income = budget;
 
   const savingsScore = calculateSavingsScore(income, totalExpenses);
@@ -969,7 +852,7 @@ function updateNoSpendTracker(expenses = []) {
   const dailyAverage = daysWithExpenses > 0 ? totalExpenses / daysWithExpenses : 0;
   
   // Calculate safe daily spend for remaining days
-  const budget = mockBudget || monthlyBudget || 0;
+  const budget = monthlyBudget || 0;
   const spentSoFar = totalExpenses;
   const remainingDays = daysInMonth - currentDay + 1;
   const safeDailySpend = remainingDays > 0 ? (budget - spentSoFar) / remainingDays : 0;

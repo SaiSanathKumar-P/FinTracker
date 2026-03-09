@@ -7,10 +7,14 @@
   'use strict';
 
   // ========== PAGE TRANSITIONS ==========
-  function initPageTransitions(){
-window.addEventListener('load',()=>{
-document.body.classList.add('page-loaded');
+function initPageTransitions(){
+
+window.addEventListener("load",function(){
+
+document.body.classList.add("page-loaded");
+
 });
+
 }
 
   // ========== RIPPLE EFFECT FOR BUTTONS ==========

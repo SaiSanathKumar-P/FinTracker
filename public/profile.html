@@ -185,9 +185,14 @@
   });
 
   // Logout
-  function logout() { localStorage.clear(); window.location.href = 'login.html'; }
-  document.getElementById('logoutBtn')?.addEventListener('click', logout);
-  document.getElementById('profileLogoutBtn')?.addEventListener('click', logout);
+  // Logout - Only remove token, keep user data
+function logout() { 
+  localStorage.removeItem("token"); 
+  window.location.href = 'login.html'; 
+}
+
+document.getElementById('logoutBtn')?.addEventListener('click', logout);
+document.getElementById('profileLogoutBtn')?.addEventListener('click', logout);
 
   // Theme system (same as dashboard)
   function initTheme() {

@@ -165,7 +165,11 @@
     // Load user data
     const userData = JSON.parse(localStorage.getItem('finTrack_user') || '{}');
     console.log('Loading user data:', userData);
-    
+    // ✅ Add this debug display (remove after testing)
+const debugDiv = document.createElement('div');
+debugDiv.style.cssText = 'position:fixed; bottom:10px; right:10px; background:rgba(0,0,0,0.8); color:lime; padding:10px; border-radius:5px; font-size:12px; z-index:9999;';
+debugDiv.innerHTML = `Current User: ${userData.email || 'none'}<br>Token: ${localStorage.getItem('token')?.substring(0,10) || 'none'}...`;
+document.body.appendChild(debugDiv);
     // Helper function to safely set text content
     function setElementText(id, text) {
       const el = document.getElementById(id);

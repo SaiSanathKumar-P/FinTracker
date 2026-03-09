@@ -380,7 +380,8 @@ async function deleteExpense(id) {
     await loadSmartAnalysis(); 
     
     // === NEW: Add this line ===
-    updateNoSpendTracker();
+    const expenses = await apiRequest('');
+    updateNoSpendTracker(expenses);
     // =========================
     
   } catch (error) { 
@@ -739,20 +740,26 @@ function calculateBudgetDisciplineScore(budget, expenses) {
  * Compares average daily spending with recommended daily limit
  */
 function calculateConsistencyScore(budget, expenses, daysInMonth = 30) {
-  if (budget <= 0 || expenses <= 0) return 0;
-  
+
+  if (budget <= 0) return 0;
+
   const recommendedDaily = budget / daysInMonth;
-  const averageDaily = expenses / Math.max(1, daysWithExpenses);
-  
-  // If average daily is less than or equal to recommended, good score
+
+  // Use total expenses divided by days in month
+  const averageDaily = expenses / daysInMonth;
+
   if (averageDaily <= recommendedDaily) {
-    // Scale: 30 points for perfect, minimum 15 for being under budget
+
     const ratio = averageDaily / recommendedDaily;
-    return Math.round(15 + (ratio * 15) * 10) / 10;
+
+    return Math.min(30, Math.round((15 + ratio * 15) * 10) / 10);
+
   } else {
-    // Penalize for going over daily limit
+
     const overRatio = (averageDaily - recommendedDaily) / recommendedDaily;
-    const penalty = Math.min(15, overRatio * 30); // Max penalty 15 points
+
+    const penalty = Math.min(15, overRatio * 30);
+
     return Math.max(0, Math.round((30 - penalty) * 10) / 10);
   }
 }

@@ -290,11 +290,6 @@ async function loadExpenses() {
     
     expenses.forEach(exp => {
       total += Number(exp.amount);
-      // Inside loadExpenses() function, after calculating total:
-if (elements.totalAmount) elements.totalAmount.innerText = total.toFixed(2);
-
-// ✅ ADD THIS LINE TO SAVE TOTAL FOR PROFILE PAGE
-localStorage.setItem('finTrack_totalAmount', total.toFixed(2));
       const li = document.createElement('li');
       li.innerHTML = `<span><strong>${exp.title}</strong> (${exp.category || 'Other'}) - ₹${Number(exp.amount).toFixed(2)}</span>
                       <button class="delete-btn" data-id="${exp._id}">✖ Delete</button>`;
@@ -305,7 +300,11 @@ localStorage.setItem('finTrack_totalAmount', total.toFixed(2));
       btn.addEventListener('click', (e) => deleteExpense(e.target.dataset.id))
     );
     
+    // ✅ FIXED: Moved outside the loop
     if (elements.totalAmount) elements.totalAmount.innerText = total.toFixed(2);
+    
+    // ✅ ADD THIS LINE TO SAVE TOTAL FOR PROFILE PAGE
+    localStorage.setItem('finTrack_totalAmount', total.toFixed(2));
     
     const currentBudget = monthlyBudget;
     if (currentBudget > 0) {
@@ -325,17 +324,6 @@ localStorage.setItem('finTrack_totalAmount', total.toFixed(2));
     updateFinancialHealthScores(expenses);
     updateNoSpendTracker(expenses);
     
-  } catch (error) { 
-    console.error(error); 
-  }
-}
-
-async function deleteExpense(id) {
-  if (!id || !confirm('Delete this expense?')) return;
-  try { 
-    await apiRequest(`/${id}`, { method: 'DELETE' }); 
-    await loadExpenses(); 
-    await loadSmartAnalysis(); 
   } catch (error) { 
     console.error(error); 
   }

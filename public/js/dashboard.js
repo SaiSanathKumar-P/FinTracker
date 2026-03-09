@@ -291,14 +291,6 @@ if (progress) progress.style.width = percent + "%";
     // Update Floating Badge
     const badge = document.getElementById('budgetPercentBadge');
     if (badge) badge.innerText = `${Math.round(percent)}%`;
-
-    // Dynamic Gradient Track
-    elements.budgetInput.style.background = `linear-gradient(to right, 
-        #38bdf8 0%, 
-        #38bdf8 ${percent}%, 
-        rgba(15, 23, 42, 0.6) ${percent}%, 
-        rgba(15, 23, 42, 0.6) 100%)`;
-
     // Interactive Card Glow - increases as you increase budget
     const card = elements.budgetInput.closest(".budget-card");
     if (card) {
@@ -809,6 +801,23 @@ document.body.classList.remove(
 );
 
 document.body.classList.add(theme+"-mode");
+  const logo = document.querySelector(".logo");
+
+if(logo){
+
+if(theme==="dark"){
+logo.textContent="FinTrack 🌙";
+}
+
+else if(theme==="light"){
+logo.textContent="FinTrack ☀️";
+}
+
+else{
+logo.textContent="FinTrack 🌓";
+}
+
+}
 
 localStorage.setItem("fintrack_theme",theme);
 

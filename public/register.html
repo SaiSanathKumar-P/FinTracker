@@ -2,11 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-    <meta name="theme-color" content="#2563eb">
+  <meta name="theme-color" content="#2563eb">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FinTrack – Register</title>
   <link rel="stylesheet" href="css/style.css">
-  <style> /* same floating-label styles as login */ </style>
+  <style>
+    body { opacity: 0; transition: opacity 0.2s; }
+    body.auto-mode, body.light-mode, body.dark-mode, body.page-loaded { opacity: 1; }
+    .back-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 30px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+    .back-btn:hover {
+      background: var(--primary-500);
+      color: white;
+      border-color: var(--primary-500);
+      transform: translateX(-5px);
+    }
+  </style>
 </head>
 <body class="auto-mode">
   <div class="auth-container">
@@ -15,12 +35,13 @@
       <p>Take control of your student finances</p>
       <img src="images/Register.png" alt="Register" class="brand-icon floating" width="300">
     </aside>
-    <main class="auth-right auth-glass-card">
+    <main class="auth-right">
+      <button class="back-btn" onclick="goBack()">← Back to Home</button>
       <img src="images/Regi.jpg" alt="Finance" class="auth-image" width="150">
       <h2>Create Account 🚀</h2>
       <p class="subtitle">Start your smart finance journey</p>
       <form id="registerForm">
-  <p id="msg" style="color:#ff6b6b; text-align:center; margin-bottom:10px;"></p>
+        <p id="msg" style="color:#ff6b6b; text-align:center; margin-bottom:10px;"></p>
         <div class="floating-label-group"><input type="text" id="fullname" placeholder=" " required><label>Full Name</label></div>
         <div class="floating-label-group"><input type="email" id="email" placeholder=" " required><label>Email</label></div>
         <div class="floating-label-group"><input type="text" id="college" placeholder=" " required><label>College</label></div>
@@ -31,8 +52,7 @@
       <p class="register-link">Already have an account? <a href="login.html">Login</a></p>
     </main>
   </div>
+  <script src="js/ui-effects.js"></script>
   <script src="js/auth.js"></script>
-<script src="js/ui-effects.js"></script>
 </body>
 </html>
-

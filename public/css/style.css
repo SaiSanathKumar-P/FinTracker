@@ -510,12 +510,10 @@ input:-webkit-autofill:active {
 }
 
 .hero-right img {
-  width: 100%;
-  max-width: 280px;
-  height: auto;
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-2xl);
-  animation: float 6s ease-in-out infinite;
+  width:100%;
+  max-width:500px;
+  height:auto;
+  object-fit:contain;
 }
 
 @keyframes float {
@@ -1684,9 +1682,6 @@ footer a:hover {
 
 /* ========== 16. TABLET & DESKTOP UPGRADES ========== */
 @media (min-width: 640px) {
-  .hero-right img {
-    max-width: 320px;
-  }
   
   .feature-card {
     max-width: 280px;

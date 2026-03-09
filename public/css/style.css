@@ -444,7 +444,36 @@ input::placeholder {
   gap: var(--space-md);
   width: 100%;
 }
+/* =====================================================
+   FIX: Chrome/Safari/Edge AUTOFILL COLOR OVERRIDE
+   Prevents browser from applying yellow/blue background
+   and black text to autofilled fields.
+   ===================================================== */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    /* Use an internal box-shadow to override the autofill background color */
+    -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+    
+    /* Force the text color to match your text-primary variable */
+    -webkit-text-fill-color: var(--text-primary) !important;
+    
+    /* Ensure the border-color still matches on focus */
+    border-color: var(--primary-500) !important;
+    
+    /* A long transition helps keep the style stable */
+    transition: background-color 5000s ease-in-out 0s;
+}
 
+/* Ensure floating labels still move up correctly when autofilled */
+.floating-label-group input:-webkit-autofill + label,
+.floating-label-group input:-webkit-autofill:not(:placeholder-shown) + label {
+    top: 8px !important;
+    transform: translateY(0) !important;
+    font-size: 0.7rem !important;
+    color: var(--primary-500) !important;
+}
 /* ========== 9. HERO SECTION (MOBILE FIRST) ========== */
 .hero-section {
   display: flex;

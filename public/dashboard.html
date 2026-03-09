@@ -47,22 +47,29 @@
 <body class="auto-mode">
 <div class="dashboard-wrapper">
   <header class="topbar">
-    <h1 class="logo">FinTrack</h1>
-    <div class="topbar-right">
-      <div class="theme-dropdown" id="themeDropdown">
-        <button class="theme-btn" id="themeBtn">
-          <span class="theme-icon">🌓</span>
-          <span id="themeLabel">Both</span>
-        </button>
-        <div id="themeMenu" class="theme-menu" role="menu">
-          <div role="menuitem" data-theme="light">☀️ Light</div>
-          <div role="menuitem" data-theme="dark">🌙 Dark</div>
-          <div role="menuitem" data-theme="auto">🌓 Both</div>
-        </div>
+  <h1 class="logo" onclick="window.location.href='dashboard.html'" style="cursor: pointer;">FinTrack</h1>
+  <div class="topbar-right" style="display: flex; align-items: center; gap: 10px;">
+    <div class="theme-dropdown" id="themeDropdown">
+      <button class="theme-btn" id="themeBtn">
+        <span class="theme-icon">🌓</span>
+        <span id="themeLabel">Both</span>
+      </button>
+      <div id="themeMenu" class="theme-menu" role="menu">
+        <div role="menuitem" data-theme="light">☀️ Light</div>
+        <div role="menuitem" data-theme="dark">🌙 Dark</div>
+        <div role="menuitem" data-theme="auto">🌓 Both</div>
       </div>
-      <button class="logout-btn" id="logoutBtn">Logout</button>
     </div>
-  </header>
+    
+    <!-- Profile Button -->
+    <button class="profile-btn" onclick="window.location.href='profile.html'" 
+            style="background: var(--primary-500); border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(56,189,248,0.3);">
+      <span style="color: white; font-size: 20px;">👤</span>
+    </button>
+    
+    <button class="logout-btn" id="logoutBtn">Logout</button>
+  </div>
+</header>
 
   <!-- Summary Cards -->
   <section class="summary-grid">

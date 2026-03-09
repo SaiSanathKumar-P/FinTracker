@@ -7,16 +7,11 @@
   'use strict';
 
   // ========== PAGE TRANSITIONS ==========
-  function initPageTransitions() {
-    // Add page-loaded class after DOM is ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        document.body.classList.add('page-loaded');
-      });
-    } else {
-      document.body.classList.add('page-loaded');
-    }
-  }
+  function initPageTransitions(){
+window.addEventListener('load',()=>{
+document.body.classList.add('page-loaded');
+});
+}
 
   // ========== RIPPLE EFFECT FOR BUTTONS ==========
   function initRippleEffect() {

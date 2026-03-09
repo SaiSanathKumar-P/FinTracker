@@ -27,9 +27,9 @@ if (loginForm) {
       if (res.ok && data.token) {
         localStorage.setItem("token", data.token);
         
-        // ✅ Check if API returns user data
+        // ✅ CRITICAL FIX: Always use data from the logged-in user
         if (data.user) {
-          // Save complete user data from API
+          // If API returns user data, use it
           localStorage.setItem('finTrack_user', JSON.stringify({
             name: data.user.name || email.split('@')[0],
             email: data.user.email || email,
@@ -37,23 +37,14 @@ if (loginForm) {
             year: data.user.year || '1'
           }));
         } else {
-          // If API doesn't return user data, try to get from localStorage
-          const existingUser = localStorage.getItem('finTrack_user');
-          
-          if (existingUser) {
-            // Update only the email in existing data (keep college and year)
-            const userData = JSON.parse(existingUser);
-            userData.email = email;
-            localStorage.setItem('finTrack_user', JSON.stringify(userData));
-          } else {
-            // Create new user data with just email (college/year will be 'Not specified')
-            localStorage.setItem('finTrack_user', JSON.stringify({
-              name: email.split('@')[0],
-              email: email,
-              college: 'Not specified',
-              year: '1'
-            }));
-          }
+          // If API doesn't return user data, create NEW data from this login
+          // DO NOT use existingUser - that belongs to a different user!
+          localStorage.setItem('finTrack_user', JSON.stringify({
+            name: email.split('@')[0],
+            email: email,
+            college: 'Not specified',
+            year: '1'
+          }));
         }
         
         window.location.href = "dashboard.html";

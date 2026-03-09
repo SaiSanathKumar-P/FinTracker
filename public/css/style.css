@@ -837,14 +837,20 @@ input::placeholder {
 }
 
 /* ========== 14. DASHBOARD (MOBILE FIRST) ========== */
-.dashboard-wrapper {
-  padding: var(--space-md);
-  background: var(--bg-primary);
-  min-height: 100vh;
-  color: var(--text-primary);
-  width: 100%;
+.dashboard-wrapper{
+  animation: fadeDashboard 0.5s ease;
 }
 
+@keyframes fadeDashboard{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
 .topbar {
   display: flex;
   justify-content: space-between;

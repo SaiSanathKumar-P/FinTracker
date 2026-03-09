@@ -25,9 +25,20 @@ if (loginForm) {
       console.log("LOGIN RESPONSE:", data);
 
       if (res.ok && data.token) {
-        localStorage.setItem("token", data.token);
-        window.location.href = "dashboard.html";
-      } else {
+  localStorage.setItem("token", data.token);
+  
+  // ✅ If your login API returns user data, save it too
+  if (data.user) {
+    localStorage.setItem('finTrack_user', JSON.stringify({
+      name: data.user.name,
+      email: data.user.email,
+      college: data.user.college,
+      year: data.user.year
+    }));
+  }
+  
+  window.location.href = "dashboard.html";
+} else {
         alert(data.message || "Login failed");
       }
 

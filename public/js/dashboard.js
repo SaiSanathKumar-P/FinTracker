@@ -742,7 +742,7 @@ function calculateConsistencyScore(budget, expenses, daysInMonth = 30) {
   if (budget <= 0 || expenses <= 0) return 0;
   
   const recommendedDaily = budget / daysInMonth;
-  const averageDaily = expenses / daysInMonth;
+  const averageDaily = expenses / Math.max(1, daysWithExpenses);
   
   // If average daily is less than or equal to recommended, good score
   if (averageDaily <= recommendedDaily) {
@@ -802,6 +802,7 @@ function updateFinancialHealthScores(expenses = []) {
  * Calculate no-spend days and related metrics
  */
 function updateNoSpendTracker(expenses = []) {
+  if (!document.getElementById('noSpendDays')) return;
   if (!expenses || expenses.length === 0) {
     document.getElementById('noSpendDays').innerText = '0';
     document.getElementById('safeDailySpend').innerText = '₹0';

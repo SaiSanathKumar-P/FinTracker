@@ -27,22 +27,28 @@ if (loginForm) {
       if (res.ok && data.token) {
         localStorage.setItem("token", data.token);
         
-        // ✅ FIXED: If API returns user data, save it
+        // ✅ Check if API returns user data
         if (data.user) {
+          // Save complete user data from API
           localStorage.setItem('finTrack_user', JSON.stringify({
-            name: data.user.name || '',
-            email: data.user.email || '',
-            college: data.user.college || '',
-            year: data.user.year || ''
+            name: data.user.name || email.split('@')[0],
+            email: data.user.email || email,
+            college: data.user.college || 'Not specified',
+            year: data.user.year || '1'
           }));
         } else {
-          // ✅ If API doesn't return user data, try to keep existing or create placeholder
+          // If API doesn't return user data, try to get from localStorage
           const existingUser = localStorage.getItem('finTrack_user');
-          if (!existingUser) {
-            // Create a temporary user from email
-            const tempName = email.split('@')[0];
+          
+          if (existingUser) {
+            // Update only the email in existing data (keep college and year)
+            const userData = JSON.parse(existingUser);
+            userData.email = email;
+            localStorage.setItem('finTrack_user', JSON.stringify(userData));
+          } else {
+            // Create new user data with just email (college/year will be 'Not specified')
             localStorage.setItem('finTrack_user', JSON.stringify({
-              name: tempName,
+              name: email.split('@')[0],
               email: email,
               college: 'Not specified',
               year: '1'
@@ -87,12 +93,12 @@ if (registerForm) {
       console.log("REGISTER RESPONSE:", data);
 
       if (res.ok && data.token) {
-        // ✅ SAVE USER DATA FOR PROFILE PAGE
+        // ✅ SAVE COMPLETE USER DATA FOR PROFILE PAGE
         localStorage.setItem('finTrack_user', JSON.stringify({
           name: name,
           email: email,
-          college: college,
-          year: year
+          college: college || 'Not specified',
+          year: year || '1'
         }));
         
         localStorage.setItem("token", data.token);

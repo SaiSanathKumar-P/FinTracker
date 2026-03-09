@@ -569,9 +569,7 @@ function updateNoSpendTracker(expenses = []) {
 // ========== Logout ==========
 // ========== Logout ==========
 function logoutUser() {
-  // ✅ Only remove the token, keep user data
-  localStorage.removeItem("token");
-  // Also remove any session data if needed
+  localStorage.removeItem("token");  // ✅ Only remove token
   sessionStorage.clear();
   window.location.replace("login.html");
 }

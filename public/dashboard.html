@@ -5,10 +5,19 @@
   <meta name="theme-color" content="#2563eb">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FinTrack – Dashboard</title>
+  <script>
+(function(){
+  try{
+    const saved = localStorage.getItem("theme") || "auto-mode";
+    document.documentElement.classList.add(saved);
+    document.body?.classList?.add(saved);
+  }catch(e){}
+})();
+</script>
   <link rel="stylesheet" href="css/style.css?v=4.2">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    body { opacity: 0; transition: opacity 0.2s; }
+    body { opacity: 1; transition: opacity 0.3s ease; }
     #chartContainer { display: block; }
     body.auto-mode, body.light-mode, body.dark-mode { opacity: 1; }
     .form-row input,

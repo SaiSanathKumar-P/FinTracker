@@ -799,11 +799,11 @@ function initThemeSystem() {
             themeIcon.textContent = icons[theme] || '🌓';
         }
 
-        localStorage.setItem("fintrack_theme", theme);
+        localStorage.setItem("theme", theme + "-mode");
     }
 
     // Load saved theme or default to auto
-    const savedTheme = localStorage.getItem("fintrack_theme") || "auto";
+    const savedTheme = localStorage.getItem("theme") || "auto-mode";
     applyTheme(savedTheme);
 
     themeBtn.onclick = (e) => {
@@ -1004,8 +1004,6 @@ function updateNoSpendTracker(expenses = []) {
 async function initDashboard() {
   elements = getElements();
   initThemeSystem(); // ADD THIS
-const savedTheme = localStorage.getItem("fintrack_theme") || "auto";
-document.body.classList.add(savedTheme + "-mode");
   const savedColors = localStorage.getItem("finTrack_categoryColors");
   if (savedColors) {
     categoryColors = JSON.parse(savedColors);

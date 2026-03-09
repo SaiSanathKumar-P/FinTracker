@@ -779,34 +779,15 @@ function initThemeSystem(){
 const themeBtn = document.getElementById('themeBtn');
 const themeMenu = document.getElementById('themeMenu');
 const dropdown = document.getElementById('themeDropdown');
+const themeLabel = document.getElementById("themeLabel");
 
 if(!themeBtn || !themeMenu || !dropdown) return;
 
-// Load saved theme
 const savedTheme = localStorage.getItem("fintrack_theme") || "auto";
 
-document.body.classList.remove(
-"light-mode",
-"dark-mode",
-"auto-mode"
-);
+applyTheme(savedTheme);
 
-document.body.classList.add(savedTheme + "-mode");
-
-// Toggle dropdown
-themeBtn.onclick = (e)=>{
-e.stopPropagation();
-dropdown.classList.toggle("active");
-};
-
-// Theme select
-themeMenu.querySelectorAll("[data-theme]").forEach(item=>{
-
-item.onclick = (e)=>{
-
-e.stopPropagation();
-
-const theme = item.dataset.theme;
+function applyTheme(theme){
 
 document.body.classList.remove(
 "light-mode",
@@ -816,7 +797,32 @@ document.body.classList.remove(
 
 document.body.classList.add(theme + "-mode");
 
+if(themeLabel){
+
+if(theme==="light") themeLabel.innerText="Light";
+else if(theme==="dark") themeLabel.innerText="Dark";
+else themeLabel.innerText="Auto";
+
+}
+
 localStorage.setItem("fintrack_theme", theme);
+
+}
+
+themeBtn.onclick = (e)=>{
+e.stopPropagation();
+dropdown.classList.toggle("active");
+};
+
+themeMenu.querySelectorAll("[data-theme]").forEach(item=>{
+
+item.onclick=(e)=>{
+
+e.stopPropagation();
+
+const theme=item.dataset.theme;
+
+applyTheme(theme);
 
 dropdown.classList.remove("active");
 
@@ -824,7 +830,6 @@ dropdown.classList.remove("active");
 
 });
 
-// Close outside click
 document.addEventListener("click",(e)=>{
 
 if(!e.target.closest(".theme-dropdown")){
@@ -834,13 +839,6 @@ dropdown.classList.remove("active");
 });
 
 }
-// ========== FINANCIAL HEALTH SCORE FUNCTIONS ==========
-
-/**
- * Calculate Savings Score (max 40 points)
- * Formula: (Savings / Income) × 100 = Savings Ratio
- * Savings Score = (Savings Ratio / 100) × 40
- */
 function calculateSavingsScore(income, expenses) {
   if (income <= 0) return 0;
   

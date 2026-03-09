@@ -134,12 +134,13 @@
   };
 
   // ========== THEME SYSTEM SYNC ==========
-  function initThemeSync() {
-    // Apply theme from localStorage on all pages
-    const savedTheme = localStorage.getItem('theme') || 'auto';
-    document.body.classList.remove('light-mode', 'dark-mode', 'auto-mode');
-    document.body.classList.add(savedTheme + '-mode');
-  }
+function initThemeSync() {
+  const savedTheme = localStorage.getItem('theme');
+  if(!savedTheme) return;
+
+  document.body.classList.remove('light-mode','dark-mode','auto-mode');
+  document.body.classList.add(savedTheme);
+}
 
   // ========== INITIALIZE ALL EFFECTS ==========
   function init() {

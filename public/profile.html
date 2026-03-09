@@ -193,14 +193,13 @@
       setElementText('infoEmail', userData.email);
     }
     
-    if (userData.college) {
-      setElementText('userCollege', userData.college + ' • Year ' + (userData.year || '1'));
-      setElementText('infoCollege', userData.college);
-    }
+    // College and Year display - FIXED
+    const collegeText = userData.college || 'Not specified';
+    const yearText = userData.year || '1';
     
-    if (userData.year) {
-      setElementText('infoYear', userData.year + (userData.year.endsWith('th') ? '' : 'th Year'));
-    }
+    setElementText('userCollege', collegeText + ' • Year ' + yearText);
+    setElementText('infoCollege', collegeText);
+    setElementText('infoYear', yearText + (yearText.endsWith('th') ? '' : 'th Year'));
     
     // Set joined date
     const joinDate = new Date();

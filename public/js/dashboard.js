@@ -776,26 +776,17 @@ async function loadBudget() {
 }
 function initThemeSystem(){
 
-const themeBtn = document.getElementById('themeBtn');
-const themeMenu = document.getElementById('themeMenu');
-const dropdown = document.getElementById('themeDropdown');
+const themeBtn = document.getElementById("themeBtn");
+const themeMenu = document.getElementById("themeMenu");
+const dropdown = document.getElementById("themeDropdown");
 const themeLabel = document.getElementById("themeLabel");
 
-if(!themeBtn || !themeMenu || !dropdown) return;
-
-const savedTheme = localStorage.getItem("fintrack_theme") || "auto";
-
-applyTheme(savedTheme);
+if(!themeBtn || !themeMenu) return;
 
 function applyTheme(theme){
 
-document.body.classList.remove(
-"light-mode",
-"dark-mode",
-"auto-mode"
-);
-
-document.body.classList.add(theme + "-mode");
+document.body.classList.remove("light-mode","dark-mode","auto-mode");
+document.body.classList.add(theme+"-mode");
 
 if(themeLabel){
 
@@ -805,37 +796,39 @@ else themeLabel.innerText="Auto";
 
 }
 
-localStorage.setItem("fintrack_theme", theme);
+localStorage.setItem("fintrack_theme",theme);
 
 }
 
-themeBtn.onclick = (e)=>{
+// load saved theme
+const savedTheme = localStorage.getItem("fintrack_theme") || "auto";
+applyTheme(savedTheme);
+
+// open dropdown
+themeBtn.onclick=(e)=>{
 e.stopPropagation();
 dropdown.classList.toggle("active");
 };
 
+// select theme
 themeMenu.querySelectorAll("[data-theme]").forEach(item=>{
 
 item.onclick=(e)=>{
-
 e.stopPropagation();
 
 const theme=item.dataset.theme;
-
 applyTheme(theme);
 
 dropdown.classList.remove("active");
-
 };
 
 });
 
+// close dropdown
 document.addEventListener("click",(e)=>{
-
 if(!e.target.closest(".theme-dropdown")){
 dropdown.classList.remove("active");
 }
-
 });
 
 }

@@ -39,7 +39,7 @@ if (loginForm) {
 }
 
 // ======================
-// REGISTER - FIXED to save user data
+// REGISTER - Saves user data
 // ======================
 if (registerForm) {
   registerForm.addEventListener("submit", async (e) => {

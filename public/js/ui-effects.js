@@ -36,3 +36,30 @@ function goBack() {
     window.location.href = 'index.html';
   }, 300);
 }
+// Scroll reveal animation
+function initScrollReveal() {
+  const revealElements = document.querySelectorAll('.feature-card, .how-card, .split-section, .hero-section');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  
+  revealElements.forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+}
+
+// Call this in DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+  initScrollReveal();
+  // ... existing code
+});

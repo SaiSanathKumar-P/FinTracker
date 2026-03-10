@@ -278,7 +278,30 @@ async function addExpense() {
     console.error(error); 
   }
 }
+// ========== DELETE EXPENSE ==========
+async function deleteExpense(id) {
 
+  if (!id) return;
+
+  const confirmDelete = confirm("Are you sure you want to delete this expense?");
+  if (!confirmDelete) return;
+
+  try {
+
+    await apiRequest(`/${id}`, {
+      method: "DELETE"
+    });
+
+    // reload updated data
+    await loadExpenses();
+    await loadSmartAnalysis();
+
+  } catch (error) {
+    console.error("Delete failed:", error);
+    alert("Failed to delete expense");
+  }
+
+}
 async function loadExpenses() {
   try {
     const expenses = await apiRequest('');

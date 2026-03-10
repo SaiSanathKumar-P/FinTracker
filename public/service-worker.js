@@ -1,4 +1,4 @@
-const CACHE_NAME = "fintrack-cache-v25";
+const CACHE_NAME = "fintrack-cache-v26";
 
 const urlsToCache = [
   "/",

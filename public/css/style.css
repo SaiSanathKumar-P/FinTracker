@@ -510,10 +510,21 @@ input:-webkit-autofill:active {
 }
 
 .hero-right img {
-  width:100%;
-  max-width:500px;
-  height:auto;
-  object-fit:contain;
+width:100%;
+max-width:520px;
+height:auto;
+object-fit:contain;
+padding:20px;
+border-radius:20px;
+box-shadow:0 20px 60px rgba(0,0,0,0.35),
+           0 0 40px rgba(56,189,248,0.35);
+transition:transform .4s ease, box-shadow .4s ease;
+}
+
+.hero-right img:hover{
+transform:translateY(-8px) scale(1.03);
+box-shadow:0 30px 80px rgba(0,0,0,0.5),
+           0 0 60px rgba(56,189,248,0.7);
 }
 
 @keyframes float {
@@ -1938,7 +1949,7 @@ body.page-loaded{
 opacity:1;
 filter:blur(0);
 transform:translateY(0);
-transition:all .45s ease;
+transition:opacity .25s ease, transform .25s ease;
 }
 /* =================================
 APPLE GLASS TILT EFFECT
